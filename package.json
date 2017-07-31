@@ -1,0 +1,8 @@
+{
+  "name": "contrail-front",
+  "version": "0.0.1",
+  "description": "Front end app for vostok-contrail",
+  "main": "index.js",
+  "author": "tihonove",
+  "license": "MIT"
+}
