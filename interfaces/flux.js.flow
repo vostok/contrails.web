@@ -1,0 +1,22 @@
+// @flow
+declare module 'flux' {
+    declare class Dispatcher {
+        dispatch(action: any): void;
+    }
+
+    declare class FluxInterface {
+        Dispatcher: Class<Dispatcher>;
+    }
+
+    declare export default FluxInterface;
+}
+
+declare module 'flux/utils' {
+    declare class Container {
+        static create(reactClass: ReactClass<*>): ReactClass<*>;
+    }
+
+    declare class Store {
+        __emitChange(): void;
+    }
+}

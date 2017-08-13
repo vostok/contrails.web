@@ -1,0 +1,11 @@
+{
+    "extends": ["skbkontur-retail"],
+    "rules": {
+        "import/no-unresolved": "error",
+        "import/order": ["error", { "newlines-between": "always" }],
+        "class-methods-use-this": "off"
+    },
+    "settings": {
+        "import/resolver": "webpack"
+    }
+}

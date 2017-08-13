@@ -1,0 +1,52 @@
+// @flow
+declare module 'jsbarcode' {
+    declare type Options = {
+        width?: number;
+        height?: number;
+        format?: string;
+        displayValue?: boolean;
+        fontOptions?: string;
+        font?: string;
+        text?: string;
+        textAlign?: string;
+        textPosition?: string;
+        textMargin?: number;
+        fontSize?: number | string;
+        background?: string;
+        lineColor?: string;
+        margin?: number;
+        marginTop?: number;
+        marginBottom?: number;
+        marginLeft?: number;
+        marginRight?: number;
+        valid?: Function;
+    };
+
+    declare interface JsBarcodeApi {
+        options(options: Options): JsBarcodeApi;
+        blank(size: number): JsBarcodeApi;
+        init(options?: Options): void;
+        render(): void;
+        CODE39(value: string, options?: Options): JsBarcodeApi;
+        CODE128(value: string, options?: Options): JsBarcodeApi;
+        CODE128A(value: string, options?: Options): JsBarcodeApi;
+        CODE128B(value: string, options?: Options): JsBarcodeApi;
+        CODE128C(value: string, options?: Options): JsBarcodeApi;
+        EAN13(value: string, options?: Options): JsBarcodeApi;
+        EAN8(value: string, options?: Options): JsBarcodeApi;
+        EAN5(value: string, options?: Options): JsBarcodeApi;
+        EAN2(value: string, options?: Options): JsBarcodeApi;
+        UPC(value: string, options?: Options): JsBarcodeApi;
+        ITF14(value: string, options?: Options): JsBarcodeApi;
+        ITF(value: string, options?: Options): JsBarcodeApi;
+        MSI(value: string, options?: Options): JsBarcodeApi;
+        MSI10(value: string, options?: Options): JsBarcodeApi;
+        MSI11(value: string, options?: Options): JsBarcodeApi;
+        MSI1010(value: string, options?: Options): JsBarcodeApi;
+        MSI1110(value: string, options?: Options): JsBarcodeApi;
+        pharmacode(value: string, options?: Options): JsBarcodeApi;
+        codabar(value: string, options?: Options): JsBarcodeApi;
+    }
+
+    declare export default function JsBarcode(element: HTMLElement, data?: string, options?: Options): JsBarcodeApi;
+}

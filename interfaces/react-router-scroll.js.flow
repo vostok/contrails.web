@@ -1,0 +1,9 @@
+// @flow
+declare module 'react-router-scroll' {
+    declare type RouterMiddleware = {
+        renderRouteComponent?: any;
+        renderRouterContext?: any;
+    };
+
+    declare function useScroll(): RouterMiddleware;
+}

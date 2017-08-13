@@ -1,0 +1,19 @@
+declare module 'numeral' {
+    declare type LanguageSettings = {
+        delimiters?: {
+            thousands?: string;
+            decimal?: string;
+        };
+    }
+
+    declare class Numeral {
+        format(format: string): string;
+    }
+
+    declare module.exports:
+        ((number: string | number) => Numeral) &
+        {
+            language(languageId: string, settings: LanguageSettings): void;
+            language(languageId: string): void;
+        };
+}

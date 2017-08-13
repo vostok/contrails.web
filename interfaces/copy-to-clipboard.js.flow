@@ -1,0 +1,4 @@
+// @flow
+declare module 'copy-to-clipboard' {
+    declare export default function copy(text: string): void;
+}

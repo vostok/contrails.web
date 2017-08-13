@@ -1,0 +1,25 @@
+// @flow
+/* eslint-disable */
+declare module 'lens' {
+    declare type PropertyPicker<T, V> = (T) => V;
+
+    declare var idx: $Facebookism$Idx;
+
+    declare interface Lens<T, TResult> {
+        get(target: T): TResult;
+        set(target: T, value: TResult): T;
+    }
+
+    declare function pathLens<TTarget: {}, TProp>(
+        propertyPicker: (target: TTarget) => TProp
+    ): Lens<TTarget, TProp>;
+
+    declare function getPath<TTarget: {}, TProp>(
+        propertyPicker: (target: TTarget) => TProp
+    ): string[];
+
+
+    declare function view<TTarget, TProp>(lens: Lens<TTarget, TProp>, target: TTarget): TProp;
+
+    declare function set<TTarget, TProp>(lens: Lens<TTarget, TProp>, value: TProp, target: TTarget): TTarget;
+}
