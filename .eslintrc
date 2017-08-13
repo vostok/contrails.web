@@ -1,7 +1,7 @@
 {
     "extends": ["skbkontur-retail"],
     "rules": {
-        "import/no-unresolved": "error",
+        "import/no-unresolved": "off",
         "import/order": ["error", { "newlines-between": "always" }],
         "class-methods-use-this": "off"
     },

@@ -11,6 +11,7 @@ const Border = glamorous.div({
     border: "1px solid #000",
     width: "400px",
     height: "200px",
+    margin: "0 auto",
 });
 
 type ProfilerItem = {
@@ -43,6 +44,10 @@ class ProfilerChartMinimapDemo extends React.Component {
         context.strokeText(item.name, 5, 10);
     };
 
+    handleChangeViewPort(viewPort: { from: number, to: number }) {
+        this.setState({ viewPort: viewPort });
+    }
+
     render(): React.Element<*> {
         const { data } = this.props;
         const { viewPort } = this.state;
@@ -55,14 +60,14 @@ class ProfilerChartMinimapDemo extends React.Component {
                         from={0}
                         to={10}
                         viewPort={viewPort}
-                        onChangeViewPort={x => this.setState({ viewPort: x })}
+                        onChangeViewPort={x => this.handleChangeViewPort(x)}
                     />
                 </div>
                 <div>
-                    <Button onClick={() => this.setState({ viewPort: { ...viewPort, from: viewPort.from + 5 } })}>
+                    <Button onClick={() => this.setState({ viewPort: { ...viewPort, from: viewPort.from + 0.4 } })}>
                         +
                     </Button>
-                    <Button onClick={() => this.setState({ viewPort: { ...viewPort, from: viewPort.from + 5 } })}>
+                    <Button onClick={() => this.setState({ viewPort: { ...viewPort, from: viewPort.from - 0.4 } })}>
                         -
                     </Button>
                 </div>

@@ -1,0 +1,16 @@
+// @flow
+declare interface IModule {
+    hot?: {
+        accept(path: string, callback: () => void): void,
+    },
+}
+
+declare var module: IModule;
+
+declare module "react-hot-loader" {
+    declare type AppContainerProps = {
+        chldren?: any,
+    };
+
+    declare class AppContainer extends React$Component<void, AppContainerProps, void> {}
+}

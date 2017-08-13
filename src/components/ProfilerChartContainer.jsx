@@ -14,7 +14,8 @@ type ProfilerChartProps = {|
 |};
 
 const Wrapper = glamorous.div({
-    overflow: "hidden",
+    overflowX: "hidden",
+    overflowY: "auto",
     position: "relative",
 });
 

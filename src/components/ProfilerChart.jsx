@@ -35,6 +35,14 @@ type ItemDrawOptions = {
     selected: boolean,
 };
 
+function delay(timeout: number): Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, timeout);
+    });
+}
+
 export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<void, ProfilerChartProps<TItem>, void> {
     props: ProfilerChartProps<TItem>;
     canvas: ?HTMLCanvasElement = null;
@@ -178,12 +186,38 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     }
 
-    drawData() {
+    newDrawStarted: boolean = false;
+    drawing: boolean = false;
+
+    async checkRedraw(): Promise<boolean> {
+        await delay(1);
+        if (this.newDrawStarted) {
+            return true;
+        }
+        return false;
+    }
+
+    setDrawBegin() {
+        if (this.drawing) {
+            this.newDrawStarted = true;
+        } else {
+            this.newDrawStarted = false;
+        }
+        this.drawing = true;
+    }
+
+    setDrawFullyCompleted() {
+        this.drawing = false;
+        this.newDrawStarted = false;
+    }
+
+    async drawData(): Promise<void> {
         const canvas = this.canvas;
         if (canvas == null) {
             return;
         }
 
+        this.setDrawBegin();
         const { data, from, to } = this.props;
         const width = this.toAbsolute(to - from);
         const drawContext = canvas.getContext("2d");
@@ -192,26 +226,40 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         drawContext.fillRect(0, 0, width, lineHeight * data.lines.length);
 
         drawContext.save();
-        for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
-            const line = data.lines[lineIndex];
-            for (const item of line.items) {
-                this.drawItemAtLine(drawContext, item, lineIndex, {
-                    hovered: false,
-                    selected: this.isItemSelected(item, lineIndex),
-                });
+        let drawedCount = 0;
+        try {
+            for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
+                const line = data.lines[lineIndex];
+                for (const item of line.items) {
+                    this.drawItemAtLine(drawContext, item, lineIndex, {
+                        hovered: false,
+                        selected: this.isItemSelected(item, lineIndex),
+                    });
+                    drawedCount++;
+                    if (drawedCount === 500) {
+                        drawedCount = 0;
+                        if (await this.checkRedraw()) {
+                            this.newDrawStarted = false;
+                            return;
+                        }
+                    }
+                }
             }
+            this.setDrawFullyCompleted();
+        } finally {
+            drawContext.restore();
         }
-        drawContext.restore();
     }
 
     render(): React.Element<*> {
-        const { to, from } = this.props;
+        const { to, from, data } = this.props;
         return (
             <canvas
                 ref={(e: HTMLCanvasElement) => (this.canvas = e)}
                 onClick={this.handleMouseClick}
                 onMouseMove={this.handleMouseMove}
                 onMouseLeave={this.handleMouseLeave}
+                height={lineHeight * data.lines.length}
                 width={this.toAbsolute(to - from)}
             />
         );

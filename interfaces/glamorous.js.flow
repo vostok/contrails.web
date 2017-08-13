@@ -864,6 +864,7 @@ declare module "glamorous" {
     declare type GlamorousStatic = {|
         (target: GlamorousTarget): GlamorousStylingFunction,
         div: GlamorousStylingFunction,
+        span: GlamorousStylingFunction,
     |};
 
     declare module.exports: GlamorousStatic;
