@@ -22,6 +22,8 @@ type ProfilerItem = {
 
 type ProfilerChartDemoProps = {
     data: ProfilerData<ProfilerItem>,
+    from: number,
+    to: number,
 };
 
 type ProfilerChartDemoState = {
@@ -49,7 +51,7 @@ class ProfilerChartMinimapDemo extends React.Component {
     }
 
     render(): React.Element<*> {
-        const { data } = this.props;
+        const { data, from, to } = this.props;
         const { viewPort } = this.state;
 
         return (
@@ -57,8 +59,8 @@ class ProfilerChartMinimapDemo extends React.Component {
                 <div>
                     <ProfilerChartMinimap
                         data={data}
-                        from={0}
-                        to={10}
+                        from={from}
+                        to={to}
                         viewPort={viewPort}
                         onChangeViewPort={x => this.handleChangeViewPort(x)}
                     />
@@ -79,13 +81,24 @@ class ProfilerChartMinimapDemo extends React.Component {
 storiesOf("ProfilerChartMinimap", module).add("Default", () =>
     <Border>
         <ProfilerChartMinimapDemo
+            from={0}
+            to={10}
             data={{
                 lines: [
+                    {
+                        items: [{ from: 0, to: 10, name: "123" }],
+                    },
                     {
                         items: [{ from: 0, to: 2, name: "123" }, { from: 2.1, to: 3.993, name: "123" }],
                     },
                     {
                         items: [{ from: 0.5, to: 2, name: "123" }, { from: 2.6, to: 3.9, name: "123" }],
+                    },
+                    {
+                        items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
+                    },
+                    {
+                        items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
                     },
                     {
                         items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],

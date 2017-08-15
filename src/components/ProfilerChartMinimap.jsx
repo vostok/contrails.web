@@ -75,8 +75,28 @@ export default class ProfilerChartMinimap extends React.Component {
 
     drawItems() {
         this.executeWithDrawContext((context, width) => {
-            context.fillStyle = "#efe";
+            const { data } = this.props;
+            context.fillStyle = "rgba(255, 255, 255, 0.0)";
             context.fillRect(0, 0, width, 100);
+            const lineHeight = 10;
+
+            let lineIndex = 0;
+            for (const line of data.lines) {
+                context.fillStyle = "rgba(255, 180, 180, 0.5)";
+                context.strokeStyle = "rgba(0, 0, 0, 0.5)";
+                context.lineWidth = 0.5;
+                for (const item of line.items) {
+                    context.rect(
+                        this.toAbsolute(item.from),
+                        lineIndex * lineHeight,
+                        this.toAbsolute(item.to - item.from),
+                        lineHeight
+                    );
+                }
+                lineIndex++;
+            }
+            context.stroke();
+            context.fill();
         });
     }
 
@@ -143,17 +163,61 @@ export default class ProfilerChartMinimap extends React.Component {
         return width * value / (to - from);
     }
 
+    generateTimeMarkers() {
+        return [
+            { title: "1s", value: 1 },
+            { title: "3s", value: 3 },
+            { title: "5s", value: 5 },
+            { title: "7s", value: 7 },
+            { title: "9s", value: 9 },
+        ];
+    }
+
+    renderTimeMarkers(): React.Element<*> {
+        const timeMarkers = this.generateTimeMarkers();
+        return (
+            <TimeMarkersContainer>
+                {timeMarkers.map(timeMarker =>
+                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsolute(timeMarker.value) }}>
+                        <TimeMarkerTitle>
+                            {timeMarker.title}
+                        </TimeMarkerTitle>
+                    </TimeMarker>
+                )}
+            </TimeMarkersContainer>
+        );
+    }
+
     renderCanvas(width: number): React.Element<*> {
-        return <canvas ref={(e: HTMLCanvasElement) => (this.canvas = e)} height={100} width={width} />;
+        return (
+            <div style={{ position: "relative", zIndex: 0 }}>
+                <div style={{ position: "relative", height: 15 }} />
+                <div style={{ position: "relative", zIndex: 2 }}>
+                    <canvas ref={(e: HTMLCanvasElement) => (this.canvas = e)} height={100} width={width} />
+                </div>
+                {this.renderTimeMarkers()}
+            </div>
+        );
     }
 
     render(): React.Element<*> {
         const { width } = this.state;
         const { from, to, viewPort } = this.props;
-
         return (
             <Container ref={this.saveRef(x => (this.container = x))}>
                 {width != null && this.renderCanvas(width)}
+                {width != null &&
+                    <LeftShadow
+                        style={{
+                            width: this.toAbsolute(viewPort.from - from),
+                        }}
+                    />}
+                {width != null &&
+                    <RightShadow
+                        style={{
+                            width: this.toAbsolute(to - viewPort.to),
+                        }}
+                    />}
                 {width != null &&
                     <Draggable
                         axis="x"
@@ -208,6 +272,22 @@ const LeftHandlerContainer = glamorous.div({
     width: 0,
 });
 
+const LeftShadow = glamorous.div({
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+});
+
+const RightShadow = glamorous.div({
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+});
+
 const RightHandlerContainer = glamorous.div({
     position: "absolute",
     top: 0,
@@ -218,31 +298,65 @@ const RightHandlerContainer = glamorous.div({
 const LeftHandler = glamorous.div({
     position: "absolute",
     top: 0,
-    left: 0,
-    width: 20,
-    height: 50,
-    backgroundColor: "rgba(0, 255, 0, 1)",
-    cursor: "col-resize",
+    left: -2,
+    width: 5,
+    height: 20,
+    backgroundColor: "#3072C4",
+    cursor: "e-resize",
 });
 
 const RightHandler = glamorous.div({
     position: "absolute",
     top: 0,
-    right: 0,
-    width: 20,
-    height: 50,
-    backgroundColor: "rgba(0, 255, 0, 1)",
-    cursor: "col-resize",
+    right: -2,
+    width: 5,
+    height: 20,
+    backgroundColor: "#3072C4",
+    cursor: "e-resize",
 });
 
 const Scroller = glamorous.div({
-    backgroundColor: "rgba(255, 0, 0, 0.5)",
+    backgroundColor: "transparent",
+    borderLeft: "1px solid #3072C4",
+    borderRight: "1px solid #3072C4",
     position: "absolute",
+    boxSizing: "border-box",
     top: 0,
     bottom: 0,
+    cursor: "grab",
 });
 
 const Container = glamorous.div({
     height: 100,
     position: "relative",
+    overflow: "hidden",
+    borderBottom: "#eee",
+});
+
+const TimeMarkersContainer = glamorous.div({
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 1,
+});
+
+const TimeMarkerTitle = glamorous.div({
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    right: 3,
+    color: "#A0A0A0",
+    fontSize: "10px",
+    lineHeight: "10px",
+});
+
+const TimeMarker = glamorous.div({
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    width: 1,
+    backgroundColor: "rgba(0,0,0,0.08)",
 });

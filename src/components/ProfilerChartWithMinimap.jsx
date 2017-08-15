@@ -125,6 +125,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                     xScale != null &&
                     <div>
                         <ProfilerChartMinimap
+                            data={data}
                             from={from}
                             to={to}
                             viewPort={{
