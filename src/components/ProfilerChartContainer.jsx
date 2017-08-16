@@ -10,6 +10,10 @@ type ProfilerChartProps = {|
         from: number,
         scale: number,
     },
+    onChangeViewPort: ({
+        from: number,
+        scale: number,
+    }) => void,
     children?: React.Element<*>[],
 |};
 
@@ -28,6 +32,11 @@ export default class ProfilerChartContainer extends React.Component {
         return (itemX - from) * viewPort.scale;
     }
 
+    toRelative(itemX: number): number {
+        const { viewPort, from } = this.props;
+        return (itemX - from) * viewPort.scale;
+    }
+
     adjustScrollPosition() {
         const container = ReactDom.findDOMNode(this.container);
         if (!(container instanceof HTMLElement)) {
@@ -41,11 +50,46 @@ export default class ProfilerChartContainer extends React.Component {
         this.adjustScrollPosition();
     }
 
+    initialFrom: number;
+    curXPos: number;
+    curDown: boolean;
+
+    handleMouseMove = (e) => {
+        if (this.curDown) {
+            const container = ReactDom.findDOMNode(this.container);
+            if (!(container instanceof HTMLElement)) {
+                return;
+            }
+            const { onChangeViewPort, viewPort } = this.props;
+            onChangeViewPort({ ...viewPort, from: this.initialFrom + (this.curXPos - e.pageX) / viewPort.scale });
+        }
+    };
+
+    handleMouseDown = (e) => {
+        const container = ReactDom.findDOMNode(this.container);
+        if (!(container instanceof HTMLElement)) {
+            return;
+        }
+
+        const { viewPort } = this.props;
+        this.initialFrom = viewPort.from;
+        this.curXPos = e.pageX;
+        this.curDown = true;
+    };
+
+    handleMouseUp = (e) => {
+        this.curDown = false;
+    };
+
     render(): React.Element<*> {
         const { children } = this.props;
-
         return (
-            <Wrapper ref={(e: Wrapper) => (this.container = e)}>
+            <Wrapper
+                onMouseDown={this.handleMouseDown}
+                onMouseUp={this.handleMouseUp}
+                onMouseMove={this.handleMouseMove}
+                onMouseLeave={() => { this.curDown = false; }}
+                ref={(e: Wrapper) => (this.container = e)}>
                 {children}
             </Wrapper>
         );

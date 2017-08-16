@@ -148,6 +148,11 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                             <ProfilerChartContainer
                                 from={from}
                                 to={to}
+                                onChangeViewPort={x =>
+                                    this.setState({
+                                        viewPortFrom: Math.min(Math.max(from, x.from), to - width / xScale),
+                                        xScale: x.scale,
+                                    })}
                                 viewPort={{
                                     from: viewPortFrom,
                                     scale: xScale,
