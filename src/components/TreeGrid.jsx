@@ -144,6 +144,7 @@ const ExpandButton = glamorous.button({
 });
 
 const Table = glamorous.table({
+    width: "100%",
     border: 0,
     borderCollapse: "collapse",
 });

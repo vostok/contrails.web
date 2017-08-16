@@ -1,7 +1,8 @@
 // @flow
 import React from "react";
-import { Button, Input, Icon } from "ui";
 import glamurous from "glamorous";
+
+import { Button, Input, Icon } from "ui";
 
 type ContrailsLayoutProps = {
     children?: React.Element<*>[],
@@ -31,9 +32,9 @@ export default class ContrailsLayout extends React.Component {
                         <Button use="success">Открыть</Button>
                     </TraceIdContainer>
                 </Header>
-                <div>
+                <Content>
                     {children}
-                </div>
+                </Content>
             </Container>
         );
     }
@@ -74,9 +75,12 @@ const LogoText = glamurous.span({
 const Logo = glamurous.div({});
 
 const Container = glamurous.div({
-    backgroundColor: "#fee",
     display: "flex",
     flexDirection: "column",
     minHeight: "100%",
     height: "100%",
+});
+
+const Content = glamurous.div({
+    flex: "0 1 100%",
 });

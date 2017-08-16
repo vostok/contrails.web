@@ -73,7 +73,7 @@ module.exports = {
         }),
     ],
     devServer: {
-        host: "localhost",
+        allowedHosts: ["localhost", ".dev.kontur"],
         port: 3000,
         historyApiFallback: true,
         hot: true,
