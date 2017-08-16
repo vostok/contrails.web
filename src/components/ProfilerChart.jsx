@@ -1,5 +1,6 @@
 // @flow
 import React from "react";
+import glamorous from "glamorous";
 
 type Color = string;
 
@@ -65,13 +66,14 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 
     getBackgroundColor(item: TItem, options: ItemDrawOptions): Color {
-        return options.hovered ? "#5f5" : "#f55";
+        return options.hovered ? "rgba(120, 255, 120, 0.5)" : "rgba(255, 120, 120, 0.5)";
     }
 
     drawItem(context: CanvasRenderingContext2D, item: TItem, options: ItemDrawOptions) {
         const { onCustomDrawItem } = this.props;
         const { from, to } = item;
 
+        context.clearRect(1, 0, this.toAbsolute(to - from) - 2, lineHeight - 1);
         context.fillStyle = this.getBackgroundColor(item, options);
         context.fillRect(1, 0, this.toAbsolute(to - from) - 2, lineHeight - 1);
         if (onCustomDrawItem != null) {
@@ -222,8 +224,8 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         const width = this.toAbsolute(to - from);
         const drawContext = canvas.getContext("2d");
 
-        drawContext.fillStyle = "#eee";
-        drawContext.fillRect(0, 0, width, lineHeight * data.lines.length);
+        //drawContext.fillStyle = "#eee";
+        drawContext.clearRect(0, 0, width, lineHeight * data.lines.length);
 
         drawContext.save();
         let drawedCount = 0;
@@ -251,17 +253,77 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     }
 
+    generateTimeMarkers() {
+        const { to, from } = this.props;
+        return [
+            { title: "1s", value: (to - from) * 0.1 },
+            { title: "3s", value: (to - from) * 0.3 },
+            { title: "5s", value: (to - from) * 0.5 },
+            { title: "7s", value: (to - from) * 0.7 },
+            { title: "9s", value: (to - from) * 0.9 },
+        ];
+    }
+
+    renderTimeMarkers(): React.Element<*> {
+        const timeMarkers = this.generateTimeMarkers();
+        return (
+            <TimeMarkersContainer>
+                {timeMarkers.map(timeMarker =>
+                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsolute(timeMarker.value) }}>
+                        <TimeMarkerTitle>
+                            {timeMarker.title}
+                        </TimeMarkerTitle>
+                    </TimeMarker>
+                )}
+            </TimeMarkersContainer>
+        );
+    }
+
     render(): React.Element<*> {
         const { to, from, data } = this.props;
         return (
-            <canvas
-                ref={(e: HTMLCanvasElement) => (this.canvas = e)}
-                onClick={this.handleMouseClick}
-                onMouseMove={this.handleMouseMove}
-                onMouseLeave={this.handleMouseLeave}
-                height={lineHeight * data.lines.length}
-                width={this.toAbsolute(to - from)}
-            />
+            <div style={{ position: "relative", zIndex: 0 }}>
+                <div style={{ position: "relative", height: 20 }} />
+                <div style={{ position: "relative", zIndex: 2 }}>
+                    <canvas
+                        ref={(e: HTMLCanvasElement) => (this.canvas = e)}
+                        onClick={this.handleMouseClick}
+                        onMouseMove={this.handleMouseMove}
+                        onMouseLeave={this.handleMouseLeave}
+                        height={lineHeight * data.lines.length}
+                        width={this.toAbsolute(to - from)}
+                    />
+                </div>
+                {this.renderTimeMarkers()}
+            </div>
         );
     }
 }
+
+const TimeMarkersContainer = glamorous.div({
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 1,
+});
+
+const TimeMarkerTitle = glamorous.div({
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    right: 3,
+    color: "#A0A0A0",
+    fontSize: "14px",
+    lineHeight: "20px",
+});
+
+const TimeMarker = glamorous.div({
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    width: 1,
+    backgroundColor: "rgba(0,0,0,0.08)",
+});
