@@ -1,9 +1,9 @@
 const path = require("path");
+
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const NODE_ENV = process.env.NODE_ENV;
-console.log(NODE_ENV);
 
 module.exports = {
     entry: {
@@ -43,6 +43,15 @@ module.exports = {
                 ],
             },
             {
+                test: /\.json$/,
+                exclude: /node_modules/,
+                rules: [
+                    {
+                        use: ["json-loader"],
+                    },
+                ],
+            },
+            {
                 test: /\.css$/,
                 include: /react-ui/,
                 rules: [
@@ -62,6 +71,7 @@ module.exports = {
         extensions: [".js", ".jsx"],
         alias: {
             ui: path.join(__dirname, "./src/commons/ui"),
+            commons: path.join(__dirname, "./src/commons"),
         },
     },
     plugins: [

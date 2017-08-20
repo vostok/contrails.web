@@ -25,6 +25,7 @@
     "glamor": "^2.20.37",
     "glamorous": "^3.25.0",
     "html-webpack-plugin": "^2.30.1",
+    "json-loader": "^0.5.7",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "prettier": "^1.5.3",

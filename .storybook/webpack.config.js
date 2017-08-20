@@ -11,6 +11,15 @@ module.exports = function(storybookBaseConfig, configType) {
         ],
     });
     storybookBaseConfig.module.rules.push({
+        test: /\.json$/,
+        exclude: /node_modules/,
+        rules: [
+            {
+                use: ["json-loader"],
+            },
+        ],
+    });
+    storybookBaseConfig.module.rules.push({
         test: /\.(woff|woff2|eot|svg|ttf|gif|png)$/,
         include: /react-ui/,
         use: ["file-loader"],

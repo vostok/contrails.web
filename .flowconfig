@@ -22,6 +22,7 @@ module.system.node.resolve_dirname=local_modules
 
 module.name_mapper='^.*\.less+$' -> '<PROJECT_ROOT>/flow/StylesFlowStub'
 module.name_mapper='^ui$' -> '<PROJECT_ROOT>/src/commons/ui/index.js'
+module.name_mapper='^\(commons/.*\)$' -> '<PROJECT_ROOT>/src/\1'
 
 esproposal.class_instance_fields=enable
 unsafe.enable_getters_and_setters=true

@@ -54,7 +54,7 @@ export default class ProfilerChartContainer extends React.Component {
     curXPos: number;
     curDown: boolean;
 
-    handleMouseMove = (e) => {
+    handleMouseMove = e => {
         if (this.curDown) {
             const container = ReactDom.findDOMNode(this.container);
             if (!(container instanceof HTMLElement)) {
@@ -65,7 +65,7 @@ export default class ProfilerChartContainer extends React.Component {
         }
     };
 
-    handleMouseDown = (e) => {
+    handleMouseDown = e => {
         const container = ReactDom.findDOMNode(this.container);
         if (!(container instanceof HTMLElement)) {
             return;
@@ -77,7 +77,7 @@ export default class ProfilerChartContainer extends React.Component {
         this.curDown = true;
     };
 
-    handleMouseUp = (e) => {
+    handleMouseUp = () => {
         this.curDown = false;
     };
 
@@ -88,7 +88,9 @@ export default class ProfilerChartContainer extends React.Component {
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}
                 onMouseMove={this.handleMouseMove}
-                onMouseLeave={() => { this.curDown = false; }}
+                onMouseLeave={() => {
+                    this.curDown = false;
+                }}
                 ref={(e: Wrapper) => (this.container = e)}>
                 {children}
             </Wrapper>
