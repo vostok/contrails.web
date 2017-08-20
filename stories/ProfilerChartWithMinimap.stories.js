@@ -2,8 +2,11 @@
 import React from "react";
 import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
+import moment from "moment";
 
 import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap";
+import type { TraceInfo } from "../src/Domain/TraceInfo";
+import Response62f8278dab21471c8370fa47d4f52f72 from "../src/Domain/Responses/62f8278dab21471c8370fa47d4f52f72.json";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
 
@@ -22,6 +25,42 @@ type ProfilerItem = {
 
 function handleCustomDrawItem(_context: CanvasRenderingContext2D, _item: ProfilerItem) {
     //context.strokeText(item.name, 5, 10);
+}
+
+function min(x, y) {
+    return Math.min(x, y);
+}
+
+function max(x, y) {
+    return Math.max(x, y);
+}
+
+function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
+    const spans = response[0].Spans;
+    const result = {
+        from: spans.map(x => x.BeginTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(min),
+        to: spans.map(x => x.EndTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(max),
+    };
+    console.log(result);
+    return result;
+}
+
+function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: { items: ProfilerItem[] }[] } {
+    const spans = response[0].Spans;
+    const casssandraSpans = spans.filter(x => x.ParentSpanId === "4160087a000000000000000000000000");
+    const result = {
+        lines: [
+            {
+                items: casssandraSpans.map(x => ({
+                    name: x.OperationName,
+                    from: moment(x.BeginTimestamp).valueOf(),
+                    to: moment(x.EndTimestamp).valueOf(),
+                })),
+            },
+        ],
+    };
+
+    return result;
 }
 
 storiesOf("ProfilerChartWithMinimap", module)
@@ -90,5 +129,26 @@ storiesOf("ProfilerChartWithMinimap", module)
             data={{
                 lines: generateProfilerData(0, 1000, 0, 7),
             }}
+        />
+    )
+    .add("FullScreen-ValuesForRealTime", () =>
+        <ProfilerChartWithMinimap
+            onCustomDrawItem={handleCustomDrawItem}
+            from={1503233308736}
+            to={1503233309325}
+            data={{
+                lines: [
+                    {
+                        items: [{ from: 1503233308736, to: 1503233309325, name: "123" }],
+                    },
+                ],
+            }}
+        />
+    )
+    .add("FullScreen-DataFromTrace-62f8278dab21471c8370fa47d4f52f72", () =>
+        <ProfilerChartWithMinimap
+            onCustomDrawItem={handleCustomDrawItem}
+            {...getFromAndTo(Response62f8278dab21471c8370fa47d4f52f72)}
+            data={generateDataFromDiTraceResponse(Response62f8278dab21471c8370fa47d4f52f72)}
         />
     );

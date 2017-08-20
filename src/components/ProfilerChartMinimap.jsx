@@ -87,9 +87,9 @@ export default class ProfilerChartMinimap extends React.Component {
                 context.lineWidth = 0.5;
                 for (const item of line.items) {
                     context.rect(
-                        this.toAbsolute(item.from),
+                        this.toAbsoluteX(item.from),
                         lineIndex * lineHeight,
-                        this.toAbsolute(item.to - item.from),
+                        this.toAbsoluteX(item.to) - this.toAbsoluteX(item.from),
                         lineHeight
                     );
                 }
@@ -105,8 +105,8 @@ export default class ProfilerChartMinimap extends React.Component {
             const { from, viewPort, onChangeViewPort } = this.props;
             onChangeViewPort({
                 from: Math.min(
-                    Math.max(from, this.toRelative(dragInfo.x)),
-                    this.toRelative(this.toAbsolute(viewPort.to) - 10)
+                    Math.max(from, this.toRelativeX(dragInfo.x)),
+                    this.toRelativeX(this.toAbsoluteX(viewPort.to) - 10)
                 ),
                 to: viewPort.to,
             });
@@ -119,8 +119,8 @@ export default class ProfilerChartMinimap extends React.Component {
             onChangeViewPort({
                 from: viewPort.from,
                 to: Math.max(
-                    Math.min(to, this.toRelative(dragInfo.x)),
-                    this.toRelative(this.toAbsolute(viewPort.from) + 10)
+                    Math.min(to, this.toRelativeX(dragInfo.x)),
+                    this.toRelativeX(this.toAbsoluteX(viewPort.from) + 10)
                 ),
             });
         }
@@ -129,14 +129,14 @@ export default class ProfilerChartMinimap extends React.Component {
     handleViewPortDrag = (e: SyntheticEvent, dragInfo: DraggableData) => {
         const { from, to, viewPort, onChangeViewPort } = this.props;
         if (dragInfo.deltaX < 0) {
-            const newFrom = Math.max(from, this.toRelative(dragInfo.x));
+            const newFrom = Math.max(from, this.toRelativeX(dragInfo.x));
             const newTo = newFrom + viewPort.to - viewPort.from;
             onChangeViewPort({
                 from: newFrom,
                 to: newTo,
             });
         } else if (dragInfo.deltaX > 0) {
-            const newTo = Math.min(to, this.toRelative(dragInfo.x) + viewPort.to - viewPort.from);
+            const newTo = Math.min(to, this.toRelativeX(dragInfo.x) + viewPort.to - viewPort.from);
             const newFrom = newTo - (viewPort.to - viewPort.from);
             onChangeViewPort({
                 from: newFrom,
@@ -145,22 +145,22 @@ export default class ProfilerChartMinimap extends React.Component {
         }
     };
 
-    toRelative(value: number): number {
+    toRelativeX(value: number): number {
         const { width } = this.state;
         const { to, from } = this.props;
         if (width == null) {
             throw new Error("InvalidStateError");
         }
-        return value * (to - from) / width;
+        return value * (to - from) / width + from;
     }
 
-    toAbsolute(value: number): number {
+    toAbsoluteX(value: number): number {
         const { width } = this.state;
         const { to, from } = this.props;
         if (width == null) {
             throw new Error("InvalidStateError");
         }
-        return width * value / (to - from);
+        return (value - from) * width / (to - from);
     }
 
     generateTimeMarkers() {
@@ -178,7 +178,7 @@ export default class ProfilerChartMinimap extends React.Component {
         return (
             <TimeMarkersContainer>
                 {timeMarkers.map(timeMarker =>
-                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsolute(timeMarker.value) }}>
+                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsoluteX(timeMarker.value) }}>
                         <TimeMarkerTitle>
                             {timeMarker.title}
                         </TimeMarkerTitle>
@@ -209,13 +209,13 @@ export default class ProfilerChartMinimap extends React.Component {
                 {width != null &&
                     <LeftShadow
                         style={{
-                            width: this.toAbsolute(viewPort.from - from),
+                            width: this.toAbsoluteX(viewPort.from),
                         }}
                     />}
                 {width != null &&
                     <RightShadow
                         style={{
-                            width: this.toAbsolute(to - viewPort.to),
+                            width: this.toAbsoluteX(from + to - viewPort.to),
                         }}
                     />}
                 {width != null &&
@@ -223,14 +223,14 @@ export default class ProfilerChartMinimap extends React.Component {
                         axis="x"
                         onDrag={this.handleViewPortDrag}
                         bounds={{
-                            left: this.toAbsolute(from),
-                            right: this.toAbsolute(to - (viewPort.to - viewPort.from)),
+                            left: this.toAbsoluteX(from),
+                            right: this.toAbsoluteX(to - (viewPort.to - viewPort.from)),
                         }}
-                        position={{ x: this.toAbsolute(viewPort.from), y: 0 }}>
+                        position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
                         <Scroller
                             ref={(e: HTMLElement) => (this.scroller = e)}
                             style={{
-                                width: this.toAbsolute(viewPort.to) - this.toAbsolute(viewPort.from),
+                                width: this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from),
                             }}
                         />
                     </Draggable>}
@@ -239,10 +239,10 @@ export default class ProfilerChartMinimap extends React.Component {
                         axis="x"
                         onDrag={this.handleDragLeftHandle}
                         bounds={{
-                            left: this.toAbsolute(from),
-                            right: this.toAbsolute(viewPort.to) - 10,
+                            left: this.toAbsoluteX(from),
+                            right: this.toAbsoluteX(viewPort.to) - 10,
                         }}
-                        position={{ x: this.toAbsolute(viewPort.from), y: 0 }}>
+                        position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
                         <LeftHandlerContainer>
                             <LeftHandler />
                         </LeftHandlerContainer>
@@ -252,10 +252,10 @@ export default class ProfilerChartMinimap extends React.Component {
                         axis="x"
                         onDrag={this.handleDragRightHandle}
                         bounds={{
-                            left: this.toAbsolute(viewPort.from) + 10,
-                            right: this.toAbsolute(to),
+                            left: this.toAbsoluteX(viewPort.from) + 10,
+                            right: this.toAbsoluteX(to),
                         }}
-                        position={{ x: this.toAbsolute(viewPort.to), y: 0 }}>
+                        position={{ x: this.toAbsoluteX(viewPort.to), y: 0 }}>
                         <RightHandlerContainer>
                             <RightHandler />
                         </RightHandlerContainer>

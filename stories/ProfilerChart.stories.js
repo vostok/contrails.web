@@ -62,4 +62,21 @@ storiesOf("ProfilerChart", module)
                 ],
             }}
         />
+    )
+    .add("NonZeroFrom", () =>
+        <ProfilerChart
+            onItemClick={action("onItemClick")}
+            selectedItems={[item2]}
+            onCustomDrawItem={handleCustomDrawItem}
+            from={10}
+            to={20}
+            xScale={100}
+            data={{
+                lines: [
+                    {
+                        items: [{ from: 11, to: 19, name: "Item 1" }],
+                    },
+                ],
+            }}
+        />
     );

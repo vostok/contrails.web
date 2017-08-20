@@ -65,6 +65,11 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         return itemX * xScale;
     }
 
+    toAbsoluteX(itemX: number): number {
+        const { from, xScale } = this.props;
+        return (itemX - from) * xScale;
+    }
+
     getBackgroundColor(item: TItem, options: ItemDrawOptions): Color {
         return options.hovered ? "rgba(120, 255, 120, 0.5)" : "rgba(255, 120, 120, 0.5)";
     }
@@ -73,9 +78,9 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         const { onCustomDrawItem } = this.props;
         const { from, to } = item;
 
-        context.clearRect(1, 0, this.toAbsolute(to - from) - 2, lineHeight - 1);
+        context.clearRect(1, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 2, lineHeight - 1);
         context.fillStyle = this.getBackgroundColor(item, options);
-        context.fillRect(1, 0, this.toAbsolute(to - from) - 2, lineHeight - 1);
+        context.fillRect(1, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 2, lineHeight - 1);
         if (onCustomDrawItem != null) {
             onCustomDrawItem(context, item);
         }
@@ -83,14 +88,14 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
             context.save();
             context.strokeStyle = "#44f";
             context.lineWidth = 2;
-            context.strokeRect(2, 1, this.toAbsolute(to - from) - 4, lineHeight - 2 - 1);
+            context.strokeRect(2, 1, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 4, lineHeight - 2 - 1);
             context.restore();
         }
     }
 
     isItemHovered(item: TItem, lineIndex: number, mouseX: number, mouseY: number): boolean {
-        const itemFrom = this.toAbsolute(item.from);
-        const itemTo = this.toAbsolute(item.to);
+        const itemFrom = this.toAbsoluteX(item.from);
+        const itemTo = this.toAbsoluteX(item.to);
         const itemTop = lineIndex * lineHeight;
         const itemBottom = (lineIndex + 1) * lineHeight;
         return mouseX > itemFrom && mouseX < itemTo && mouseY > itemTop && mouseY < itemBottom;
@@ -181,7 +186,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     drawItemAtLine(context: CanvasRenderingContext2D, item: TItem, lineIndex: number, options: ItemDrawOptions) {
         context.save();
         try {
-            context.translate(this.toAbsolute(item.from), lineIndex * lineHeight);
+            context.translate(this.toAbsoluteX(item.from), lineIndex * lineHeight);
             this.drawItem(context, item, options);
         } finally {
             context.restore();
@@ -221,7 +226,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
         this.setDrawBegin();
         const { data, from, to } = this.props;
-        const width = this.toAbsolute(to - from);
+        const width = this.toAbsoluteX(to) - this.toAbsoluteX(from);
         const drawContext = canvas.getContext("2d");
 
         //drawContext.fillStyle = "#eee";
@@ -269,7 +274,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         return (
             <TimeMarkersContainer>
                 {timeMarkers.map(timeMarker =>
-                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsolute(timeMarker.value) }}>
+                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsoluteX(timeMarker.value) }}>
                         <TimeMarkerTitle>
                             {timeMarker.title}
                         </TimeMarkerTitle>
@@ -291,7 +296,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
                         onMouseMove={this.handleMouseMove}
                         onMouseLeave={this.handleMouseLeave}
                         height={lineHeight * data.lines.length}
-                        width={this.toAbsolute(to - from)}
+                        width={this.toAbsoluteX(to) - this.toAbsoluteX(from)}
                     />
                 </div>
                 {this.renderTimeMarkers()}

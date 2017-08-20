@@ -35,12 +35,17 @@ type ProfilerChartDemoState = {
 
 class ProfilerChartMinimapDemo extends React.Component {
     props: ProfilerChartDemoProps;
-    state: ProfilerChartDemoState = {
-        viewPort: {
-            from: 5,
-            to: 7,
-        },
-    };
+    state: ProfilerChartDemoState;
+
+    constructor(props: ProfilerChartDemoProps) {
+        super(props);
+        this.state = {
+            viewPort: {
+                from: props.from + (props.to - props.from) / 2 - (props.to - props.from) / 5,
+                to: props.from + (props.to - props.from) / 2 + (props.to - props.from) / 5,
+            },
+        };
+    }
 
     handleCustomDrawItem = (context: CanvasRenderingContext2D, item: ProfilerItem) => {
         context.strokeText(item.name, 5, 10);
@@ -78,33 +83,49 @@ class ProfilerChartMinimapDemo extends React.Component {
     }
 }
 
-storiesOf("ProfilerChartMinimap", module).add("Default", () =>
-    <Border>
-        <ProfilerChartMinimapDemo
-            from={0}
-            to={10}
-            data={{
-                lines: [
-                    {
-                        items: [{ from: 0, to: 10, name: "123" }],
-                    },
-                    {
-                        items: [{ from: 0, to: 2, name: "123" }, { from: 2.1, to: 3.993, name: "123" }],
-                    },
-                    {
-                        items: [{ from: 0.5, to: 2, name: "123" }, { from: 2.6, to: 3.9, name: "123" }],
-                    },
-                    {
-                        items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
-                    },
-                    {
-                        items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
-                    },
-                    {
-                        items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
-                    },
-                ],
-            }}
-        />
-    </Border>
-);
+storiesOf("ProfilerChartMinimap", module)
+    .add("Default", () =>
+        <Border>
+            <ProfilerChartMinimapDemo
+                from={0}
+                to={10}
+                data={{
+                    lines: [
+                        {
+                            items: [{ from: 0, to: 10, name: "123" }],
+                        },
+                        {
+                            items: [{ from: 0, to: 2, name: "123" }, { from: 2.1, to: 3.993, name: "123" }],
+                        },
+                        {
+                            items: [{ from: 0.5, to: 2, name: "123" }, { from: 2.6, to: 3.9, name: "123" }],
+                        },
+                        {
+                            items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
+                        },
+                        {
+                            items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
+                        },
+                        {
+                            items: [{ from: 1, to: 1.5, name: "123" }, { from: 2, to: 2.9, name: "123" }],
+                        },
+                    ],
+                }}
+            />
+        </Border>
+    )
+    .add("NonZeroFrom", () =>
+        <Border>
+            <ProfilerChartMinimapDemo
+                from={10}
+                to={20}
+                data={{
+                    lines: [
+                        {
+                            items: [{ from: 11, to: 19, name: "123" }],
+                        },
+                    ],
+                }}
+            />
+        </Border>
+    );
