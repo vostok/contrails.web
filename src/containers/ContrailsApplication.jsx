@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Switch, Route } from "react-router";
 
@@ -10,7 +10,7 @@ import TraceViewer from "./TraceViewer";
 
 const api = new ContrailsApiFake();
 
-export default function ContrailsApplication(): React.Element<*> {
+export default function ContrailsApplication(): React.Node {
     return (
         <ApiProvider contrailsApi={api}>
             <BrowserRouter>

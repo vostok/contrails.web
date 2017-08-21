@@ -1,14 +1,11 @@
 // @flow
 /* eslint-disable */
-import React, { PropTypes } from 'react';
+import * as React from "react";
 
-declare type FunctionComponent<P> = (props: P) => ?React$Element<any>;
-declare type ClassComponent<D, P, S> = Class<React$Component<D, P, S>>;
-
-export type WithApiWrapper<TApiProps> = <P, S>(Comp: ClassComponent<void, P, S> | FunctionComponent<P>) => ClassComponent<void, $Diff<P, TApiProps>, S>;
+export type WithApiWrapper<TApiProps> = <P>(Comp: React.ComponentType<P>) => React.ComponentType<$Diff<P, TApiProps>>;
 
 declare export var createWithApiWrapper: <T: {}>(z: string, u: ?T) => WithApiWrapper<T>;
 
-export type ApiProviderBase<TApiProps> = Class<React.Component<void, TApiProps & { children?: any }, void>>
+export type ApiProviderBase<TApiProps> = React.ComponentType<TApiProps & { children?: React.Node }>
 
 declare export function createApiProvider<TProps: {}>(propsToContextNames: string[]): ApiProviderBase<TProps>;

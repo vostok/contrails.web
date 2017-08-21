@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import ReactDOM from "react-dom";
 import { AppContainer } from "react-hot-loader";
 
@@ -18,7 +18,7 @@ const rootEl = document.getElementById("root");
 //     console.log(a);
 // })();
 
-function render(Component: Class<React.Component<any, void, any>>) {
+function render(Component: React.ComponentType<{||}>) {
     ReactDOM.render(
         <AppContainer>
             <Component />

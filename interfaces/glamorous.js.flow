@@ -857,14 +857,18 @@ declare module "glamorous" {
         $call?: empty,
     };
 
-    declare type GlamorousStylingFunction = (styles: CSSProperties) => Class<React$Component<void, any, void>>;
+    declare type GlamorousStylingFunction = (styles: CSSProperties) => React$ComponentType<any>;
 
-    declare type GlamorousTarget = Class<React$Component<void, any, void>>;
+    declare type GlamorousTarget = React$ComponentType<any>;
 
     declare type GlamorousStatic = {|
         (target: GlamorousTarget): GlamorousStylingFunction,
         div: GlamorousStylingFunction,
         span: GlamorousStylingFunction,
+        button: GlamorousStylingFunction,
+        table: GlamorousStylingFunction,
+        tr: GlamorousStylingFunction,
+        td: GlamorousStylingFunction,
     |};
 
     declare module.exports: GlamorousStatic;

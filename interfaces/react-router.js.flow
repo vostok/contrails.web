@@ -1,17 +1,12 @@
 // @flow
 /* eslint-disable */
 declare module 'react-router' {
-    declare type FunctionComponent<P> = (props: P) => ?React$Element<any>;
-    declare type ClassComponent<D, P, S> = Class<React$Component<D, P, S>>;
-
     declare class ReactRouter {
         push(location: RouterLocationDescriptor): void;
         replace(location: RouterLocationDescriptor): void;
     }
 
-    declare function withRouter<P, S>(
-        Comp: ClassComponent<void, P, S> | FunctionComponent<P>
-    ): ClassComponent<void, $Diff<P, { router: ReactRouter }>, S>;
+    declare function withRouter<P>(Comp: React$ComponentType<P>): React$ComponentType<$Diff<P, { router: ReactRouter }>>;
 
     declare type LocationDescriptor = {
         pathname: string;
@@ -52,14 +47,21 @@ declare module 'react-router' {
     }
 
     declare type RouteProps = {
+        exact?: boolean;
         path?: string;
-        component?: (options: RouteOptions) => React$Element<*> | Class<React$Component<void, RouteOptions, void>>;
-        children?: any;
+        component?: React$ComponentType<RouteOptions>;
+        children?: React$Node,
         onEnter?: (options: RouteOptions) => void | Promise<void>;
         onLeave?: () => void | Promise<void>;
         [stringPropName: string]: string;
     }
-    declare class Route extends React$Component<void, RouteProps, void> { }
+    declare class Route extends React$Component<RouteProps, void> { }
+
+    declare type SwitchProps = {
+        children: React$Node,
+    }
+
+    declare class Switch extends React$Component<SwitchProps> { }
 
     declare type IndexRouteProps = {
         component?: (options: RouteOptions) => React$Element<*> | Class<React$Component<void, RouteOptions, void>>;
@@ -69,21 +71,21 @@ declare module 'react-router' {
         onChange?: (prevOptions: RouteOptions, options: RouteOptions) => void | Promise<void>;
         [stringPropName: string]: string;
     }
-    declare class IndexRoute extends React$Component<void, IndexRouteProps, void> { }
+    declare class IndexRoute extends React$Component<IndexRouteProps, void> { }
 
 
     declare type RouterProps = {|
         history: IBrowserHistory;
         children?: any;
         routes?: ?any[];
-        render?: Class<React$Component<void, any, void>> | ((props: any) => React$Element<any>);
+        render?: React$ComponentType<any>;
     |}
-    declare var Router: Class<React$Component<void, RouterProps, void>>;
+    declare var Router: React$ComponentType<RouterProps>;
 
     declare type RouterMiddleware = {
         renderRouteComponent?: any;
         renderRouterContext?: any;
     };
 
-    declare function applyRouterMiddleware(...middlewares: RouterMiddleware[]): Class<React$Component<void, any, void>>
+    declare function applyRouterMiddleware(...middlewares: RouterMiddleware[]): React$ComponentType<any>
 }

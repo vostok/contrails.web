@@ -58,6 +58,7 @@ declare module 'moment' {
         minutes(value: number): Moment;
         year(value: number): Moment;
         year(): number;
+        valueOf(): number;
     }
 
     declare export default class MomentStatic  {

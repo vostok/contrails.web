@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import moment from "moment";
@@ -27,11 +27,11 @@ function handleCustomDrawItem(_context: CanvasRenderingContext2D, _item: Profile
     //context.strokeText(item.name, 5, 10);
 }
 
-function min(x, y) {
+function min(x: number, y: number): number {
     return Math.min(x, y);
 }
 
-function max(x, y) {
+function max(x: number, y: number): number {
     return Math.max(x, y);
 }
 
@@ -41,7 +41,6 @@ function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
         from: spans.map(x => x.BeginTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(min),
         to: spans.map(x => x.EndTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(max),
     };
-    console.log(result);
     return result;
 }
 
@@ -123,7 +122,6 @@ storiesOf("ProfilerChartWithMinimap", module)
     )
     .add("FullScreen-LargeData", () =>
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
             from={0}
             to={1000}
             data={{
@@ -133,7 +131,6 @@ storiesOf("ProfilerChartWithMinimap", module)
     )
     .add("FullScreen-ValuesForRealTime", () =>
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
             from={1503233308736}
             to={1503233309325}
             data={{
@@ -147,7 +144,6 @@ storiesOf("ProfilerChartWithMinimap", module)
     )
     .add("FullScreen-DataFromTrace-62f8278dab21471c8370fa47d4f52f72", () =>
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
             {...getFromAndTo(Response62f8278dab21471c8370fa47d4f52f72)}
             data={generateDataFromDiTraceResponse(Response62f8278dab21471c8370fa47d4f52f72)}
         />

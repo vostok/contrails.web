@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import glamorous from "glamorous";
 
 type Color = string;
@@ -23,7 +23,7 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
     to: number,
     xScale: number,
 
-    onItemClick?: (event: SyntheticMouseEvent, item: TItem, lineIndex: number) => void,
+    onItemClick?: (event: SyntheticMouseEvent<HTMLCanvasElement>, item: TItem, lineIndex: number) => void,
     selectedItems?: TItem[],
     onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem) => void,
     onGetBackgroundColor?: (item: TItem) => Color,
@@ -44,7 +44,7 @@ function delay(timeout: number): Promise<void> {
     });
 }
 
-export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<void, ProfilerChartProps<TItem>, void> {
+export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<ProfilerChartProps<TItem>, void> {
     props: ProfilerChartProps<TItem>;
     canvas: ?HTMLCanvasElement = null;
     currentHoveredItem: ?{
@@ -124,7 +124,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         return selectedItems != null && selectedItems.includes(item);
     }
 
-    getItemAtCursor(event: SyntheticMouseEvent): ?{ item: TItem, lineIndex: number } {
+    getItemAtCursor(event: SyntheticMouseEvent<HTMLCanvasElement>): ?{ item: TItem, lineIndex: number } {
         const canvas = this.canvas;
         if (canvas == null) {
             return null;
@@ -145,7 +145,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         return null;
     }
 
-    handleMouseClick = (event: SyntheticMouseEvent) => {
+    handleMouseClick = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
         const canvas = this.canvas;
         if (canvas == null) {
             return;
@@ -159,7 +159,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     };
 
-    handleMouseMove = (event: SyntheticMouseEvent) => {
+    handleMouseMove = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
         const canvas = this.canvas;
         if (canvas == null) {
             return;
@@ -258,7 +258,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     }
 
-    generateTimeMarkers() {
+    generateTimeMarkers(): any {
         const { to, from } = this.props;
         return [
             { title: "1s", value: (to - from) * 0.1 },
@@ -291,7 +291,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
                 <div style={{ position: "relative", height: 20 }} />
                 <div style={{ position: "relative", zIndex: 2 }}>
                     <canvas
-                        ref={(e: HTMLCanvasElement) => (this.canvas = e)}
+                        ref={e => (this.canvas = e)}
                         onClick={this.handleMouseClick}
                         onMouseMove={this.handleMouseMove}
                         onMouseLeave={this.handleMouseLeave}

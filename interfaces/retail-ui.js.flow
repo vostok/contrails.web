@@ -8,9 +8,9 @@ declare module 'retail-ui/components/Autocomplete' {
         width?: ?number | ?string;
         leftIcon?: React$Element<any>;
         value: ?string;
-        onChange: (SyntheticEvent, string) => void;
+        onChange: (SyntheticEvent<>, string) => void;
     |};
-    declare export default class Autocomplete extends React$Component<void, AutocompleteProps, void> {}
+    declare export default class Autocomplete extends React$Component<AutocompleteProps, void> {}
 }
 
 type ButtonProps = {|
@@ -28,19 +28,19 @@ type ButtonProps = {|
     use?: 'default' | 'primary' | 'success' | 'danger' | 'pay' | 'link';
     width?: ?number | ?string;
     arrow?: boolean;
-    onClick?: (e: SyntheticMouseEvent) => void;
-    onKeyDown?: (e: SyntheticKeyboardEvent) => void;
-    onMouseEnter?: (e: SyntheticMouseEvent) => void;
-    onMouseLeave?: (e: SyntheticMouseEvent) => void;
-    onMouseOver?: (e: SyntheticMouseEvent) => void;
+    onClick?: (e: SyntheticMouseEvent<>) => void;
+    onKeyDown?: (e: SyntheticKeyboardEvent<>) => void;
+    onMouseEnter?: (e: SyntheticMouseEvent<>) => void;
+    onMouseLeave?: (e: SyntheticMouseEvent<>) => void;
+    onMouseOver?: (e: SyntheticMouseEvent<>) => void;
 |};
 
 declare module 'retail-ui/components/Button' {
-    declare export default class Button extends React$Component<void, ButtonProps, void> {}
+    declare export default class Button extends React$Component<ButtonProps, void> {}
 }
 
 declare module '@skbkontur/react-ui/Button' {
-    declare export default class Button extends React$Component<void, ButtonProps, void> {}
+    declare export default class Button extends React$Component<ButtonProps, void> {}
 }
 
 declare module 'retail-ui/components/Center' {
@@ -51,7 +51,7 @@ declare module 'retail-ui/components/Center' {
         align?: 'center';
         children?: any;
     |};
-    declare export default class Center extends React$Component<void, CenterProps, void> {}
+    declare export default class Center extends React$Component<CenterProps, void> {}
 }
 
 declare module 'retail-ui/components/Checkbox' {
@@ -62,7 +62,7 @@ declare module 'retail-ui/components/Checkbox' {
         children?: any;
         onChange?: (event: Event, nextChecked: boolean) => void;
     |};
-    declare export default class Checkbox extends React$Component<void, CheckboxProps, void> {}
+    declare export default class Checkbox extends React$Component<CheckboxProps, void> {}
 }
 
 declare module 'retail-ui/components/ComboBoxOld' {
@@ -78,16 +78,16 @@ declare module 'retail-ui/components/ComboBoxOld' {
 
         source: (searchText: string) => Promise<?{ values: TValue[]; infos: TInfo[] }>;
         value: ?TValue;
-        info?: (TValue) => Promsie<?TInfo>;
+        info?: (TValue) => Promise<?TInfo>;
         renderValue: (TValue, TInfo) => ?React$Element<any> | ?string;
         renderItem: (TValue, TInfo) => ?React$Element<any> | ?string;
         valueToString?: (TValue) => ?string;
         renderNotFound?: string | ((searchText: string) => React$Element<*> | string);
-        onChange: (event: SyntheticEvent, value: ?TValue, info: ?TInfo) => void;
+        onChange: (event: SyntheticEvent<>, value: ?TValue, info: ?TInfo) => void;
         recover?: (pattern: string) => ?{ value: ?TValue; info: TInfo };
         autoFocus?: boolean;
     |};
-    declare export default class ComboBoxOld<TValue, TInfo> extends React$Component<void, ComboBoxOldProps<TValue, TInfo>, void> { }
+    declare export default class ComboBoxOld<TValue, TInfo> extends React$Component<ComboBoxOldProps<TValue, TInfo>, void> { }
 }
 
 declare module 'retail-ui/components/DatePicker' {
@@ -101,7 +101,7 @@ declare module 'retail-ui/components/DatePicker' {
         value: ?Date;
         onChange: (Event, Date) => void;
     |};
-    declare export default class DatePicker extends React$Component<void, DatePickerProps, void> {
+    declare export default class DatePicker extends React$Component<DatePickerProps, void> {
         focus(): void;
     }
 }
@@ -112,7 +112,7 @@ declare module 'retail-ui/components/Dropdown' {
         caption: string | React$Element<any>;
         children?: any;
     |};
-    declare export default class Dropdown extends React$Component<void, DropdownProps, void> {}
+    declare export default class Dropdown extends React$Component<DropdownProps, void> {}
 }
 
 declare module 'retail-ui/components/Gapped' {
@@ -123,7 +123,7 @@ declare module 'retail-ui/components/Gapped' {
         gap?: number | string;
         children?: any;
     |};
-    declare export default class Gapped extends React$Component<void, GappedProps, void> {}
+    declare export default class Gapped extends React$Component<GappedProps, void> {}
 }
 
 declare module 'retail-ui/components/Group' {
@@ -131,7 +131,7 @@ declare module 'retail-ui/components/Group' {
         'data-tid'?: string;
         children?: any;
     |};
-    declare export default class Group extends React$Component<void, GroupProps, void> {}
+    declare export default class Group extends React$Component<GroupProps, void> {}
 }
 
 declare module 'retail-ui/components/Icon' {
@@ -141,7 +141,7 @@ declare module 'retail-ui/components/Icon' {
         color?: ?string;
         size?: ?number | ?string;
     |};
-    declare export default class Icon extends React$Component<void, IconProps, void> {}
+    declare export default class Icon extends React$Component<IconProps, void> {}
 }
 
 declare module 'retail-ui/components/Input' {
@@ -167,7 +167,7 @@ declare module 'retail-ui/components/Input' {
         onKeyPress?: (event: Event) => void;
         onChange?: (event: Event, value: string) => void;
     |};
-    declare export default class Input extends React$Component<void, InputProps, void> {
+    declare export default class Input extends React$Component<InputProps, void> {
         setSelectionRange(start: number, end: number): void;
     }
 }
@@ -183,12 +183,12 @@ declare module 'retail-ui/components/Link' {
         target?: ?string;
         disabled?: boolean;
         children?: any;
-        onClick?: (event: SyntheticMouseEvent) => void;
-        onMouseEnter?: (e: SyntheticMouseEvent) => void;
-        onMouseLeave?: (e: SyntheticMouseEvent) => void;
-        onMouseOver?: (e: SyntheticMouseEvent) => void;
+        onClick?: (event: SyntheticMouseEvent<>) => void;
+        onMouseEnter?: (e: SyntheticMouseEvent<>) => void;
+        onMouseLeave?: (e: SyntheticMouseEvent<>) => void;
+        onMouseOver?: (e: SyntheticMouseEvent<>) => void;
     |};
-    declare export default class Link extends React$Component<void, LinkProps, void> {}
+    declare export default class Link extends React$Component<LinkProps, void> {}
 }
 
 declare module 'retail-ui/components/Loader' {
@@ -200,7 +200,7 @@ declare module 'retail-ui/components/Loader' {
         children?: any;
         type?: 'mini' | 'normal' | 'big';
     };
-    declare export default class Loader extends React$Component<void, LoaderProps, void> {}
+    declare export default class Loader extends React$Component<LoaderProps, void> {}
 }
 
 declare module 'retail-ui/components/Modal' {
@@ -227,10 +227,10 @@ declare module 'retail-ui/components/Modal' {
         children?: any;
     |};
 
-    declare export default class Modal extends React$Component<void, ModalProps, void> {
-        static Header: Class<React$Component<void, HeaderProps, void>>;
-        static Body: Class<React$Component<void, BodyProps, void>>;
-        static Footer: Class<React$Component<void, FooterProps, void>>;
+    declare export default class Modal extends React$Component<ModalProps, void> {
+        static Header: Class<React$Component<HeaderProps, void>>;
+        static Body: Class<React$Component<BodyProps, void>>;
+        static Footer: Class<React$Component<FooterProps, void>>;
     }
 }
 
@@ -241,7 +241,7 @@ declare module 'retail-ui/components/PhoneInput' {
         width?: number;
         onChange?: (event: Event, value: string) => void;
     |};
-    declare export default class PhoneInput extends React$Component<void, PhoneInputProps, void> {}
+    declare export default class PhoneInput extends React$Component<PhoneInputProps, void> {}
 }
 
 declare module 'retail-ui/components/Radio' {
@@ -250,7 +250,7 @@ declare module 'retail-ui/components/Radio' {
         disabled?: boolean;
         checked: boolean;
     |};
-    declare export default class Radio extends React$Component<void, RadioProps, void> {}
+    declare export default class Radio extends React$Component<RadioProps, void> {}
 }
 
 declare module 'retail-ui/components/RadioGroup' {
@@ -261,7 +261,7 @@ declare module 'retail-ui/components/RadioGroup' {
         onChange: (Event, T) => void;
         renderItem: T => React$Element<any> | string;
     |};
-    declare export default class RadioGroup<T> extends React$Component<void, RadioGroupProps<T>, void> {}
+    declare export default class RadioGroup<T> extends React$Component<RadioGroupProps<T>, void> {}
 }
 
 declare module 'retail-ui/components/RenderContainer' {
@@ -269,7 +269,7 @@ declare module 'retail-ui/components/RenderContainer' {
         'data-tid'?: string;
         children?: any;
     |};
-    declare export default class RenderContainer extends React$Component<void, RenderContainerProps, void> {}
+    declare export default class RenderContainer extends React$Component<RenderContainerProps, void> {}
 }
 
 declare module 'retail-ui/components/Select' {
@@ -288,7 +288,7 @@ declare module 'retail-ui/components/Select' {
         renderItem?: (T, TRenderElement) => React$Element<any> | string;
         renderValue?: (T, TRenderElement) => React$Element<any> | string;
         value: ?T;
-        onChange: (SyntheticEvent, T) => void;
+        onChange: (SyntheticEvent<>, T) => void;
         maxMenuHeight?: number;
     |} |
     {|
@@ -302,11 +302,11 @@ declare module 'retail-ui/components/Select' {
         items: T[];
         value: ?T;
         maxMenuHeight?: number;
-        onChange: (SyntheticEvent, T) => void;
+        onChange: (SyntheticEvent<>, T) => void;
         renderItem?: (T, T) => React$Element<any> | string;
         renderValue?: (T, T) => React$Element<any> | string;
     |};
-    declare export default class Select<T, TRenderElement> extends React$Component<void, SelectProps<T, TRenderElement>, void> {
+    declare export default class Select<T, TRenderElement> extends React$Component<SelectProps<T, TRenderElement>, void> {
         static SEP: string;
     }
 }
@@ -317,7 +317,7 @@ declare module 'retail-ui/components/Spinner' {
         caption?: string;
         type?: 'mini' | 'normal' | 'big';
     |};
-    declare export default class Spinner extends React$Component<void, SpinnerProps, void> {}
+    declare export default class Spinner extends React$Component<SpinnerProps, void> {}
 }
 
 declare module 'retail-ui/components/Sticky' {
@@ -328,7 +328,7 @@ declare module 'retail-ui/components/Sticky' {
         getStop?: () => ?HTMLElement;
         offset?: number;
     |};
-    declare export default class Sticky extends React$Component<void, StickyProps, void> {}
+    declare export default class Sticky extends React$Component<StickyProps, void> {}
 }
 
 declare module 'retail-ui/components/Textarea' {
@@ -343,14 +343,14 @@ declare module 'retail-ui/components/Textarea' {
         rows?: number | string;
         placeholder?: ?string;
         value: string;
-        onBlur?: (event: SyntheticEvent) => void;
-        onFocus?: (event: SyntheticEvent) => void;
-        onChange?: (event: SyntheticEvent, value: string) => void;
-        onMouseEnter?: (event: SyntheticMouseEvent) => void;
-        onMouseLeave?: (event: SyntheticMouseEvent) => void;
-        onMouseOver?: (event: SyntheticMouseEvent) => void;
+        onBlur?: (event: SyntheticEvent<>) => void;
+        onFocus?: (event: SyntheticEvent<>) => void;
+        onChange?: (event: SyntheticEvent<>, value: string) => void;
+        onMouseEnter?: (event: SyntheticMouseEvent<>) => void;
+        onMouseLeave?: (event: SyntheticMouseEvent<>) => void;
+        onMouseOver?: (event: SyntheticMouseEvent<>) => void;
     };
-    declare export default class Textarea extends React$Component<void, TextareaProps, void> {}
+    declare export default class Textarea extends React$Component<TextareaProps, void> {}
 }
 
 declare module 'retail-ui/components/Tooltip' {
@@ -361,7 +361,7 @@ declare module 'retail-ui/components/Tooltip' {
         children?: any;
         onCloseClick?: () => void;
     |};
-    declare export default class Tooltip extends React$Component<void, TooltipProps, void> {}
+    declare export default class Tooltip extends React$Component<TooltipProps, void> {}
 }
 
 declare module 'retail-ui/components/MenuItem' {
@@ -373,21 +373,21 @@ declare module 'retail-ui/components/MenuItem' {
         value?: mixed;
         children?: any;
     |};
-    declare export default class MenuItem extends React$Component<void, MenuItemProps, void> {}
+    declare export default class MenuItem extends React$Component<MenuItemProps, void> {}
 }
 
 declare module 'retail-ui/components/MenuSeparator' {
     declare type MenuSeparatorProps = {|
         'data-tid'?: string;
     |};
-    declare export default class MenuSeparator extends React$Component<void, MenuSeparatorProps, void> {}
+    declare export default class MenuSeparator extends React$Component<MenuSeparatorProps, void> {}
 }
 
 declare module 'retail-ui/components/Hint' {
     declare type HintProps = {
         'data-tid'?: string;
     };
-    declare export default class Hint extends React$Component<void, HintProps, void> {}
+    declare export default class Hint extends React$Component<HintProps, void> {}
 }
 
 declare module 'retail-ui/lib/dom/addClass' {
@@ -449,7 +449,7 @@ declare module 'retail-ui/lib/dom/removeClass' {
 
 declare module 'retail-ui/components/Toast' {
     declare type ToastProps = {};
-    declare export default class Toast extends React$Component<void, ToastProps, void> {
+    declare export default class Toast extends React$Component<ToastProps, void> {
         static push(text: string, options?: { label?: string; }): void;
         static close(): void;
     }
@@ -477,10 +477,10 @@ declare module 'retail-ui/components/TopBar' {
         userName?: string | React$Element<any>;
     };
 
-    declare export default class TopBar extends React$Component<void, TopBarProps, void> {
-        static Dropdown: Class<React$Component<void, TopBarDropdownProps, void>>;
-        static OrganizationsDropdown: Class<React$Component<void, TopBarDropdownProps, void>>;
-        static Item: Class<React$Component<void, TopBarMenuItemProps, void>>;
+    declare export default class TopBar extends React$Component<TopBarProps, void> {
+        static Dropdown: Class<React$Component<TopBarDropdownProps, void>>;
+        static OrganizationsDropdown: Class<React$Component<TopBarDropdownProps, void>>;
+        static Item: Class<React$Component<TopBarMenuItemProps, void>>;
     }
 }
 
@@ -489,7 +489,7 @@ declare module 'retail-ui/components/RenderLayer' {
         children?: any;
         onClickOutside?: () => void;
     |};
-    declare export default class RenderLayer extends React$Component<void, RenderLayerProps, void> {
+    declare export default class RenderLayer extends React$Component<RenderLayerProps, void> {
     }
 }
 
@@ -501,22 +501,18 @@ declare module 'retail-ui/components/Tabs' {
         value: ?string;
         vertical?: ?boolean;
         width?: string | number;
-        onChange: (event: SyntheticEvent, activeTab: string) => void;
+        onChange: (event: SyntheticEvent<>, activeTab: string) => void;
     |};
 
     declare type TabProps = {|
         'data-tid'?: ?string;
         children?: React$Element<*>;
-        component?: string | React$Class<any>;
+        component?: React$ComponentType<*>;
         href?: ?string;
         id: string;
-        onClick?: (event: SyntheticEvent) => void;
+        onClick?: (event: SyntheticEvent<>) => void;
     |};
-    declare export default class Tabs extends React$Component<void, TabsProps, void> {
-        static Tab: Class<React$Component<void, TabProps, void>>;
+    declare export default class Tabs extends React$Component<TabsProps, void> {
+        static Tab: Class<React$Component<TabProps, void>>;
     }
-}
-
-declare module 'retail-ui/components/TopBar' {
-    declare export default ReactClass<*>;
 }

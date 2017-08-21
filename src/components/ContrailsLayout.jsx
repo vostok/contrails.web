@@ -1,16 +1,16 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import glamurous from "glamorous";
 
 import { Button, Input, Icon } from "ui";
 
 type ContrailsLayoutProps = {
-    children?: React.Element<*>[],
+    children: React.Node,
 };
 
 type ContrailsLayoutState = {};
 
-export default class ContrailsLayout extends React.Component {
+export default class ContrailsLayout extends React.Component<ContrailsLayoutProps, ContrailsLayoutState> {
     props: ContrailsLayoutProps;
     state: ContrailsLayoutState;
 

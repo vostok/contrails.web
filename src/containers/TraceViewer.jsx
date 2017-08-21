@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 
 import ContrailsLayout from "../components/ContrailsLayout";
 import type { TraceInfo } from "../Domain/TraceInfo";
@@ -16,7 +16,7 @@ type ContrailsApplicationState = {
     traceInfo: ?TraceInfo,
 };
 
-export class ContrailsApplication extends React.Component {
+export class ContrailsApplication extends React.Component<ContrailsApplicationProps, ContrailsApplicationState> {
     props: ContrailsApplicationProps;
     state: ContrailsApplicationState = {
         loading: false,
@@ -43,7 +43,7 @@ export class ContrailsApplication extends React.Component {
         this.setState({ loading: false });
     }
 
-    render(): React.Element<*> {
+    render(): React.Node {
         const { loading, traceInfo } = this.state;
         return (
             <ContrailsLayout>

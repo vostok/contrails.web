@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import { storiesOf } from "@storybook/react";
 
 import {
@@ -9,7 +9,7 @@ import {
     ContrailPanelsBottomLeft,
     ContrailPanelsBottomRight,
 } from "../src/components/ContrailPanels";
-import "../src/styles/root.less";
+import "../src/styles/root.less"; // eslint-disable-line import/no-unassigned-import
 
 storiesOf("ContrailPanels", module).add("Default", () =>
     <ContrailPanelsContainer>

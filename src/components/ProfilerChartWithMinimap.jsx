@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import glamorous from "glamorous";
 import ReactDom from "react-dom";
 
@@ -22,7 +22,6 @@ type ProfilerChartWithMinimapState = {
 };
 
 export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React.Component<
-    *,
     ProfilerChartWithMinimapProps<TItem>,
     ProfilerChartWithMinimapState
 > {
@@ -32,7 +31,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         viewPortFrom: null,
         xScale: null,
     };
-    container: ?React.Component<any, any, any>;
+    container: ?React.ElementRef<*>;
 
     componentDidUpdate() {
         this.updateWidth();
@@ -66,7 +65,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         }
     }
 
-    handleWheel = (event: SyntheticWheelEvent) => {
+    handleWheel = (event: SyntheticWheelEvent<>) => {
         const { width, xScale, viewPortFrom } = this.state;
         const { from: maxFrom, to: maxTo } = this.props;
         const container = ReactDom.findDOMNode(this.container);

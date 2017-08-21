@@ -1,23 +1,23 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import _ from "lodash";
 import glamorous from "glamorous";
 
 import { Icon } from "ui";
 
 type TreeGridItem = {
-    children: ?Array<TreeGridItem>,
+    children?: ?Array<TreeGridItem>,
 };
 
 type ColumnDefintion<TItem> = {
-    renderHeader: () => string | React.Element<*>,
-    renderValue: TItem => string | React.Element<*>,
+    renderHeader: () => React.Node,
+    renderValue: TItem => React.Node,
 };
 
 type TreeGridProps<TItem: TreeGridItem> = {
     data: Array<TItem>,
     columns: Array<ColumnDefintion<TItem>>,
-    focusedItem?: TItem,
+    focusedItem?: ?TItem,
     expandedItems?: Array<TItem>,
     onChangeExpandedItems?: (Array<TItem>) => void,
 };
@@ -26,13 +26,13 @@ type TreeGridState<TItem: TreeGridItem> = {
     expandedItems: Array<TItem>,
 };
 
-export default class TreeGrid<TItem: TreeGridItem> extends React.Component<*, TreeGridProps<TItem>, *> {
+export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
     props: TreeGridProps<TItem>;
     state: TreeGridState<TItem> = {
         expandedItems: [],
     };
 
-    renderCell(item: TItem, column: ColumnDefintion<TItem>): React.Element<*> {
+    renderCell(item: TItem, column: ColumnDefintion<TItem>): React.Node {
         return (
             <ItemCell>
                 {column.renderValue(item)}
@@ -40,7 +40,7 @@ export default class TreeGrid<TItem: TreeGridItem> extends React.Component<*, Tr
         );
     }
 
-    renderCellValue(item: TItem, column: ColumnDefintion<TItem>): string | React.Element<*> {
+    renderCellValue(item: TItem, column: ColumnDefintion<TItem>): React.Node {
         return column.renderValue(item);
     }
 

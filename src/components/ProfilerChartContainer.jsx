@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import ReactDom from "react-dom";
 import glamorous from "glamorous";
 
@@ -10,11 +10,11 @@ type ProfilerChartProps = {|
         from: number,
         scale: number,
     },
-    onChangeViewPort: ({
+    onChangeViewPort?: ({
         from: number,
         scale: number,
     }) => void,
-    children?: React.Element<*>[],
+    children: React.Node,
 |};
 
 const Wrapper = glamorous.div({
@@ -23,9 +23,9 @@ const Wrapper = glamorous.div({
     position: "relative",
 });
 
-export default class ProfilerChartContainer extends React.Component {
+export default class ProfilerChartContainer extends React.Component<ProfilerChartProps> {
     props: ProfilerChartProps;
-    container: Wrapper;
+    container: ?React.Component<{}>;
 
     toAbsolute(itemX: number): number {
         const { viewPort, from } = this.props;
@@ -54,18 +54,20 @@ export default class ProfilerChartContainer extends React.Component {
     curXPos: number;
     curDown: boolean;
 
-    handleMouseMove = e => {
+    handleMouseMove = (e: SyntheticMouseEvent<>) => {
         if (this.curDown) {
             const container = ReactDom.findDOMNode(this.container);
             if (!(container instanceof HTMLElement)) {
                 return;
             }
             const { onChangeViewPort, viewPort } = this.props;
-            onChangeViewPort({ ...viewPort, from: this.initialFrom + (this.curXPos - e.pageX) / viewPort.scale });
+            if (onChangeViewPort != null) {
+                onChangeViewPort({ ...viewPort, from: this.initialFrom + (this.curXPos - e.pageX) / viewPort.scale });
+            }
         }
     };
 
-    handleMouseDown = e => {
+    handleMouseDown = (e: SyntheticMouseEvent<>) => {
         const container = ReactDom.findDOMNode(this.container);
         if (!(container instanceof HTMLElement)) {
             return;
@@ -81,17 +83,17 @@ export default class ProfilerChartContainer extends React.Component {
         this.curDown = false;
     };
 
-    render(): React.Element<*> {
+    render(): React.Node {
         const { children } = this.props;
         return (
             <Wrapper
+                ref={e => (this.container = e)}
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}
                 onMouseMove={this.handleMouseMove}
                 onMouseLeave={() => {
                     this.curDown = false;
-                }}
-                ref={(e: Wrapper) => (this.container = e)}>
+                }}>
                 {children}
             </Wrapper>
         );

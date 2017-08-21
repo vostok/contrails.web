@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import ReactDom from "react-dom";
 import glamorous from "glamorous";
 import Draggable from "react-draggable";
@@ -22,12 +22,15 @@ type ProfilerChartMinimapState = {
     width: ?number,
 };
 
-export default class ProfilerChartMinimap extends React.Component {
+export default class ProfilerChartMinimap extends React.Component<
+    ProfilerChartMinimapProps,
+    ProfilerChartMinimapState
+> {
     props: ProfilerChartMinimapProps;
     state: ProfilerChartMinimapState = { width: null };
     canvas: ?HTMLCanvasElement;
-    container: ?HTMLElement;
-    scroller: ?HTMLElement;
+    container: ?React.Component<{}>;
+    scroller: ?React.Component<{}>;
 
     saveRef(to: HTMLElement => ?HTMLElement): HTMLElement => void {
         return (e: HTMLElement) => {
@@ -100,7 +103,7 @@ export default class ProfilerChartMinimap extends React.Component {
         });
     }
 
-    handleDragLeftHandle = (e: SyntheticEvent, dragInfo: DraggableData) => {
+    handleDragLeftHandle = (e: SyntheticMouseEvent<>, dragInfo: DraggableData) => {
         if (dragInfo.deltaX !== 0) {
             const { from, viewPort, onChangeViewPort } = this.props;
             onChangeViewPort({
@@ -113,7 +116,7 @@ export default class ProfilerChartMinimap extends React.Component {
         }
     };
 
-    handleDragRightHandle = (e: SyntheticEvent, dragInfo: DraggableData) => {
+    handleDragRightHandle = (e: SyntheticMouseEvent<>, dragInfo: DraggableData) => {
         if (dragInfo.deltaX !== 0) {
             const { to, viewPort, onChangeViewPort } = this.props;
             onChangeViewPort({
@@ -126,7 +129,7 @@ export default class ProfilerChartMinimap extends React.Component {
         }
     };
 
-    handleViewPortDrag = (e: SyntheticEvent, dragInfo: DraggableData) => {
+    handleViewPortDrag = (e: SyntheticMouseEvent<>, dragInfo: DraggableData) => {
         const { from, to, viewPort, onChangeViewPort } = this.props;
         if (dragInfo.deltaX < 0) {
             const newFrom = Math.max(from, this.toRelativeX(dragInfo.x));
@@ -163,7 +166,7 @@ export default class ProfilerChartMinimap extends React.Component {
         return (value - from) * width / (to - from);
     }
 
-    generateTimeMarkers() {
+    generateTimeMarkers(): any {
         return [
             { title: "1s", value: 1 },
             { title: "3s", value: 3 },
@@ -193,7 +196,7 @@ export default class ProfilerChartMinimap extends React.Component {
             <div style={{ position: "relative", zIndex: 0 }}>
                 <div style={{ position: "relative", height: 15 }} />
                 <div style={{ position: "relative", zIndex: 2 }}>
-                    <canvas ref={(e: HTMLCanvasElement) => (this.canvas = e)} height={100} width={width} />
+                    <canvas ref={e => (this.canvas = e)} height={100} width={width} />
                 </div>
                 {this.renderTimeMarkers()}
             </div>
@@ -204,7 +207,7 @@ export default class ProfilerChartMinimap extends React.Component {
         const { width } = this.state;
         const { from, to, viewPort } = this.props;
         return (
-            <Container ref={this.saveRef(x => (this.container = x))}>
+            <Container ref={x => (this.container = x)}>
                 {width != null && this.renderCanvas(width)}
                 {width != null &&
                     <LeftShadow
@@ -228,7 +231,7 @@ export default class ProfilerChartMinimap extends React.Component {
                         }}
                         position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
                         <Scroller
-                            ref={(e: HTMLElement) => (this.scroller = e)}
+                            ref={e => (this.scroller = e)}
                             style={{
                                 width: this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from),
                             }}

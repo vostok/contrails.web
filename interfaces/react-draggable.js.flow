@@ -7,7 +7,7 @@ declare module 'react-draggable' {
         bottom?: number,
     }
 
-    declare export type DraggableEventHandler = (e: SytheticMouseEvent, data: DraggableData) => void | false;
+    declare export type DraggableEventHandler = (e: SyntheticMouseEvent<>, data: DraggableData) => void | false;
 
     declare export type DraggableData = {|
         node: HTMLElement,
@@ -56,12 +56,12 @@ declare module 'react-draggable' {
         defaultClassNameDragged?: string,
         defaultPosition?: ControlPosition,
         position?: ControlPosition,
-        children?: React$Element<any>[];
+        children: React$Node;
     |};
 
-    declare export default class Draggable extends React$Component<void, DraggableProps, {}> {
+    declare export default class Draggable extends React$Component<DraggableProps> {
     }
 
-    declare export class DraggableCore extends React$Component<void, DraggableCoreProps, {}> {
+    declare export class DraggableCore extends React$Component<DraggableCoreProps> {
     }
 }

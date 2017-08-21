@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import Button from "@skbkontur/react-ui/Button";
@@ -33,7 +33,7 @@ type ProfilerChartDemoState = {
     },
 };
 
-class ProfilerChartMinimapDemo extends React.Component {
+class ProfilerChartMinimapDemo extends React.Component<*, *> {
     props: ProfilerChartDemoProps;
     state: ProfilerChartDemoState;
 

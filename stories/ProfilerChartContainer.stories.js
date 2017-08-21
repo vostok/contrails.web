@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import Button from "@skbkontur/react-ui/Button";
@@ -29,7 +29,7 @@ type ProfilerChartDemoState = {
     xScale: number,
 };
 
-class ProfilerChartDemo extends React.Component {
+class ProfilerChartDemo extends React.Component<ProfilerChartDemoProps, ProfilerChartDemoState> {
     props: ProfilerChartDemoProps;
     state: ProfilerChartDemoState = {
         viewPortFrom: 0,
@@ -40,12 +40,12 @@ class ProfilerChartDemo extends React.Component {
         context.strokeText(item.name, 5, 10);
     };
 
-    render(): React.Element<*> {
+    render(): React.Node {
         const { data } = this.props;
         const { xScale, viewPortFrom } = this.state;
         return (
             <div
-                onWheel={(e: SyntheticWheelEvent) => {
+                onWheel={(e: SyntheticWheelEvent<HTMLElement>) => {
                     this.setState({ xScale: xScale + e.deltaY / 100 * 5 });
                 }}>
                 <div />
