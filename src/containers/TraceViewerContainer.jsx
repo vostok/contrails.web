@@ -16,7 +16,7 @@ type ContrailsApplicationState = {
     traceInfo: ?TraceInfo,
 };
 
-export class ContrailsApplication extends React.Component<ContrailsApplicationProps, ContrailsApplicationState> {
+export class TraceViewerContainer extends React.Component<ContrailsApplicationProps, ContrailsApplicationState> {
     props: ContrailsApplicationProps;
     state: ContrailsApplicationState = {
         loading: false,
@@ -57,4 +57,4 @@ export class ContrailsApplication extends React.Component<ContrailsApplicationPr
     }
 }
 
-export default withContrailsApi(ContrailsApplication);
+export default withContrailsApi(TraceViewerContainer);

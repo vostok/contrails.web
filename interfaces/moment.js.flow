@@ -48,7 +48,7 @@ declare module 'moment' {
         add(value: number, units: Units): Moment;
         subtract(value: number, units: Units): Moment;
         diff(value: Moment, units: Units): number;
-        format(format: string): string;
+        format(format?: string): string;
         toISOString(): string;
         startOf(unit: Unit): Moment;
 

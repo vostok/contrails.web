@@ -7,6 +7,8 @@ import moment from "moment";
 import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap";
 import type { TraceInfo } from "../src/Domain/TraceInfo";
 import Response62f8278dab21471c8370fa47d4f52f72 from "../src/Domain/Responses/62f8278dab21471c8370fa47d4f52f72.json";
+import Response37fa1a7edcc34ca28204fc50e6681e70 from "../src/Domain/Responses/37fa1a7edcc34ca28204fc50e6681e70.json";
+import SpansToLinesArranger from "../src/Domain/SpansToLines";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
 
@@ -45,21 +47,24 @@ function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
 }
 
 function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: { items: ProfilerItem[] }[] } {
+    const arranger = new SpansToLinesArranger();
     const spans = response[0].Spans;
-    const casssandraSpans = spans.filter(x => x.ParentSpanId === "4160087a000000000000000000000000");
-    const result = {
-        lines: [
-            {
-                items: casssandraSpans.map(x => ({
-                    name: x.OperationName,
-                    from: moment(x.BeginTimestamp).valueOf(),
-                    to: moment(x.EndTimestamp).valueOf(),
-                })),
-            },
-        ],
-    };
+    return { lines: arranger.arrange(spans) };
 
-    return result;
+    // const casssandraSpans = spans.filter(x => x.ParentSpanId === "4160087a000000000000000000000000");
+    // const result = {
+    //     lines: [
+    //         {
+    //             items: casssandraSpans.map(x => ({
+    //                 name: x.OperationName,
+    //                 from: moment(x.BeginTimestamp).valueOf(),
+    //                 to: moment(x.EndTimestamp).valueOf(),
+    //             })),
+    //         },
+    //     ],
+    // };
+
+    // return result;
 }
 
 storiesOf("ProfilerChartWithMinimap", module)
@@ -146,5 +151,11 @@ storiesOf("ProfilerChartWithMinimap", module)
         <ProfilerChartWithMinimap
             {...getFromAndTo(Response62f8278dab21471c8370fa47d4f52f72)}
             data={generateDataFromDiTraceResponse(Response62f8278dab21471c8370fa47d4f52f72)}
+        />
+    )
+    .add("FullScreen-DataFromTrace-37fa1a7edcc34ca28204fc50e6681e70", () =>
+        <ProfilerChartWithMinimap
+            {...getFromAndTo(Response37fa1a7edcc34ca28204fc50e6681e70)}
+            data={generateDataFromDiTraceResponse(Response37fa1a7edcc34ca28204fc50e6681e70)}
         />
     );

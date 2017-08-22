@@ -14,6 +14,8 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.1",
     "classnames": "^2.2.5",
     "classnames-loader": "^2.0.0",
     "cross-env": "^5.0.1",
@@ -28,6 +30,8 @@
     "json-loader": "^0.5.7",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
+    "mocha": "^3.5.0",
+    "moment": "^2.18.1",
     "prettier": "^1.5.3",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
@@ -50,6 +54,7 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
     "flow.check": "flow check",
-    "lint": "eslint src stories"
+    "lint": "eslint src stories",
+    "test": "cross-env NODE_ENV=mocha mocha"
   }
 }

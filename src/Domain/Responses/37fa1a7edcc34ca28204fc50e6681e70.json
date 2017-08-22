@@ -1,0 +1,146 @@
+[
+    {
+        "Spans": [
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "2b1bd401000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:25.9240000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:28.0379996+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": null,
+                    "ClientTargetHost": null,
+                    "ClientRequestBodySize": null,
+                    "ClientRequestUrlHash": null,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": null,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "6aa88e86000000000000000000000000",
+                "ParentSpanId": "2b1bd401000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:25.9240000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:28.0378219+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": null,
+                    "ClientTargetHost": null,
+                    "ClientRequestBodySize": null,
+                    "ClientRequestUrlHash": null,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": null,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "bb6016a6000000000000000000000000",
+                "ParentSpanId": "6aa88e86000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:25.9320000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:25.9323516+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": null,
+                    "ClientTargetHost": "cassandra.billing",
+                    "ClientRequestBodySize": 0,
+                    "ClientRequestUrlHash": 1708088801,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": null,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "2cda6502000000000000000000000000",
+                "ParentSpanId": "914795a2000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:25.9330000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:26.0046577+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": "GET",
+                    "ClientTargetHost": "vm-cs2",
+                    "ClientRequestBodySize": 0,
+                    "ClientRequestUrlHash": 812682742,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": 2405,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "914795a2000000000000000000000000",
+                "ParentSpanId": "6aa88e86000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:25.9330000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:26.0049338+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": null,
+                    "ClientTargetHost": null,
+                    "ClientRequestBodySize": null,
+                    "ClientRequestUrlHash": null,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": null,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "38171c14000000000000000000000000",
+                "ParentSpanId": "9165be37000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:26.0050000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:28.0082664+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": "POST",
+                    "ClientTargetHost": "izh-cv08205302d",
+                    "ClientRequestBodySize": 0,
+                    "ClientRequestUrlHash": -1111262464,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": 5006,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "37fa1a7edcc34ca28204fc50e6681e70",
+                "SpanId": "9165be37000000000000000000000000",
+                "ParentSpanId": "6aa88e86000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-08-21T16:28:26.0050000+03:00",
+                "EndTimestamp": "2017-08-21T16:28:28.0350269+03:00",
+                "Annotations": {
+                    "OriginHost": "IZH-CV08205302D",
+                    "OriginId": "Billy.Partners.LinkService",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": null,
+                    "ClientTargetHost": null,
+                    "ClientRequestBodySize": null,
+                    "ClientRequestUrlHash": null,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": null,
+                    "ClientResponseBodySize": null
+                }
+            }
+        ],
+        "TraceId": "37fa1a7edcc34ca28204fc50e6681e70"
+    }
+]
