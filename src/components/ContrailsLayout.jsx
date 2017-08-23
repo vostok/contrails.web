@@ -26,7 +26,6 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
                         <LogoText>Contrails</LogoText>
                     </Logo>
                     <TraceIdContainer>
-                        <TraceIdCaption>TraceId:</TraceIdCaption>
                         <Input placeholder="Введите TraceId" autoFocus width={500} />
                         <Gap />
                         <Button use="success">Открыть</Button>
@@ -42,12 +41,15 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
 
 const Header = glamurous.div({
     display: "flex",
-    backgroundColor: "#1F7ABE",
+    flexGrow: "0",
+    flexShrink: "0",
+    backgroundColor: "#white",
     padding: "5px 20px 7px",
-    color: "white",
+    color: "black",
     alignItems: "baseline",
     fontSize: "18px",
     lineHeight: "32px",
+    boxShadow: "0 1px 1px 0 rgba(0,0,0,.1), 0 1px 8px 0 rgba(0,0,0,.1)",
 });
 
 const TraceIdContainer = glamurous.div({
@@ -64,7 +66,7 @@ const TraceIdCaption = glamurous.span({
 });
 
 const LogoIcon = glamurous.span({
-    color: "white",
+    color: "black",
     fontSize: 23,
 });
 
@@ -78,9 +80,13 @@ const Container = glamurous.div({
     display: "flex",
     flexDirection: "column",
     minHeight: "100%",
-    height: "100%",
+    maxHeight: "100%",
 });
 
 const Content = glamurous.div({
-    flex: "0 1 100%",
+    display: "flex",
+    flexDirection: "column",
+    flexShrink: 0,
+    flexGrow: 1,
+    flexBasis: "100%",
 });

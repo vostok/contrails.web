@@ -2,6 +2,8 @@
 import * as React from "react";
 import glamorous from "glamorous";
 
+import generateTimeMarkers from "../Domain/TimeMarkers";
+
 type Color = string;
 
 export type ProfilerItem = {
@@ -17,6 +19,12 @@ export type ProfilerData<TItem: ProfilerItem> = {
     lines: Array<ProfilerLine<TItem>>,
 };
 
+export type ItemDrawContext = {
+    width: number,
+    lineHeight: number,
+    options: ItemDrawOptions,
+};
+
 type ProfilerChartProps<TItem: ProfilerItem> = {|
     data: ProfilerData<TItem>,
     from: number,
@@ -25,11 +33,13 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
 
     onItemClick?: (event: SyntheticMouseEvent<HTMLCanvasElement>, item: TItem, lineIndex: number) => void,
     selectedItems?: TItem[],
-    onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem) => void,
+    onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, itemDrawContext: ItemDrawContext) => void,
+    onCustomDrawItemContent?: (context: CanvasRenderingContext2D, item: TItem) => void,
     onGetBackgroundColor?: (item: TItem) => Color,
 |};
 
 const lineHeight = 50;
+const lineGap = 1;
 
 type ItemDrawOptions = {
     hovered: boolean,
@@ -75,29 +85,38 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 
     drawItem(context: CanvasRenderingContext2D, item: TItem, options: ItemDrawOptions) {
-        const { onCustomDrawItem } = this.props;
+        const { onCustomDrawItem, onCustomDrawItemContent } = this.props;
         const { from, to } = item;
 
-        context.clearRect(1, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 2, lineHeight - 1);
-        context.fillStyle = this.getBackgroundColor(item, options);
-        context.fillRect(1, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 2, lineHeight - 1);
+        context.clearRect(0, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from), lineHeight);
         if (onCustomDrawItem != null) {
-            onCustomDrawItem(context, item);
-        }
-        if (options.selected) {
-            context.save();
-            context.strokeStyle = "#44f";
-            context.lineWidth = 2;
-            context.strokeRect(2, 1, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 4, lineHeight - 2 - 1);
-            context.restore();
+            const itemDrawContext = {
+                width: this.toAbsoluteX(to) - this.toAbsoluteX(from),
+                lineHeight: lineHeight,
+                options: options,
+            };
+            onCustomDrawItem(context, item, itemDrawContext);
+        } else {
+            context.fillStyle = this.getBackgroundColor(item, options);
+            context.fillRect(1, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 2, lineHeight - 1);
+            if (onCustomDrawItemContent != null) {
+                onCustomDrawItemContent(context, item);
+            }
+            if (options.selected) {
+                context.save();
+                context.strokeStyle = "#44f";
+                context.lineWidth = 2;
+                context.strokeRect(2, 1, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 4, lineHeight - 2 - 1);
+                context.restore();
+            }
         }
     }
 
     isItemHovered(item: TItem, lineIndex: number, mouseX: number, mouseY: number): boolean {
         const itemFrom = this.toAbsoluteX(item.from);
         const itemTo = this.toAbsoluteX(item.to);
-        const itemTop = lineIndex * lineHeight;
-        const itemBottom = (lineIndex + 1) * lineHeight;
+        const itemTop = lineIndex * (lineHeight + lineGap);
+        const itemBottom = (lineIndex + 1) * (lineHeight + lineGap) - lineGap;
         return mouseX > itemFrom && mouseX < itemTo && mouseY > itemTop && mouseY < itemBottom;
     }
 
@@ -186,7 +205,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     drawItemAtLine(context: CanvasRenderingContext2D, item: TItem, lineIndex: number, options: ItemDrawOptions) {
         context.save();
         try {
-            context.translate(this.toAbsoluteX(item.from), lineIndex * lineHeight);
+            context.translate(this.toAbsoluteX(item.from), lineIndex * (lineHeight + lineGap));
             this.drawItem(context, item, options);
         } finally {
             context.restore();
@@ -230,7 +249,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         const drawContext = canvas.getContext("2d");
 
         //drawContext.fillStyle = "#eee";
-        drawContext.clearRect(0, 0, width, lineHeight * data.lines.length);
+        drawContext.clearRect(0, 0, width, (lineHeight + lineGap) * data.lines.length);
 
         drawContext.save();
         let drawedCount = 0;
@@ -259,14 +278,16 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 
     generateTimeMarkers(): any {
-        const { to, from } = this.props;
-        return [
-            { title: "1s", value: (to - from) * 0.1 },
-            { title: "3s", value: (to - from) * 0.3 },
-            { title: "5s", value: (to - from) * 0.5 },
-            { title: "7s", value: (to - from) * 0.7 },
-            { title: "9s", value: (to - from) * 0.9 },
-        ];
+        const { to, from, xScale } = this.props;
+        return generateTimeMarkers(0, to - from, 100 / xScale).map(x => ({ ...x, value: x.value + from }));
+
+        // return [
+        //     { title: "1s", value: (to - from) * 0.1 },
+        //     { title: "3s", value: (to - from) * 0.3 },
+        //     { title: "5s", value: (to - from) * 0.5 },
+        //     { title: "7s", value: (to - from) * 0.7 },
+        //     { title: "9s", value: (to - from) * 0.9 },
+        // ];
     }
 
     renderTimeMarkers(): React.Element<*> {
@@ -295,7 +316,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
                         onClick={this.handleMouseClick}
                         onMouseMove={this.handleMouseMove}
                         onMouseLeave={this.handleMouseLeave}
-                        height={lineHeight * data.lines.length}
+                        height={(lineHeight + lineGap) * data.lines.length}
                         width={this.toAbsoluteX(to) - this.toAbsoluteX(from)}
                     />
                 </div>
@@ -322,6 +343,7 @@ const TimeMarkerTitle = glamorous.div({
     color: "#A0A0A0",
     fontSize: "14px",
     lineHeight: "20px",
+    whiteSpace: "nowrap",
 });
 
 const TimeMarker = glamorous.div({

@@ -65,6 +65,11 @@ module.exports = {
                 include: /react-ui/,
                 use: ["file-loader"],
             },
+            {
+                test: /\.(woff|woff2|eot|svg|ttf|gif|png)$/,
+                exclude: /node_modules/,
+                use: ["file-loader"],
+            },
         ],
     },
     resolve: {

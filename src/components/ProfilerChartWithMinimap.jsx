@@ -122,7 +122,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                 {width != null &&
                     viewPortFrom != null &&
                     xScale != null &&
-                    <div>
+                    <MinimapContainer>
                         <ProfilerChartMinimap
                             data={data}
                             from={from}
@@ -137,7 +137,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                     xScale: width / (x.to - x.from),
                                 })}
                         />
-                    </div>}
+                    </MinimapContainer>}
                 {width != null &&
                     viewPortFrom != null &&
                     xScale != null &&
@@ -170,6 +170,11 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         );
     }
 }
+
+const MinimapContainer = glamorous.div({
+    //marginTop: "10px",
+    borderBottom: "1px solid #eee",
+});
 
 const Container = glamorous.div({
     display: "flex",

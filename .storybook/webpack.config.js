@@ -25,6 +25,11 @@ module.exports = function(storybookBaseConfig, configType) {
         use: ["file-loader"],
     });
     storybookBaseConfig.module.rules.push({
+        test: /\.(svg|png)$/,
+        exclude: /node_modules/,
+        use: ["file-loader"],
+    });
+    storybookBaseConfig.module.rules.push({
         test: /\.less$/,
         exclude: /node_modules/,
         rules: [

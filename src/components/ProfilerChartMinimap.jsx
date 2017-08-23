@@ -5,6 +5,14 @@ import glamorous from "glamorous";
 import Draggable from "react-draggable";
 import type { DraggableData } from "react-draggable";
 
+import generateTimeMarkers from "../Domain/TimeMarkers";
+
+type ChartMinimapItem = {
+    from: number,
+    to: number,
+    color: ?string,
+};
+
 type ProfilerChartMinimapProps = {
     from: number,
     to: number,
@@ -85,10 +93,10 @@ export default class ProfilerChartMinimap extends React.Component<
 
             let lineIndex = 0;
             for (const line of data.lines) {
-                context.fillStyle = "rgba(255, 180, 180, 0.5)";
-                context.strokeStyle = "rgba(0, 0, 0, 0.5)";
-                context.lineWidth = 0.5;
                 for (const item of line.items) {
+                    context.fillStyle = item.color || "rgba(30, 121, 190, 0.50)";
+                    context.strokeStyle = "rgba(30, 121, 190, 1.0)";
+                    context.lineWidth = 0.5;
                     context.rect(
                         this.toAbsoluteX(item.from),
                         lineIndex * lineHeight,
@@ -167,13 +175,10 @@ export default class ProfilerChartMinimap extends React.Component<
     }
 
     generateTimeMarkers(): any {
-        return [
-            { title: "1s", value: 1 },
-            { title: "3s", value: 3 },
-            { title: "5s", value: 5 },
-            { title: "7s", value: 7 },
-            { title: "9s", value: 9 },
-        ];
+        const { width } = this.state;
+        const { to, from } = this.props;
+        const scale = width / (to - from);
+        return generateTimeMarkers(0, to - from, 100 / scale).map(x => ({ ...x, value: x.value + from }));
     }
 
     renderTimeMarkers(): React.Element<*> {
@@ -194,7 +199,7 @@ export default class ProfilerChartMinimap extends React.Component<
     renderCanvas(width: number): React.Element<*> {
         return (
             <div style={{ position: "relative", zIndex: 0 }}>
-                <div style={{ position: "relative", height: 15 }} />
+                <div style={{ position: "relative", height: 18 }} />
                 <div style={{ position: "relative", zIndex: 2 }}>
                     <canvas ref={e => (this.canvas = e)} height={100} width={width} />
                 </div>
@@ -348,7 +353,7 @@ const TimeMarkersContainer = glamorous.div({
 const TimeMarkerTitle = glamorous.div({
     zIndex: 1,
     position: "absolute",
-    top: 0,
+    top: 4,
     right: 3,
     color: "#A0A0A0",
     fontSize: "10px",

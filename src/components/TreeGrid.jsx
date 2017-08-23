@@ -5,36 +5,45 @@ import glamorous from "glamorous";
 
 import { Icon } from "ui";
 
-type TreeGridItem = {
-    children?: ?Array<TreeGridItem>,
-};
-
 type ColumnDefintion<TItem> = {
     renderHeader: () => React.Node,
     renderValue: TItem => React.Node,
+    width?: number,
+    align?: "right" | "left" | "center",
 };
 
-type TreeGridProps<TItem: TreeGridItem> = {
+type TreeGridProps<TItem> = {
     data: Array<TItem>,
     columns: Array<ColumnDefintion<TItem>>,
     focusedItem?: ?TItem,
     expandedItems?: Array<TItem>,
+    onGetItemColor?: TItem => ?string,
+    onGetChildren: TItem => ?Array<TItem>,
     onChangeExpandedItems?: (Array<TItem>) => void,
 };
 
-type TreeGridState<TItem: TreeGridItem> = {
+type TreeGridState<TItem> = {
     expandedItems: Array<TItem>,
 };
 
-export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
+export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
     props: TreeGridProps<TItem>;
     state: TreeGridState<TItem> = {
         expandedItems: [],
     };
 
+    getItemColor(item: TItem): string {
+        const { onGetItemColor } = this.props;
+        const defaultColor = "#000";
+        if (onGetItemColor != null) {
+            return onGetItemColor(item) || defaultColor;
+        }
+        return defaultColor;
+    }
+
     renderCell(item: TItem, column: ColumnDefintion<TItem>): React.Node {
         return (
-            <ItemCell>
+            <ItemCell width={column.width} align={column.align}>
                 {column.renderValue(item)}
             </ItemCell>
         );
@@ -67,12 +76,13 @@ export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeG
         }
     }
 
-    renderParentBlock(_item: TItem): React.Element<*> {
-        return <ParentLine>&nbsp;</ParentLine>;
+    renderParentBlock(item: TItem): React.Element<*> {
+        return <ParentLine color={this.getItemColor(item)}>&nbsp;</ParentLine>;
     }
 
     renderItem(item: TItem, parents: Array<TItem>): React.Element<*>[] {
-        const { columns } = this.props;
+        const { onGetChildren, columns } = this.props;
+        const itemChildren = onGetChildren(item);
         const expanded = this.isItemExpanded(item);
         return [
             <ItemRow>
@@ -80,8 +90,8 @@ export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeG
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
                         <ExpandButton onClick={() => this.handleToggleItemExpand(item)}>
-                            {item.children != null &&
-                                item.children.length > 0 &&
+                            {itemChildren != null &&
+                                itemChildren.length > 0 &&
                                 <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />}
                         </ExpandButton>
                         {this.renderCellValue(item, columns[0])}
@@ -90,7 +100,7 @@ export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeG
                 {columns.slice(1).map(x => this.renderCell(item, x))}
             </ItemRow>,
             ...(this.isItemExpanded(item)
-                ? (item.children || []).map(x => this.renderItem(x, [...parents, item])).reduce(flatten, [])
+                ? (itemChildren || []).map(x => this.renderItem(x, [...parents, item])).reduce(flatten, [])
                 : []),
         ];
     }
@@ -108,6 +118,7 @@ export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeG
         const { columns } = this.props;
 
         return (
+            <ScrollContainer>
             <Table>
                 <thead>
                     <HeadRow>
@@ -118,6 +129,7 @@ export default class TreeGrid<TItem: TreeGridItem> extends React.Component<TreeG
                     {data.map(x => this.renderItem(x, []))}
                 </tbody>
             </Table>
+            </ScrollContainer>
         );
     }
 }
@@ -126,15 +138,29 @@ function flatten<T>(memo: Array<T>, item: Array<T>): Array<T> {
     return [...memo, ...item];
 }
 
-const ParentLine = glamorous.div({
-    display: "inline-block",
-    marginLeft: 10,
-    width: 1,
-    height: 30,
-    marginRight: 9,
-    padding: 0,
-    backgroundColor: "#000",
+const ScrollContainer = glamorous.div({
+    position: "absolute",
+    onverflowY: "scroll",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
 });
+
+const ParentLine = glamorous.div(
+    {
+        display: "inline-block",
+        marginLeft: 10,
+        width: 1,
+        height: 30,
+        marginRight: 9,
+        padding: 0,
+        backgroundColor: "#000",
+    },
+    ({ color }) => ({
+        backgroundColor: color,
+    })
+);
 
 const ExpandButton = glamorous.button({
     width: 20,
@@ -167,12 +193,20 @@ const FirstItemCell = glamorous.td({
     paddingRight: "10px",
 });
 
-const ItemCell = glamorous.td({
-    borderLeft: "1px solid #ddd",
-    borderRight: "1px solid #ddd",
-    lineHeight: "30px",
-    verticalAlign: "baseline",
-    height: 30,
-    padding: "0 10px",
-    margin: 0,
-});
+const ItemCell = glamorous.td(
+    {
+        position: "relative",
+        borderLeft: "1px solid #ddd",
+        borderRight: "1px solid #ddd",
+        lineHeight: "30px",
+        verticalAlign: "baseline",
+        height: 30,
+        padding: "0 10px",
+        margin: 0,
+    },
+    ({ width, align }) => ({
+        width: width,
+        maxWidth: width,
+        textAlign: align,
+    })
+);

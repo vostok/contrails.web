@@ -11,16 +11,19 @@ const item1 = {
         {
             value1: "value 1 2",
             value2: "value 1 2",
+            children: null,
         },
         {
             value1: "value 1 2",
             value2: "value 1 2",
+            children: null,
         },
     ],
 };
 
 storiesOf("TreeGrid", module).add("Default", () =>
     <TreeGrid
+        onGetChildren={x => x.children}
         columns={[
             {
                 name: "Value 1",
@@ -43,6 +46,7 @@ storiesOf("TreeGrid", module).add("Default", () =>
                     {
                         value1: "value 1 2",
                         value2: "value 1 2",
+                        children: null,
                     },
                     {
                         value1: "value 1 2",
@@ -51,10 +55,12 @@ storiesOf("TreeGrid", module).add("Default", () =>
                             {
                                 value1: "value 1 2",
                                 value2: "value 1 2",
+                                children: null,
                             },
                             {
                                 value1: "value 1 2",
                                 value2: "value 1 2",
+                                children: null,
                             },
                         ],
                     },

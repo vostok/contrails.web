@@ -5,6 +5,7 @@ import ContrailsLayout from "../components/ContrailsLayout";
 import type { TraceInfo } from "../Domain/TraceInfo";
 import { withContrailsApi } from "../Domain/ContrailsApiInjection";
 import type { IContrailsApi } from "../Domain/IContrailsApi";
+import TraceViewer from "../components/TraceViewer";
 
 type ContrailsApplicationProps = {
     traceIdPrefix: string,
@@ -48,10 +49,7 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         return (
             <ContrailsLayout>
                 {loading && <span>Loading...</span>}
-                {traceInfo != null &&
-                    <pre>
-                        {JSON.stringify(traceInfo, null, "  ")}
-                    </pre>}
+                {traceInfo != null && <TraceViewer traceInfo={traceInfo} />}
             </ContrailsLayout>
         );
     }
