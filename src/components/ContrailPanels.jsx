@@ -2,20 +2,33 @@
 import glamurous from "glamorous";
 
 export const ContrailPanelsContainer = glamurous.div({
-    display: "flex",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    //display: "flex",
     flexDirection: "column",
     flexShrink: 0,
     flexGrow: 1,
 });
 
 export const ContrailPanelsTop = glamurous.div({
-    flex: "1 1 1000",
+    position: "absolute",
+    top: 0,
+    bottom: "50%",
+    left: 0,
+    right: 0,
     boxSizing: "border-box",
-    borderBottom: "1px solid #eee",
+    borderBottom: "1px solid #888",
 });
 
 export const ContrailPanelsBottom = glamurous.div({
-    flex: "1 1 1000",
+    position: "absolute",
+    bottom: 0,
+    top: "50%",
+    left: 0,
+    right: 0,
     boxSizing: "border-box",
     display: "flex",
 });
@@ -26,12 +39,19 @@ export const ContrailPanelsFooter = glamurous.div({
 });
 
 export const ContrailPanelsBottomLeft = glamurous.div({
-    flex: "0 0 70%",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: "70%",
     boxSizing: "border-box",
     borderRight: "1px solid #eee",
-    position: "relative",
 });
 export const ContrailPanelsBottomRight = glamurous.div({
-    flex: "0 0 30%",
+    position: "absolute",
+    top: 0,
+    left: "70%",
+    bottom: 0,
+    right: 0,
     boxSizing: "border-box",
 });

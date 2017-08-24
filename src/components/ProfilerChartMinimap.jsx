@@ -24,6 +24,7 @@ type ProfilerChartMinimapProps = {
         from: number,
         to: number,
     }) => void,
+    data: { lines: Array<{ items: Array<ChartMinimapItem> }> },
 };
 
 type ProfilerChartMinimapState = {
@@ -177,6 +178,9 @@ export default class ProfilerChartMinimap extends React.Component<
     generateTimeMarkers(): any {
         const { width } = this.state;
         const { to, from } = this.props;
+        if (width == null) {
+            return [];
+        }
         const scale = width / (to - from);
         return generateTimeMarkers(0, to - from, 100 / scale).map(x => ({ ...x, value: x.value + from }));
     }

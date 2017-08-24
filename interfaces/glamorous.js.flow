@@ -857,7 +857,8 @@ declare module "glamorous" {
         $call?: empty,
     };
 
-    declare type GlamorousStylingFunction = (styles: CSSProperties) => React$ComponentType<any>;
+    declare type GlamorousStylingFunction =
+        <TProps>(...styles: Array<CSSProperties | (TProps) => CSSProperties>) => React$ComponentType<TProps>;
 
     declare type GlamorousTarget = React$ComponentType<any>;
 

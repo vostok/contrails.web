@@ -119,16 +119,16 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
 
         return (
             <ScrollContainer>
-            <Table>
-                <thead>
-                    <HeadRow>
-                        {columns.map(x => this.renderHeaderCell(x))}
-                    </HeadRow>
-                </thead>
-                <tbody>
-                    {data.map(x => this.renderItem(x, []))}
-                </tbody>
-            </Table>
+                <Table>
+                    <thead>
+                        <HeadRow>
+                            {columns.map(x => this.renderHeaderCell(x))}
+                        </HeadRow>
+                    </thead>
+                    <tbody>
+                        {data.map(x => this.renderItem(x, []))}
+                    </tbody>
+                </Table>
             </ScrollContainer>
         );
     }
@@ -140,7 +140,7 @@ function flatten<T>(memo: Array<T>, item: Array<T>): Array<T> {
 
 const ScrollContainer = glamorous.div({
     position: "absolute",
-    onverflowY: "scroll",
+    overflowY: "scroll",
     top: 0,
     left: 0,
     right: 0,

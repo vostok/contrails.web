@@ -280,14 +280,6 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     generateTimeMarkers(): any {
         const { to, from, xScale } = this.props;
         return generateTimeMarkers(0, to - from, 100 / xScale).map(x => ({ ...x, value: x.value + from }));
-
-        // return [
-        //     { title: "1s", value: (to - from) * 0.1 },
-        //     { title: "3s", value: (to - from) * 0.3 },
-        //     { title: "5s", value: (to - from) * 0.5 },
-        //     { title: "7s", value: (to - from) * 0.7 },
-        //     { title: "9s", value: (to - from) * 0.9 },
-        // ];
     }
 
     renderTimeMarkers(): React.Element<*> {

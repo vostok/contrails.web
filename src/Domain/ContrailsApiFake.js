@@ -1,5 +1,5 @@
 // @flow
-import PromsieUtils from "commons/PromiseUtils";
+import PromiseUtils from "commons/PromiseUtils";
 
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";

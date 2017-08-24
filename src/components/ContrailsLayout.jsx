@@ -41,8 +41,8 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
 
 const Header = glamurous.div({
     display: "flex",
-    flexGrow: "0",
-    flexShrink: "0",
+    flexGrow: 0,
+    flexShrink: 0,
     backgroundColor: "#white",
     padding: "5px 20px 7px",
     color: "black",
@@ -59,10 +59,6 @@ const TraceIdContainer = glamurous.div({
 const Gap = glamurous.span({
     display: "inline-block",
     width: 10,
-});
-
-const TraceIdCaption = glamurous.span({
-    marginRight: 10,
 });
 
 const LogoIcon = glamurous.span({
@@ -85,6 +81,8 @@ const Container = glamurous.div({
 
 const Content = glamurous.div({
     display: "flex",
+    overflow: "hidden",
+    position: "relative",
     flexDirection: "column",
     flexShrink: 0,
     flexGrow: 1,

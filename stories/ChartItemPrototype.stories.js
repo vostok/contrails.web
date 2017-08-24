@@ -74,11 +74,13 @@ const Item = glamorous.div(
             zIndex: 2,
         },
     }),
-    ({ focused, colorIndex }) =>
-        focused && {
-            border: `3px solid ${itemColors[colorIndex].border}`,
-            padding: "1px 5px",
-        }
+    ({ focused, colorIndex }: { focused?: boolean, colorIndex: number }) =>
+        focused
+            ? {
+                  border: `3px solid ${itemColors[colorIndex].border}`,
+                  padding: "1px 5px",
+              }
+            : {}
 );
 
 const Text = glamorous.div({
