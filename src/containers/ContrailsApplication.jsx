@@ -20,7 +20,9 @@ export default function ContrailsApplication(): React.Node {
                     </Route>
                     <Route
                         path="/:traceIdPrefix"
-                        component={({ match }) => <TraceViewerContainer traceIdPrefix={match.params.traceIdPrefix} />}
+                        component={({ match }) =>
+                            match.params.traceIdPrefix &&
+                            <TraceViewerContainer traceIdPrefix={match.params.traceIdPrefix} />}
                     />
                 </Switch>
             </BrowserRouter>

@@ -1,6 +1,14 @@
 // @flow
 import * as React from "react";
 import moment from "moment";
+import glamurous from "glamorous";
+
+import type { TraceInfo } from "../Domain/TraceInfo";
+import type { TraceTree, SpanNode } from "../Domain/TraceTree";
+import type { SpanInfo } from "../Domain/SpanInfo";
+import SpansToLinesArranger from "../Domain/SpansToLines";
+import handleCustomDrawItem from "../Domain/ItemDrawer";
+import { buildTraceTree } from "../Domain/TraceTree";
 
 import {
     ContrailPanelsContainer,
@@ -8,21 +16,19 @@ import {
     ContrailPanelsBottom,
     ContrailPanelsBottomLeft,
     ContrailPanelsBottomRight,
-    ContrailPanelsFooter,
-} from "../components/ContrailPanels";
-import ProfilerChartWithMinimap from "../components/ProfilerChartWithMinimap";
-import TraceTreeGrid from "../components/TraceTreeGrid";
-import type { TraceInfo } from "../Domain/TraceInfo";
-import type { SpanInfo } from "../Domain/SpanInfo";
-import SpansToLinesArranger from "../Domain/SpansToLines";
-import handleCustomDrawItem from "../Domain/ItemDrawer";
-import { buildTraceTree } from "../Domain/TraceTree";
+} from "./ContrailPanels";
+import ProfilerChartWithMinimap from "./ProfilerChartWithMinimap";
+import TraceTreeGrid from "./TraceTreeGrid";
+import SpanInfoView from "./SpanInfoView";
 
 type TraceViewerProps = {
     traceInfo: TraceInfo,
 };
 
-type TraceViewerState = {};
+type TraceViewerState = {
+    focusedSpanNode: ?SpanNode,
+    traceTree: TraceTree,
+};
 
 function min(x: number, y: number): number {
     return Math.min(x, y);
@@ -35,6 +41,14 @@ function max(x: number, y: number): number {
 export default class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     props: TraceViewerProps;
     state: TraceViewerState;
+
+    constructor(props: TraceViewerProps) {
+        super(props);
+        this.state = {
+            focusedSpanNode: null,
+            traceTree: buildTraceTree(props.traceInfo.Spans),
+        };
+    }
 
     generateDataFromDiTraceResponse(response: TraceInfo): { lines: { items: SpanInfo[] }[] } {
         const arranger = new SpansToLinesArranger();
@@ -51,8 +65,13 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         return result;
     }
 
+    handleItemClick = (spanNode: SpanNode) => {
+        this.setState({ focusedSpanNode: spanNode });
+    };
+
     render(): React.Node {
         const { traceInfo } = this.props;
+        const { traceTree, focusedSpanNode } = this.state;
         return (
             <ContrailPanelsContainer>
                 <ContrailPanelsTop>
@@ -64,12 +83,19 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                 </ContrailPanelsTop>
                 <ContrailPanelsBottom>
                     <ContrailPanelsBottomLeft>
-                        <TraceTreeGrid traceTree={buildTraceTree(traceInfo.Spans)} />{" "}
+                        <TraceTreeGrid traceTree={traceTree} onItemClick={this.handleItemClick} />{" "}
                     </ContrailPanelsBottomLeft>
-                    <ContrailPanelsBottomRight>Right</ContrailPanelsBottomRight>
+                    <ContrailPanelsBottomRight>
+                        <SpanInfoViewContainer>
+                            {focusedSpanNode && <SpanInfoView spanInfo={focusedSpanNode.source} />}
+                        </SpanInfoViewContainer>
+                    </ContrailPanelsBottomRight>
                 </ContrailPanelsBottom>
-                <ContrailPanelsFooter />
             </ContrailPanelsContainer>
         );
     }
 }
+
+const SpanInfoViewContainer = glamurous.div({
+    padding: 10,
+});

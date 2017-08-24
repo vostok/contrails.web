@@ -7,6 +7,19 @@
         "import/no-namespace": "off"
     },
     "settings": {
-        "import/resolver": "webpack"
+        "import/resolver": {
+            "webpack": {
+                "config": {
+                    "resolve": {
+                        "extensions": [".js", ".jsx"]
+                    },
+                    "alias": {
+                        "ui": "./src/commons/ui",
+                        "commons": "./src/commons"
+                    }
+                }
+            }
+        },
+        "import/extensions": [".js", ".jsx"]
     }
 }

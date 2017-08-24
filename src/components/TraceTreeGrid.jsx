@@ -9,6 +9,7 @@ import TreeGrid from "./TreeGrid";
 
 type TraceTreeGridProps = {
     traceTree: TraceTree,
+    onItemClick?: (spanNode: SpanNode) => void,
 };
 
 type TraceTreeGridState = {};
@@ -62,7 +63,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     render(): React.Node {
-        const { traceTree } = this.props;
+        const { traceTree, onItemClick } = this.props;
         return (
             <TreeGrid
                 columns={[
@@ -93,6 +94,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                 ]}
                 onGetChildren={x => x.children}
                 onGetItemColor={x => Colors[x.colorConfig].background}
+                onItemClick={onItemClick}
                 data={[traceTree]}
             />
         );

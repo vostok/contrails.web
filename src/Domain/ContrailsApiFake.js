@@ -8,7 +8,7 @@ const ResponsesContext = require.context("./Responses", true, /.json$/);
 
 export default class ContrailsApiFake implements IContrailsApi {
     async getTrace(id: string): Promise<TraceInfo[]> {
-        //await PromsieUtils.delay(2000);
+        await PromiseUtils.delay(2000);
         const result = ResponsesContext.keys().find(x => x.replace(/^\.\//, "").startsWith(id));
         if (result != null) {
             return ResponsesContext(result);

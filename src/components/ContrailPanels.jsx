@@ -7,7 +7,6 @@ export const ContrailPanelsContainer = glamurous.div({
     left: 0,
     right: 0,
     bottom: 0,
-    //display: "flex",
     flexDirection: "column",
     flexShrink: 0,
     flexGrow: 1,
@@ -47,7 +46,9 @@ export const ContrailPanelsBottomLeft = glamurous.div({
     boxSizing: "border-box",
     borderRight: "1px solid #eee",
 });
+
 export const ContrailPanelsBottomRight = glamurous.div({
+    overflowY: "scroll",
     position: "absolute",
     top: 0,
     left: "70%",

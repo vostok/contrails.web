@@ -33,7 +33,7 @@ function getIntervalConfig(minIntervalMs: number): { value: number } {
             break;
         }
     }
-    return result;
+    return result || intervals[intervals.length - 1];
 }
 
 export default function generateTimeMarkers(fromMs: number, toMs: number, minIntervalMs: number): TimeMarker[] {

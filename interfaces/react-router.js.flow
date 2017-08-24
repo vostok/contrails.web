@@ -36,7 +36,9 @@ declare module 'react-router' {
     declare type RouteParams = { [key: string]: ?string };
 
     declare type RouteOptions = {
-        params: RouteParams;
+        match: {
+            params: RouteParams;
+        },
         location: {
             pathname: string;
             search?: ?string;

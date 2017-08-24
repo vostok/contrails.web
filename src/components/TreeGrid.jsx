@@ -16,6 +16,7 @@ type TreeGridProps<TItem> = {
     data: Array<TItem>,
     columns: Array<ColumnDefintion<TItem>>,
     focusedItem?: ?TItem,
+    onItemClick?: TItem => void,
     expandedItems?: Array<TItem>,
     onGetItemColor?: TItem => ?string,
     onGetChildren: TItem => ?Array<TItem>,
@@ -81,15 +82,24 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     }
 
     renderItem(item: TItem, parents: Array<TItem>): React.Element<*>[] {
-        const { onGetChildren, columns } = this.props;
+        const { onItemClick, onGetChildren, columns } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = this.isItemExpanded(item);
         return [
-            <ItemRow>
+            <ItemRow
+                onClick={() => {
+                    if (onItemClick != null) {
+                        onItemClick(item);
+                    }
+                }}>
                 <FirstItemCell>
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
-                        <ExpandButton onClick={() => this.handleToggleItemExpand(item)}>
+                        <ExpandButton
+                            onClick={e => {
+                                this.handleToggleItemExpand(item);
+                                e.stopPropagation();
+                            }}>
                             {itemChildren != null &&
                                 itemChildren.length > 0 &&
                                 <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />}
