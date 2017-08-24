@@ -1,5 +1,6 @@
 // @flow
 import moment from "moment";
+import { NotImplementedError } from "commons/Errors";
 
 import type { SpanInfo } from "./SpanInfo";
 
@@ -18,6 +19,10 @@ export type TraceTree = SpanNode;
 
 export function buildTraceTree(spans: Array<SpanInfo>): TraceTree {
     const root = spans.find(x => x.ParentSpanId == null);
+    if (root == null) {
+        // TODO построить фековай item
+        throw new NotImplementedError();
+    }
     return spanInfoToSpanNode(root, spans);
 }
 

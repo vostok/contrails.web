@@ -5,8 +5,8 @@ import glamurous from "glamorous";
 
 import type { TraceInfo } from "../Domain/TraceInfo";
 import type { TraceTree, SpanNode } from "../Domain/TraceTree";
-import type { SpanInfo } from "../Domain/SpanInfo";
-import SpansToLinesArranger from "../Domain/SpansToLines";
+import SpansToLinesArranger from "../Domain/SpansToLinesArranger";
+import type { SpanLines } from "../Domain/SpansToLinesArranger";
 import handleCustomDrawItem from "../Domain/ItemDrawer";
 import { buildTraceTree } from "../Domain/TraceTree";
 
@@ -21,6 +21,10 @@ import ProfilerChartWithMinimap from "./ProfilerChartWithMinimap";
 import TraceTreeGrid from "./TraceTreeGrid";
 import SpanInfoView from "./SpanInfoView";
 
+type ChartData = {
+    lines: SpanLines,
+};
+
 type TraceViewerProps = {
     traceInfo: TraceInfo,
 };
@@ -28,6 +32,7 @@ type TraceViewerProps = {
 type TraceViewerState = {
     focusedSpanNode: ?SpanNode,
     traceTree: TraceTree,
+    spanLines: ChartData,
 };
 
 function min(x: number, y: number): number {
@@ -47,10 +52,11 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         this.state = {
             focusedSpanNode: null,
             traceTree: buildTraceTree(props.traceInfo.Spans),
+            spanLines: this.generateDataFromDiTraceResponse(props.traceInfo),
         };
     }
 
-    generateDataFromDiTraceResponse(response: TraceInfo): { lines: { items: SpanInfo[] }[] } {
+    generateDataFromDiTraceResponse(response: TraceInfo): ChartData {
         const arranger = new SpansToLinesArranger();
         const spans = response.Spans;
         return { lines: arranger.arrange(spans) };
@@ -71,14 +77,14 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
 
     render(): React.Node {
         const { traceInfo } = this.props;
-        const { traceTree, focusedSpanNode } = this.state;
+        const { traceTree, focusedSpanNode, spanLines } = this.state;
         return (
             <ContrailPanelsContainer>
                 <ContrailPanelsTop>
                     <ProfilerChartWithMinimap
                         onCustomDrawItem={handleCustomDrawItem}
                         {...this.getFromAndTo(traceInfo)}
-                        data={this.generateDataFromDiTraceResponse(traceInfo)}
+                        data={spanLines}
                     />
                 </ContrailPanelsTop>
                 <ContrailPanelsBottom>

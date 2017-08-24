@@ -3,17 +3,23 @@ import moment from "moment";
 
 import type { SpanInfo } from "./SpanInfo";
 
-export type SpanByLines = Array<{ items: Array<SpanInfo & { from: number, to: number }> }>;
+export type SpanLineItem = {
+    from: number,
+    to: number,
+    source: SpanInfo,
+};
+
+export type SpanLines = Array<{ items: Array<SpanLineItem> }>;
 
 export default class SpansToLinesArranger {
-    arrange(spans: SpanInfo[]): SpanByLines {
-        const result: SpanByLines = [];
+    arrange(spans: SpanInfo[]): SpanLines {
+        const result: SpanLines = [];
         return this.treeTraverse(
             spans,
             (result, { node }, depth) => {
                 result[depth] = result[depth] || { items: [] };
                 result[depth].items.push({
-                    ...node,
+                    source: node,
                     from: moment(node.BeginTimestamp).valueOf(),
                     to: moment(node.EndTimestamp).valueOf(),
                 });

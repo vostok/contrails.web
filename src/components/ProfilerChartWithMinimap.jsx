@@ -3,8 +3,8 @@ import * as React from "react";
 import glamorous from "glamorous";
 import ReactDom from "react-dom";
 
-import ProfilerChart from "./ProfilerChart";
-import type { ProfilerData, ProfilerItem } from "./ProfilerChart";
+import ProfilerChart from "./ProfilerChart/ProfilerChart";
+import type { ProfilerData, ProfilerItem, ItemDrawContext } from "./ProfilerChart/ProfilerChart";
 import ProfilerChartContainer from "./ProfilerChartContainer";
 import ProfilerChartMinimap from "./ProfilerChartMinimap";
 
@@ -12,7 +12,7 @@ type ProfilerChartWithMinimapProps<TItem> = {
     data: ProfilerData<TItem>,
     from: number,
     to: number,
-    onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem) => void,
+    onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, options: ItemDrawContext) => void,
 };
 
 type ProfilerChartWithMinimapState = {

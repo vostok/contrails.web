@@ -1,10 +1,22 @@
 // @flow
 import DatabaseIcon from "../components/Icons/db.png";
 
+import type { SpanLineItem } from "./SpansToLinesArranger";
 import itemColors from "./Colors";
 
 const DatabaseImage = new Image(14, 14);
 DatabaseImage.src = DatabaseIcon;
+
+type ItemDrawOptions = {
+    hovered: boolean,
+    selected: boolean,
+};
+
+export type ItemDrawContext = {
+    width: number,
+    lineHeight: number,
+    options: ItemDrawOptions,
+};
 
 function fittingString(context: CanvasRenderingContext2D, str: string, maxWidth: number): string {
     let width = context.measureText(str).width;
@@ -24,7 +36,7 @@ function fittingString(context: CanvasRenderingContext2D, str: string, maxWidth:
 
 export default function handleCustomDrawItem(
     context: CanvasRenderingContext2D,
-    item: ProfilerItem,
+    item: SpanLineItem,
     itemContext: ItemDrawContext
 ) {
     context.save();
@@ -52,11 +64,27 @@ export default function handleCustomDrawItem(
 
             context.fillStyle = itemColors[0].text;
             context.font = "14px Segoe UI";
-            context.fillText(fittingString(context, item.name || "undefined", width - (8 + 18)), 8 + 18, 14 + 4);
+            context.fillText(
+                fittingString(
+                    context,
+                    (item.source.Annotations && item.source.Annotations.OriginId) || "",
+                    width - (8 + 18)
+                ),
+                8 + 18,
+                14 + 4
+            );
 
             context.fillStyle = itemColors[0].text;
             context.font = "12px Segoe UI";
-            context.fillText(fittingString(context, item.name || "undefined", width - 8), 8, 14 + 4 + 22);
+            context.fillText(
+                fittingString(
+                    context,
+                    (item.source.Annotations && item.source.Annotations.OriginHost) || "",
+                    width - 8
+                ),
+                8,
+                14 + 4 + 22
+            );
         }
     } finally {
         context.restore();

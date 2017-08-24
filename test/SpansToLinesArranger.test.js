@@ -2,11 +2,11 @@
 import moment from "moment";
 import { expect } from "chai";
 
-import SpansToLines from "../src/Domain/SpansToLines";
+import SpansToLinesArranger from "../src/Domain/SpansToLinesArranger";
 
-describe("SpansToLines.arrange", () => {
+describe("SpansToLinesArranger.arrange", () => {
     it("должен располагать элементы друг под другом", () => {
-        const arranger = new SpansToLines();
+        const arranger = new SpansToLinesArranger();
         const spans = [
             {
                 BeginTimestamp: moment("2013-02-08 12:00:00.000").format(),
@@ -27,7 +27,7 @@ describe("SpansToLines.arrange", () => {
             },
         ];
         const spansByLines = arranger.arrange(spans);
-        expect(spansByLines[0].items[0].SpanId).to.eql(spans[0].SpanId);
-        expect(spansByLines[1].items[0].SpanId).to.eql(spans[1].SpanId);
+        expect(spansByLines[0].items[0].source.SpanId).to.eql(spans[0].SpanId);
+        expect(spansByLines[1].items[0].source.SpanId).to.eql(spans[1].SpanId);
     });
 });

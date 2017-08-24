@@ -3,8 +3,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
-import ProfilerChart from "../src/components/ProfilerChart";
-import handleCustomDrawItem from "../src/Domain/ItemDrawer";
+import ProfilerChart from "../src/components/ProfilerChart/ProfilerChart";
 
 const item2 = { from: 2, to: 4, name: "Item 2" };
 
@@ -13,7 +12,6 @@ storiesOf("ProfilerChart", module)
         <ProfilerChart
             onItemClick={action("onItemClick")}
             selectedItems={[item2]}
-            onCustomDrawItem={handleCustomDrawItem}
             from={0}
             to={5}
             xScale={100}
@@ -28,7 +26,6 @@ storiesOf("ProfilerChart", module)
     )
     .add("Default", () =>
         <ProfilerChart
-            onCustomDrawItem={handleCustomDrawItem}
             from={0}
             to={5}
             xScale={100}
@@ -51,7 +48,6 @@ storiesOf("ProfilerChart", module)
         <ProfilerChart
             onItemClick={action("onItemClick")}
             selectedItems={[item2]}
-            onCustomDrawItem={handleCustomDrawItem}
             from={10}
             to={20}
             xScale={100}

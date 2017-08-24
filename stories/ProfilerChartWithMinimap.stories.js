@@ -6,10 +6,10 @@ import moment from "moment";
 
 import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap";
 import type { TraceInfo } from "../src/Domain/TraceInfo";
-import type { SpanInfo } from "../src/Domain/SpanInfo";
 import Response62f8278dab21471c8370fa47d4f52f72 from "../src/Domain/Responses/62f8278dab21471c8370fa47d4f52f72.json";
 import Response37fa1a7edcc34ca28204fc50e6681e70 from "../src/Domain/Responses/37fa1a7edcc34ca28204fc50e6681e70.json";
-import SpansToLinesArranger from "../src/Domain/SpansToLines";
+import SpansToLinesArranger from "../src/Domain/SpansToLinesArranger";
+import type { SpanLines } from "../src/Domain/SpansToLinesArranger";
 import handleCustomDrawItem from "../src/Domain/ItemDrawer";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
@@ -38,34 +38,16 @@ function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
     return result;
 }
 
-function generateDataFromDiTraceResponse(
-    response: TraceInfo[]
-): { lines: Array<{ items: Array<SpanInfo & { from: number, to: number }> }> } {
+function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: SpanLines } {
     const arranger = new SpansToLinesArranger();
     const spans = response[0].Spans;
     return { lines: arranger.arrange(spans) };
-
-    // const casssandraSpans = spans.filter(x => x.ParentSpanId === "4160087a000000000000000000000000");
-    // const result = {
-    //     lines: [
-    //         {
-    //             items: casssandraSpans.map(x => ({
-    //                 name: x.OperationName,
-    //                 from: moment(x.BeginTimestamp).valueOf(),
-    //                 to: moment(x.EndTimestamp).valueOf(),
-    //             })),
-    //         },
-    //     ],
-    // };
-
-    // return result;
 }
 
 storiesOf("ProfilerChartWithMinimap", module)
     .add("Default", () =>
         <Border>
             <ProfilerChartWithMinimap
-                onCustomDrawItem={handleCustomDrawItem}
                 from={0}
                 to={10}
                 data={{
@@ -92,7 +74,6 @@ storiesOf("ProfilerChartWithMinimap", module)
     )
     .add("FullScreen", () =>
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
             from={0}
             to={10}
             data={{
@@ -121,7 +102,6 @@ storiesOf("ProfilerChartWithMinimap", module)
     )
     .add("FullScreen-LargeData", () =>
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
             from={0}
             to={1000}
             data={{
@@ -131,7 +111,6 @@ storiesOf("ProfilerChartWithMinimap", module)
     )
     .add("FullScreen-ValuesForRealTime", () =>
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
             from={1503233308736}
             to={1503233309325}
             data={{

@@ -4,8 +4,8 @@ import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import Button from "@skbkontur/react-ui/Button";
 
-import ProfilerChart from "../src/components/ProfilerChart";
-import type { ProfilerData } from "../src/components/ProfilerChart";
+import ProfilerChart from "../src/components/ProfilerChart/ProfilerChart";
+import type { ProfilerData } from "../src/components/ProfilerChart/ProfilerChart";
 import ProfilerChartContainer from "../src/components/ProfilerChartContainer";
 
 const Border = glamorous.div({

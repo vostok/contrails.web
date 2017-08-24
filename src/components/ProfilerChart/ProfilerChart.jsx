@@ -1,8 +1,9 @@
 // @flow
 import * as React from "react";
-import glamorous from "glamorous";
 
-import generateTimeMarkers from "../Domain/TimeMarkers";
+import generateTimeMarkers from "../../Domain/TimeMarkers";
+
+import cn from "./ProfilerChart.less";
 
 type Color = string;
 
@@ -17,6 +18,11 @@ type ProfilerLine<TItem> = {
 
 export type ProfilerData<TItem: ProfilerItem> = {
     lines: Array<ProfilerLine<TItem>>,
+};
+
+type ItemDrawOptions = {
+    hovered: boolean,
+    selected: boolean,
 };
 
 export type ItemDrawContext = {
@@ -40,11 +46,6 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
 
 const lineHeight = 50;
 const lineGap = 1;
-
-type ItemDrawOptions = {
-    hovered: boolean,
-    selected: boolean,
-};
 
 function delay(timeout: number): Promise<void> {
     return new Promise(resolve => {
@@ -286,15 +287,18 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     renderTimeMarkers(): React.Element<*> {
         const timeMarkers = this.generateTimeMarkers();
         return (
-            <TimeMarkersContainer>
+            <div className={cn("time-markers-container")}>
                 {timeMarkers.map(timeMarker =>
-                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsoluteX(timeMarker.value) }}>
-                        <TimeMarkerTitle>
+                    <div
+                        className={cn("time-marker")}
+                        key={timeMarker.value}
+                        style={{ left: this.toAbsoluteX(timeMarker.value) }}>
+                        <div className={cn("time-marker-title")}>
                             {timeMarker.title}
-                        </TimeMarkerTitle>
-                    </TimeMarker>
+                        </div>
+                    </div>
                 )}
-            </TimeMarkersContainer>
+            </div>
         );
     }
 
@@ -318,32 +322,3 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         );
     }
 }
-
-const TimeMarkersContainer = glamorous.div({
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: 1,
-});
-
-const TimeMarkerTitle = glamorous.div({
-    zIndex: 1,
-    position: "absolute",
-    top: 0,
-    right: 3,
-    color: "#A0A0A0",
-    fontSize: "14px",
-    lineHeight: "20px",
-    whiteSpace: "nowrap",
-});
-
-const TimeMarker = glamorous.div({
-    zIndex: 1,
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    width: 1,
-    backgroundColor: "rgba(0,0,0,0.08)",
-});

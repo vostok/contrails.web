@@ -34,7 +34,18 @@ module.exports = function(storybookBaseConfig, configType) {
         exclude: /node_modules/,
         rules: [
             {
-                use: ["style-loader", "css-loader", "less-loader"],
+                use: [
+                    "classnames-loader",
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            modules: true,
+                            localIdentName: "[name]-[local]--[hash:base64:3]",
+                        },
+                    },
+                    "less-loader",
+                ],
             },
         ],
     }), (storybookBaseConfig.entry.preview = [

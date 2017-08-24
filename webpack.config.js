@@ -1,3 +1,4 @@
+/* eslint-disable import/unambiguous */
 const path = require("path");
 
 const webpack = require("webpack");
@@ -56,7 +57,18 @@ module.exports = {
                 include: /react-ui/,
                 rules: [
                     {
-                        use: ["style-loader", "css-loader"],
+                        use: [
+                            "classnames-loader",
+                            "style-loader",
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    modules: true,
+                                    localIdentName: "[name]-[local]--[hash:base64:3]",
+                                },
+                            },
+                            "less-loader",
+                        ],
                     },
                 ],
             },
