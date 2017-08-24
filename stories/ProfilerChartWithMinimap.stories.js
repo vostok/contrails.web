@@ -6,6 +6,7 @@ import moment from "moment";
 
 import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap";
 import type { TraceInfo } from "../src/Domain/TraceInfo";
+import type { SpanInfo } from "../src/Domain/SpanInfo";
 import Response62f8278dab21471c8370fa47d4f52f72 from "../src/Domain/Responses/62f8278dab21471c8370fa47d4f52f72.json";
 import Response37fa1a7edcc34ca28204fc50e6681e70 from "../src/Domain/Responses/37fa1a7edcc34ca28204fc50e6681e70.json";
 import SpansToLinesArranger from "../src/Domain/SpansToLines";
@@ -19,12 +20,6 @@ const Border = glamorous.div({
     height: "300px",
     margin: "0 auto",
 });
-
-type ProfilerItem = {
-    from: number,
-    to: number,
-    name: string,
-};
 
 function min(x: number, y: number): number {
     return Math.min(x, y);
@@ -43,7 +38,9 @@ function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
     return result;
 }
 
-function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: { items: ProfilerItem[] }[] } {
+function generateDataFromDiTraceResponse(
+    response: TraceInfo[]
+): { lines: Array<{ items: Array<SpanInfo & { from: number, to: number }> }> } {
     const arranger = new SpansToLinesArranger();
     const spans = response[0].Spans;
     return { lines: arranger.arrange(spans) };

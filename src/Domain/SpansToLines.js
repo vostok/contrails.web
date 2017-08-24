@@ -3,7 +3,7 @@ import moment from "moment";
 
 import type { SpanInfo } from "./SpanInfo";
 
-export type SpanByLines = Array<{ items: Array<SpanInfo> }>;
+export type SpanByLines = Array<{ items: Array<SpanInfo & { from: number, to: number }> }>;
 
 export default class SpansToLinesArranger {
     arrange(spans: SpanInfo[]): SpanByLines {

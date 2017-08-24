@@ -264,6 +264,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
                     drawedCount++;
                     if (drawedCount === 500) {
                         drawedCount = 0;
+                        // eslint-disable-next-line max-depth
                         if (await this.checkRedraw()) {
                             this.newDrawStarted = false;
                             return;
