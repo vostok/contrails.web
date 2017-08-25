@@ -1,6 +1,59 @@
 .expand-button {
-    width: 20;
+    width: 20px;
     border: 0;
     padding: 0;
     background: transparent;
+}
+
+.scroll-container {
+    position: absolute;
+    overflow-y: scroll;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.table {
+    width: 100%;
+    border: 0;
+    border-collapse: collapse;
+}
+
+.head-row {
+    border-bottom: 1px solid #ddd;
+
+    th {
+        border-right: 1px solid #ddd;
+    }
+}
+
+.first-item-cell {
+    line-height: 30px;
+    vertical-align: baseline;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+    padding-right: 10px;
+}
+
+.parent-line {
+    display: inline-block;
+    margin-left: 10px;
+    width: 1px;
+    height: 30px;
+    margin-right: 9px;
+    padding: 0;
+    background-color: #000;
+}
+
+.item-cell {
+    position: relative;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 30px;
+    vertical-align: baseline;
+    height: 30;
+    padding: 0 10px;
+    margin: 0;
 }

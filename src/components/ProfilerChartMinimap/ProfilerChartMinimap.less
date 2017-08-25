@@ -3,6 +3,94 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 1;
+    width: 1px;
     background-color: rgba(0, 0, 0, 0.08);
+}
+
+
+.left-handler-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+}
+
+.left-shadow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.right-shadow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.right-handler-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+}
+
+.left-handler {
+    position: absolute;
+    top: 0;
+    left: -2px;
+    width: 5px;
+    height: 20px;
+    background-color: #3072C4;
+    cursor: e-resize;
+}
+
+.right-handler {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    width: 5px;
+    height: 20px;
+    background-color: #3072C4;
+    cursor: e-resize;
+}
+
+.scroller {
+    background-color: transparent;
+    border-left: 1px solid #3072C4;
+    border-right: 1px solid #3072C4;
+    position: absolute;
+    box-sizing: border-box;
+    top: 0;
+    bottom: 0;
+    cursor: grab;
+}
+
+.container {
+    height: 100;
+    position: relative;
+    overflow: hidden;
+    border-bottom: #eee;
+}
+
+.time-markers-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.time-marker-title {
+    z-index: 1;
+    position: absolute;
+    top: 4;
+    right: 3;
+    color: #A0A0A0;
+    font-size: 10px;
+    line-height: 10px;
 }

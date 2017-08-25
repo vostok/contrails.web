@@ -1,8 +1,9 @@
 // @flow
 import * as React from "react";
-import glamurous from "glamorous";
 
 import type { SpanInfo } from "../../Domain/SpanInfo";
+
+import cn from "./SpanInfoView.less";
 
 type SpanInfoViewProps = {
     spanInfo: SpanInfo,
@@ -12,83 +13,60 @@ export default function SpanInfoView({ spanInfo }: SpanInfoViewProps): React.Nod
     const annotations = spanInfo.Annotations;
     return (
         <div>
-            <Section>
-                <SectionHeader>General</SectionHeader>
-                <Item>
-                    <Caption>TraceId:</Caption>
-                    <Value>
+            <div className={cn("section")}>
+                <div className={cn("section-header")}>General</div>
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>TraceId:</div>
+                    <span className={cn("value")}>
                         {spanInfo.TraceId}
-                    </Value>
-                </Item>
+                    </span>
+                </div>
 
-                <Item>
-                    <Caption>SpanId:</Caption>
-                    <Value>
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>SpanId:</div>
+                    <span className={cn("value")}>
                         {spanInfo.SpanId}
-                    </Value>
-                </Item>
-                <Item>
-                    <Caption>ParentSpanId:</Caption>
-                    <Value>
+                    </span>
+                </div>
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>ParentSpanId:</div>
+                    <span className={cn("value")}>
                         {spanInfo.ParentSpanId}
-                    </Value>
-                </Item>
-                <Item>
-                    <Caption>OperationName:</Caption>
-                    <Value>
+                    </span>
+                </div>
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>OperationName:</div>
+                    <span className={cn("value")}>
                         {spanInfo.OperationName}
-                    </Value>
-                </Item>
-                <Item>
-                    <Caption>BeginTimestamp:</Caption>
-                    <Value>
+                    </span>
+                </div>
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>BeginTimestamp:</div>
+                    <span className={cn("value")}>
                         {spanInfo.BeginTimestamp}
-                    </Value>
-                </Item>
-                <Item>
-                    <Caption>EndTimestamp:</Caption>
-                    <Value>
+                    </span>
+                </div>
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>EndTimestamp:</div>
+                    <span className={cn("value")}>
                         {spanInfo.EndTimestamp}
-                    </Value>
-                </Item>
-            </Section>
+                    </span>
+                </div>
+            </div>
             {annotations != null &&
-                <Section>
-                    <SectionHeader>Annotations</SectionHeader>
+                <div className={cn("section")}>
+                    <div className={cn("section-header")}>Annotations</div>
                     {Object.getOwnPropertyNames(annotations).map(x =>
-                        <Item>
-                            <Caption>
+                        <div key={x} className={cn("item")}>
+                            <div className={cn("caption")}>
                                 {x}:
-                            </Caption>
-                            <Value>
+                            </div>
+                            <span className={cn("value")}>
                                 {annotations[x]}
-                            </Value>
-                        </Item>
+                            </span>
+                        </div>
                     )}
-                </Section>}
+                </div>}
         </div>
     );
 }
-
-const Section = glamurous.div({
-    marginBottom: 10,
-});
-
-const SectionHeader = glamurous.div({
-    fontSize: "16px",
-    marginBottom: 5,
-});
-
-const Item = glamurous.div({});
-
-const Caption = glamurous.span({
-    display: "inline-block",
-    color: "#111",
-    fontWeight: 600,
-    marginRight: 10,
-});
-
-const Value = glamurous.span({
-    fontFamily: "Consolas, monospace",
-    fontSize: "13px",
-});

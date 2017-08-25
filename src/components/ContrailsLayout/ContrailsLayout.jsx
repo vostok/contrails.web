@@ -20,14 +20,14 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
             <div className={cn("container")}>
                 <div className={cn("header")}>
                     <div className={cn("logo")}>
-                        <div className={cn("logo-icon")}>
+                        <span className={cn("logo-icon")}>
                             <Icon name="OwnershipBoat" />
-                        </div>
-                        <div className={cn("logo-text")}>Contrails</div>
+                        </span>
+                        <span className={cn("logo-text")}>Contrails</span>
                     </div>
                     <div className={cn("trace-id-container")}>
                         <Input placeholder="Введите TraceId" autoFocus width={500} />
-                        <div className={cn("gap")} />
+                        <span className={cn("gap")} />
                         <Button use="success">Открыть</Button>
                     </div>
                 </div>

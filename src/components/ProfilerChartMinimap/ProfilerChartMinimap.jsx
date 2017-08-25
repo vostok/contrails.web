@@ -1,7 +1,6 @@
 // @flow
 import * as React from "react";
 import ReactDom from "react-dom";
-import glamorous from "glamorous";
 import Draggable from "react-draggable";
 import type { DraggableData } from "react-draggable";
 
@@ -191,18 +190,18 @@ export default class ProfilerChartMinimap extends React.Component<
     renderTimeMarkers(): React.Node {
         const timeMarkers = this.generateTimeMarkers();
         return (
-            <TimeMarkersContainer>
+            <div className={cn("time-markers-container")}>
                 {timeMarkers.map(timeMarker =>
                     <div
                         className={cn("time-marker")}
                         key={timeMarker.value}
                         style={{ left: this.toAbsoluteX(timeMarker.value) }}>
-                        <TimeMarkerTitle>
+                        <div className={cn("time-marker-title")}>
                             {timeMarker.title}
-                        </TimeMarkerTitle>
+                        </div>
                     </div>
                 )}
-            </TimeMarkersContainer>
+            </div>
         );
     }
 
@@ -222,16 +221,18 @@ export default class ProfilerChartMinimap extends React.Component<
         const { width } = this.state;
         const { from, to, viewPort } = this.props;
         return (
-            <Container ref={x => (this.container = x)}>
+            <div className={cn("container")} ref={x => (this.container = x)}>
                 {width != null && this.renderCanvas(width)}
                 {width != null &&
-                    <LeftShadow
+                    <div
+                        className={cn("left-shadow")}
                         style={{
                             width: this.toAbsoluteX(viewPort.from),
                         }}
                     />}
                 {width != null &&
-                    <RightShadow
+                    <div
+                        className={cn("right-shadow")}
                         style={{
                             width: this.toAbsoluteX(from + to - viewPort.to),
                         }}
@@ -245,7 +246,8 @@ export default class ProfilerChartMinimap extends React.Component<
                             right: this.toAbsoluteX(to - (viewPort.to - viewPort.from)),
                         }}
                         position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
-                        <Scroller
+                        <div
+                            className={cn("scroller")}
                             ref={e => (this.scroller = e)}
                             style={{
                                 width: this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from),
@@ -261,9 +263,9 @@ export default class ProfilerChartMinimap extends React.Component<
                             right: this.toAbsoluteX(viewPort.to) - 10,
                         }}
                         position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
-                        <LeftHandlerContainer>
-                            <LeftHandler />
-                        </LeftHandlerContainer>
+                        <div className={cn("left-handler-container")}>
+                            <div className={cn("left-handler")} />
+                        </div>
                     </Draggable>}
                 {width != null &&
                     <Draggable
@@ -274,98 +276,11 @@ export default class ProfilerChartMinimap extends React.Component<
                             right: this.toAbsoluteX(to),
                         }}
                         position={{ x: this.toAbsoluteX(viewPort.to), y: 0 }}>
-                        <RightHandlerContainer>
-                            <RightHandler />
-                        </RightHandlerContainer>
+                        <div className={cn("right-handler-container")}>
+                            <div className={cn("right-handler")} />
+                        </div>
                     </Draggable>}
-            </Container>
+            </div>
         );
     }
 }
-
-const LeftHandlerContainer = glamorous.div({
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: 0,
-});
-
-const LeftShadow = glamorous.div({
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-});
-
-const RightShadow = glamorous.div({
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-});
-
-const RightHandlerContainer = glamorous.div({
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: 0,
-});
-
-const LeftHandler = glamorous.div({
-    position: "absolute",
-    top: 0,
-    left: -2,
-    width: 5,
-    height: 20,
-    backgroundColor: "#3072C4",
-    cursor: "e-resize",
-});
-
-const RightHandler = glamorous.div({
-    position: "absolute",
-    top: 0,
-    right: -2,
-    width: 5,
-    height: 20,
-    backgroundColor: "#3072C4",
-    cursor: "e-resize",
-});
-
-const Scroller = glamorous.div({
-    backgroundColor: "transparent",
-    borderLeft: "1px solid #3072C4",
-    borderRight: "1px solid #3072C4",
-    position: "absolute",
-    boxSizing: "border-box",
-    top: 0,
-    bottom: 0,
-    cursor: "grab",
-});
-
-const Container = glamorous.div({
-    height: 100,
-    position: "relative",
-    overflow: "hidden",
-    borderBottom: "#eee",
-});
-
-const TimeMarkersContainer = glamorous.div({
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: 1,
-});
-
-const TimeMarkerTitle = glamorous.div({
-    zIndex: 1,
-    position: "absolute",
-    top: 4,
-    right: 3,
-    color: "#A0A0A0",
-    fontSize: "10px",
-    lineHeight: "10px",
-});

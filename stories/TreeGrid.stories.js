@@ -36,7 +36,7 @@ storiesOf("TreeGrid", module).add("Default", () =>
                 renderValue: x => x.value2,
             },
         ]}
-        focusedItem={null}
+        focusedItem={item1}
         data={[
             item1,
             {

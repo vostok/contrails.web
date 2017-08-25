@@ -1,7 +1,6 @@
 // @flow
 import * as React from "react";
 import _ from "lodash";
-import glamorous from "glamorous";
 import { Icon } from "ui";
 
 import { reduceTree, findNodeToReducer } from "../../Domain/Utils/TreeTraverseUtils";
@@ -47,9 +46,15 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
 
     renderCell(item: TItem, column: ColumnDefintion<TItem>): React.Node {
         return (
-            <ItemCell width={column.width} align={column.align}>
+            <td
+                className={cn("item-cell")}
+                style={{
+                    width: column.width,
+                    maxWidth: column.width,
+                    textAlign: column.align,
+                }}>
                 {column.renderValue(item)}
-            </ItemCell>
+            </td>
         );
     }
 
@@ -103,7 +108,11 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     }
 
     renderParentBlock(item: TItem): React.Element<*> {
-        return <ParentLine color={this.getItemColor(item)}>&nbsp;</ParentLine>;
+        return (
+            <div className={cn("parent-line")} style={{ backgroundColor: this.getItemColor(item) }}>
+                &nbsp;
+            </div>
+        );
     }
 
     renderItem(item: TItem, parents: Array<TItem>): React.Element<*>[] {
@@ -111,13 +120,14 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         const itemChildren = onGetChildren(item);
         const expanded = this.isItemExpanded(item);
         return [
-            <ItemRow
+            <tr
+                className={cn("item-row")}
                 onClick={() => {
                     if (onItemClick != null) {
                         onItemClick(item);
                     }
                 }}>
-                <FirstItemCell>
+                <td className={cn("first-item-cell")}>
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
                         <button
@@ -132,9 +142,9 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                         </button>
                         {this.renderCellValue(item, columns[0])}
                     </span>
-                </FirstItemCell>
+                </td>
                 {columns.slice(1).map(x => this.renderCell(item, x))}
-            </ItemRow>,
+            </tr>,
             ...(this.isItemExpanded(item)
                 ? (itemChildren || []).map(x => this.renderItem(x, [...parents, item])).reduce(flatten, [])
                 : []),
@@ -154,18 +164,18 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         const { columns } = this.props;
 
         return (
-            <ScrollContainer>
-                <Table>
+            <div className={cn("scroll-container")}>
+                <table className={cn("table")}>
                     <thead>
-                        <HeadRow>
+                        <tr className={cn("head-row")}>
                             {columns.map(x => this.renderHeaderCell(x))}
-                        </HeadRow>
+                        </tr>
                     </thead>
                     <tbody>
                         {data.map(x => this.renderItem(x, []))}
                     </tbody>
-                </Table>
-            </ScrollContainer>
+                </table>
+            </div>
         );
     }
 }
@@ -173,69 +183,3 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
 function flatten<T>(memo: Array<T>, item: Array<T>): Array<T> {
     return [...memo, ...item];
 }
-
-const ScrollContainer = glamorous.div({
-    position: "absolute",
-    overflowY: "scroll",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-});
-
-const ParentLine = glamorous.div(
-    {
-        display: "inline-block",
-        marginLeft: 10,
-        width: 1,
-        height: 30,
-        marginRight: 9,
-        padding: 0,
-        backgroundColor: "#000",
-    },
-    ({ color }) => ({
-        backgroundColor: color,
-    })
-);
-
-const Table = glamorous.table({
-    width: "100%",
-    border: 0,
-    borderCollapse: "collapse",
-});
-
-const ItemRow = glamorous.tr({});
-
-const HeadRow = glamorous.tr({
-    borderBottom: "1px solid #ddd",
-    " th": {
-        borderRight: "1px solid #ddd",
-    },
-});
-
-const FirstItemCell = glamorous.td({
-    lineHeight: "30px",
-    verticalAlign: "baseline",
-    height: 30,
-    padding: 0,
-    margin: 0,
-    paddingRight: "10px",
-});
-
-const ItemCell = glamorous.td(
-    {
-        position: "relative",
-        borderLeft: "1px solid #ddd",
-        borderRight: "1px solid #ddd",
-        lineHeight: "30px",
-        verticalAlign: "baseline",
-        height: 30,
-        padding: "0 10px",
-        margin: 0,
-    },
-    ({ width, align }) => ({
-        width: width,
-        maxWidth: width,
-        textAlign: align,
-    })
-);
