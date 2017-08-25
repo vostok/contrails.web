@@ -1,5 +1,6 @@
 [ignore]
 .*/fbjs/.*
+.*/radium/.*
 .*/flux/.*
 .*/retail-ui/lib/.*
 .*/retail-ui/docs/.*
