@@ -54,8 +54,25 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
+    "flow": "flow",
     "flow.check": "flow check",
+    "flow.coverage-report": "flow-coverage-report -t html",
+    "travis:flow.coverage-report": "flow-coverage-report -t text",
     "lint": "eslint src stories",
     "test": "cross-env NODE_ENV=mocha mocha"
+  },
+  "flow-coverage-report": {
+    "includeGlob": [
+      "src/**/*.js",
+      "src/**/*.jsx",
+      "stories/**/*.js",
+      "stories/**/*.jsx",
+      "test/**/*.js"
+    ],
+    "excludeGlob": [
+      "src/Domain/Responses/index.js",
+      "src/commons/ApiInjection.js",
+      "src/commons/ApplicationError.js"
+    ]
   }
 }

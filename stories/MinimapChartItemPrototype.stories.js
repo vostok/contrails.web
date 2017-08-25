@@ -3,12 +3,6 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import glamorous from "glamorous";
 
-import ServiceIcon from "../src/components/Icons/service.svg";
-import CassandraIcon from "../src/components/Icons/cassandra.svg";
-import DatabaseIcon from "../src/components/Icons/db.svg";
-
-import { Icon } from "ui";
-
 const itemColors = [
     {
         text: "white",
@@ -65,21 +59,6 @@ const Item = glamorous.div(({ width, colorIndex }) => ({
     overflow: "hidden",
     textOverflow: "ellipsis",
     zIndex: 1,
-}));
-
-const Text = glamorous.div({
-    cursor: "default",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-});
-
-const SvgIcon = glamorous.span(({ path }) => ({
-    display: "inline-block",
-    position: "relative",
-    top: 2,
-    width: 14,
-    height: 14,
-    background: `url(${path})`,
 }));
 
 storiesOf("MinimapChartItemPrototype", module).add("Default", () =>

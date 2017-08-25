@@ -1,7 +1,7 @@
 // @flow
 import { getDefaultTimeIntervalAsString, millisecondsToString } from "./TimeUtils";
 
-type TimeMarker = {
+export type TimeMarker = {
     title: string,
     value: number,
 };

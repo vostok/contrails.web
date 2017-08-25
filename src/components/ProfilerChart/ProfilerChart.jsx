@@ -2,6 +2,7 @@
 import * as React from "react";
 
 import generateTimeMarkers from "../../Domain/TimeMarkers";
+import type { TimeMarker } from "../../Domain/TimeMarkers";
 
 import cn from "./ProfilerChart.less";
 
@@ -37,7 +38,7 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
     to: number,
     xScale: number,
 
-    onItemClick?: (event: SyntheticMouseEvent<HTMLCanvasElement>, item: TItem, lineIndex: number) => void,
+    onItemClick?: (item: TItem, lineIndex: number) => void,
     selectedItems?: TItem[],
     onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, itemDrawContext: ItemDrawContext) => void,
     onCustomDrawItemContent?: (context: CanvasRenderingContext2D, item: TItem) => void,
@@ -174,7 +175,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         if (onItemClick != null) {
             const itemAtCursor = this.getItemAtCursor(event);
             if (itemAtCursor != null) {
-                onItemClick(event, itemAtCursor.item, itemAtCursor.lineIndex);
+                onItemClick(itemAtCursor.item, itemAtCursor.lineIndex);
             }
         }
     };
@@ -279,12 +280,12 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     }
 
-    generateTimeMarkers(): any {
+    generateTimeMarkers(): TimeMarker[] {
         const { to, from, xScale } = this.props;
         return generateTimeMarkers(0, to - from, 100 / xScale).map(x => ({ ...x, value: x.value + from }));
     }
 
-    renderTimeMarkers(): React.Element<*> {
+    renderTimeMarkers(): React.Node {
         const timeMarkers = this.generateTimeMarkers();
         return (
             <div className={cn("time-markers-container")}>
@@ -302,7 +303,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         );
     }
 
-    render(): React.Element<*> {
+    render(): React.Node {
         const { to, from, data } = this.props;
         return (
             <div style={{ position: "relative", zIndex: 0 }}>

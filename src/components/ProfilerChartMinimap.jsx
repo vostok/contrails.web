@@ -6,6 +6,9 @@ import Draggable from "react-draggable";
 import type { DraggableData } from "react-draggable";
 
 import generateTimeMarkers from "../Domain/TimeMarkers";
+import type { TimeMarker } from "../Domain/TimeMarkers";
+
+import cn from "./ProfilerChartMinimap.less";
 
 type ChartMinimapItem = {
     from: number,
@@ -175,7 +178,7 @@ export default class ProfilerChartMinimap extends React.Component<
         return (value - from) * width / (to - from);
     }
 
-    generateTimeMarkers(): any {
+    generateTimeMarkers(): TimeMarker[] {
         const { width } = this.state;
         const { to, from } = this.props;
         if (width == null) {
@@ -185,16 +188,19 @@ export default class ProfilerChartMinimap extends React.Component<
         return generateTimeMarkers(0, to - from, 100 / scale).map(x => ({ ...x, value: x.value + from }));
     }
 
-    renderTimeMarkers(): React.Element<*> {
+    renderTimeMarkers(): React.Node {
         const timeMarkers = this.generateTimeMarkers();
         return (
             <TimeMarkersContainer>
                 {timeMarkers.map(timeMarker =>
-                    <TimeMarker key={timeMarker.value} style={{ left: this.toAbsoluteX(timeMarker.value) }}>
+                    <div
+                        className={cn("time-marker")}
+                        key={timeMarker.value}
+                        style={{ left: this.toAbsoluteX(timeMarker.value) }}>
                         <TimeMarkerTitle>
                             {timeMarker.title}
                         </TimeMarkerTitle>
-                    </TimeMarker>
+                    </div>
                 )}
             </TimeMarkersContainer>
         );
@@ -362,13 +368,4 @@ const TimeMarkerTitle = glamorous.div({
     color: "#A0A0A0",
     fontSize: "10px",
     lineHeight: "10px",
-});
-
-const TimeMarker = glamorous.div({
-    zIndex: 1,
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    width: 1,
-    backgroundColor: "rgba(0,0,0,0.08)",
 });

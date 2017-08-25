@@ -2,8 +2,11 @@
 import * as React from "react";
 import _ from "lodash";
 import glamorous from "glamorous";
-
 import { Icon } from "ui";
+
+import SpanNodeUtils from "../Domain/TraceTree/SpanNode";
+
+import cn from "./TreeGrid.less";
 
 type ColumnDefintion<TItem> = {
     renderHeader: () => React.Node,
@@ -27,6 +30,14 @@ type TreeGridState<TItem> = {
     expandedItems: Array<TItem>,
 };
 
+function reduceTree<TNode, TResult>(
+    root: TNode,
+    reducer: (childResults: Array<TResult>, node: TNode) => TResult,
+    childrenGetter: TNode => ?Array<TNode>
+): TResult {
+    return reducer((childrenGetter(root) || []).map(child => reduceTree(child, reducer, childrenGetter)), root);
+}
+
 export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
     props: TreeGridProps<TItem>;
     state: TreeGridState<TItem> = {
@@ -48,6 +59,44 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                 {column.renderValue(item)}
             </ItemCell>
         );
+    }
+
+    componentWillReceiveProps(nextProps: TreeGridProps<TItem>) {
+        if (this.props.focusedItem !== nextProps.focusedItem) {
+            if (nextProps.focusedItem != null) {
+                this.updateFocusedItem(nextProps.focusedItem);
+            }
+        }
+    }
+
+    updateFocusedItem(item: TItem) {
+        const nodes = this.findNodeTo(item);
+        this.setState(({ expandedItems }) => ({
+            expandedItems: _.union(expandedItems || [], nodes),
+        }));
+    }
+
+    findNodeTo(item: TItem): TItem[] {
+        const { data, onGetChildren } = this.props;
+        return data
+            .map(x =>
+                reduceTree(
+                    x,
+                    (result, node) => {
+                        if (node === item) {
+                            return [node];
+                        }
+                        console.log(result)
+                        const results = result.reduce((a, b) => [...a, ...b], []);
+                        if (results.length > 0) {
+                            return [...results, node];
+                        }
+                        return ([]: Array<TItem>);
+                    },
+                    onGetChildren
+                )
+            )
+            .reduce((x, y) => [...x, ...y], []);
     }
 
     renderCellValue(item: TItem, column: ColumnDefintion<TItem>): React.Node {
@@ -95,15 +144,16 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                 <FirstItemCell>
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
-                        <ExpandButton
-                            onClick={e => {
-                                this.handleToggleItemExpand(item);
+                        <button
+                            className={cn("expand-button")}
+                            onClick={(e: SyntheticEvent<HTMLButtonElement>) => {
                                 e.stopPropagation();
+                                this.handleToggleItemExpand(item);
                             }}>
                             {itemChildren != null &&
                                 itemChildren.length > 0 &&
                                 <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />}
-                        </ExpandButton>
+                        </button>
                         {this.renderCellValue(item, columns[0])}
                     </span>
                 </FirstItemCell>
@@ -171,13 +221,6 @@ const ParentLine = glamorous.div(
         backgroundColor: color,
     })
 );
-
-const ExpandButton = glamorous.button({
-    width: 20,
-    border: 0,
-    padding: 0,
-    background: "transparent",
-});
 
 const Table = glamorous.table({
     width: "100%",

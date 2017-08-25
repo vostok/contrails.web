@@ -9,6 +9,7 @@ import TreeGrid from "./TreeGrid";
 
 type TraceTreeGridProps = {
     traceTree: SpanNode,
+    focusedItem?: ?SpanNode,
     onItemClick?: (spanNode: SpanNode) => void,
 };
 
@@ -63,9 +64,10 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     render(): React.Node {
-        const { traceTree, onItemClick } = this.props;
+        const { traceTree, onItemClick, focusedItem } = this.props;
         return (
             <TreeGrid
+                focusedItem={focusedItem}
                 columns={[
                     {
                         name: "service",

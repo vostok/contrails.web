@@ -6,7 +6,7 @@ import glamurous from "glamorous";
 import type { TraceInfo } from "../Domain/TraceInfo";
 import type { SpanNode } from "../Domain/TraceTree/SpanNode";
 import SpansToLinesArranger from "../Domain/SpanLines/SpansToLinesArranger";
-import type { SpanLines } from "../Domain/SpanLines/SpansToLinesArranger";
+import type { SpanLines, SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../Domain/ItemDrawer";
 import TraceTreeBuilder from "../Domain/TraceTree/TraceTreeBuilder";
 
@@ -52,7 +52,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         const traceTree = new TraceTreeBuilder().buildTraceTree(props.traceInfo.Spans);
         this.state = {
             focusedSpanNode: null,
-            traceTree: new TraceTreeBuilder().buildTraceTree(props.traceInfo.Spans),
+            traceTree: traceTree,
             spanLines: this.generateDataFromDiTraceResponse(traceTree),
         };
     }
@@ -75,6 +75,11 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         this.setState({ focusedSpanNode: spanNode });
     };
 
+    handleChartItemClick = (spanLineItem: SpanLineItem) => {
+        console.log(spanLineItem.source);
+        this.setState({ focusedSpanNode: spanLineItem.source });
+    };
+
     render(): React.Node {
         const { traceInfo } = this.props;
         const { traceTree, focusedSpanNode, spanLines } = this.state;
@@ -82,6 +87,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
             <ContrailPanelsContainer>
                 <ContrailPanelsTop>
                     <ProfilerChartWithMinimap
+                        onItemClick={this.handleChartItemClick}
                         onCustomDrawItem={handleCustomDrawItem}
                         {...this.getFromAndTo(traceInfo)}
                         data={spanLines}
@@ -89,7 +95,11 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                 </ContrailPanelsTop>
                 <ContrailPanelsBottom>
                     <ContrailPanelsBottomLeft>
-                        <TraceTreeGrid traceTree={traceTree} onItemClick={this.handleItemClick} />{" "}
+                        <TraceTreeGrid
+                            focusedItem={focusedSpanNode}
+                            traceTree={traceTree}
+                            onItemClick={this.handleItemClick}
+                        />{" "}
                     </ContrailPanelsBottomLeft>
                     <ContrailPanelsBottomRight>
                         <SpanInfoViewContainer>

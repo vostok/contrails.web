@@ -45,9 +45,7 @@ export function createApiProvider(propsToContextNames: string[]) {
 
         render(): React.Element<*> {
             const { children } = this.props;
-            return (
-                React.Children.only(children)
-            );
+            return React.Children.only(children);
         }
     };
 }

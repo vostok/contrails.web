@@ -12,6 +12,7 @@ type ProfilerChartWithMinimapProps<TItem> = {
     data: ProfilerData<TItem>,
     from: number,
     to: number,
+    onItemClick?: TItem => void,
     onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, options: ItemDrawContext) => void,
 };
 
@@ -115,7 +116,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     }
 
     render(): React.Element<*> {
-        const { data, from, to } = this.props;
+        const { data, from, to, onItemClick } = this.props;
         const { width, xScale, viewPortFrom } = this.state;
         return (
             <Container ref={x => (this.container = x)}>
@@ -165,6 +166,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                     to={to}
                                     xScale={xScale}
                                     data={data}
+                                    onItemClick={onItemClick}
                                     onCustomDrawItem={this.props.onCustomDrawItem}
                                 />
                             </ProfilerChartContainer>
