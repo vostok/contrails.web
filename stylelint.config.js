@@ -18,15 +18,17 @@ module.exports = {
 
         // Checks the use variable on declaration
         // https://github.com/sh-waqar/stylelint-declaration-use-variable#usage
-        'scale-unlimited/declaration-strict-value': [
-            ['color', 'background-color'],
-            {
-                ignoreKeywords: {
-                    "color": ["inherit"],
-                    "background-color": ["transparent", "inherit"],
-                },
-            },
-        ],
+
+        // TODO включить!
+        // 'scale-unlimited/declaration-strict-value': [
+        //     ['color', 'background-color'],
+        //     {
+        //         ignoreKeywords: {
+        //             "color": ["inherit"],
+        //             "background-color": ["transparent", "inherit"],
+        //         },
+        //     },
+        // ],
 
 
         // =================

@@ -1,8 +1,50 @@
 @import './mixins.less';
 @import './variables.less';
+
 :global {
-    // @font-face тут для мака
-    // stylelint-disable no-unsupported-browser-features
+    body, html {
+        font-family: @base-font-family;
+        font-size: @base-font-size;
+        line-height: @base-line-height;
+    }
+
+    h1 {
+        font-weight: 300;
+        font-size: 42px;
+        line-height: 50px;
+    }
+
+    h2 {
+        font-weight: 300;
+        font-size: 29px;
+        line-height: 40px;
+    }
+
+    h3 {
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    h4 {
+        font-size: 18px;
+        line-height: 25px;
+        font-weight: 400;
+    }
+
+    a {
+        color: @link-color;
+        text-decoration: none;
+
+        &:hover, &:focus {
+            text-decoration: none;
+        }
+    }
+
+    b {
+        font-weight: bold;
+    }
+    // @font-face тут для мака 
+    // stylelint-disable no-unsupported-browser-features 
     @font-face {
         font-family: 'Segoe UI';
         font-weight: 200;
@@ -45,47 +87,5 @@
         font-style: italic;
         font-weight: 700;
         src: local('Segoe UI Bold Italic');
-    }
-
-    body, html {
-        font-family: @base-font-family;
-        font-size: @base-font-size;
-        line-height: @base-line-height;
-    }
-
-    h1 {
-        font-weight: 300;
-        font-size: 42px;
-        line-height: 50px;
-    }
-
-    h2 {
-        font-weight: 300;
-        font-size: 29px;
-        line-height: 40px;
-    }
-
-    h3 {
-        font-size: 24px;
-        line-height: 30px;
-    }
-
-    h4 {
-        font-size: 18px;
-        line-height: 25px;
-        font-weight: 400;
-    }
-
-    a {
-        color: @link-color;
-        text-decoration: none;
-
-        &:hover, &:focus {
-            text-decoration: none;
-        }
-    }
-
-    b {
-        font-weight: bold;
     }
 }
