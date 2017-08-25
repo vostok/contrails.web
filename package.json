@@ -45,7 +45,10 @@
     "react-router-dom": "^4.1.2",
     "retail-ui": "^0.8.6",
     "style-loader": "^0.18.2",
-    "stylelint": "^8.0.0",
+    "stylelint": "7.x",
+    "stylelint-declaration-strict-value": "^1.0.4",
+    "stylelint-declaration-use-variable": "^1.6.0",
+    "stylelint-order": "^0.6.0",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1",
     "webpack-node-externals": "^1.6.0"
@@ -61,6 +64,7 @@
     "flow.coverage-report": "flow-coverage-report -t html",
     "travis:flow.coverage-report": "flow-coverage-report -t text --threshold 100",
     "lint": "eslint src stories",
+    "stylelint": "stylelint src/**/*.less stories/**/*.less --syntax less",
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js"
   },
   "flow-coverage-report": {
