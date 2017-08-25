@@ -1,1 +1,3 @@
---require babel-register
+--include babel-polyfill
+--webpack-config webpack.test-config.js
+--timeout 10000

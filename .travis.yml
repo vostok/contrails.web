@@ -6,3 +6,4 @@ script:
 - npm run lint
 - npm run travis:flow.check-coverage
 - npm run flow.check
+- npm run test

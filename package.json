@@ -32,6 +32,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "mocha": "^3.5.0",
+    "mocha-webpack": "^0.7.0",
     "moment": "^2.18.1",
     "prettier": "^1.5.3",
     "prop-types": "^15.5.10",
@@ -59,7 +60,7 @@
     "flow.coverage-report": "flow-coverage-report -t html",
     "travis:flow.coverage-report": "flow-coverage-report -t text",
     "lint": "eslint src stories",
-    "test": "cross-env NODE_ENV=mocha mocha"
+    "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js"
   },
   "flow-coverage-report": {
     "includeGlob": [
