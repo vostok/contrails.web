@@ -40,6 +40,7 @@ module.exports = {
                 rules: [
                     {
                         use: [
+                            "classnames-loader",
                             "style-loader",
                             {
                                 loader: "css-loader",

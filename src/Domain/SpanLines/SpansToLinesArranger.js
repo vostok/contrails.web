@@ -1,58 +1,59 @@
 // @flow
-import moment from "moment";
-
-import type { SpanInfo } from "../SpanInfo";
+import type { SpanNode } from "../TraceTree/SpanNode";
 
 export type SpanLineItem = {
     from: number,
     to: number,
-    source: SpanInfo,
+    source: SpanNode,
 };
 
 export type SpanLines = Array<{ items: Array<SpanLineItem> }>;
 
 export default class SpansToLinesArranger {
-    arrange(spans: SpanInfo[]): SpanLines {
+    arrange(rootNode: SpanNode): SpanLines {
         const result: SpanLines = [];
         return this.treeTraverse(
-            spans,
+            rootNode,
             (result, { node }, depth) => {
                 result[depth] = result[depth] || { items: [] };
                 result[depth].items.push({
                     source: node,
-                    from: moment(node.BeginTimestamp).valueOf(),
-                    to: moment(node.EndTimestamp).valueOf(),
+                    from: node.from,
+                    to: node.to,
                 });
                 return result;
             },
-            result
+            result,
+            x => x.children
         );
-    }
-
-    treeTraverse<T>(spans: SpanInfo[], visitor: (T, { node: SpanInfo, parent: ?SpanInfo }, number) => T, init: T): T {
-        const root = spans.find(x => x.ParentSpanId == null);
-        if (root == null) {
-            return init;
-        }
-        return this.treeTraverseInternal(root, spans, visitor, init, 0);
     }
 
     // eslint-disable-next-line max-params
-    treeTraverseInternal<T>(
-        root: SpanInfo,
-        spans: SpanInfo[],
-        visitor: (T, { node: SpanInfo, parent: ?SpanInfo }, number) => T,
+    treeTraverse<T, TNode>(
+        root: TNode,
+        visitor: (T, { node: TNode, parent: ?TNode }, number) => T,
         init: T,
-        currentDepth: number
+        childrenGetter: TNode => Array<TNode>
     ): T {
-        let result = visitor(
-            init,
-            { node: root, parent: spans.find(x => x.SpanId === root.ParentSpanId) },
-            currentDepth
-        );
-        const children = spans.filter(x => x.ParentSpanId === root.SpanId);
+        if (root == null) {
+            return init;
+        }
+        return this.treeTraverseInternal(null, root, visitor, init, 0, childrenGetter);
+    }
+
+    // eslint-disable-next-line max-params
+    treeTraverseInternal<T, TNode>(
+        parent: ?TNode,
+        root: TNode,
+        visitor: (T, { node: TNode, parent: ?TNode }, number) => T,
+        init: T,
+        currentDepth: number,
+        childrenGetter: TNode => Array<TNode>
+    ): T {
+        let result = visitor(init, { node: root, parent: parent }, currentDepth);
+        const children = childrenGetter(root);
         for (const child of children) {
-            result = this.treeTraverseInternal(child, spans, visitor, result, currentDepth + 1);
+            result = this.treeTraverseInternal(root, child, visitor, result, currentDepth + 1, childrenGetter);
         }
         return result;
     }

@@ -2,6 +2,7 @@
 import moment from "moment";
 import { expect } from "chai";
 
+import TraceTreeBuilder from "../src/Domain/TraceTree/TraceTreeBuilder";
 import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
 
 describe("SpansToLinesArranger.arrange", () => {
@@ -26,8 +27,8 @@ describe("SpansToLinesArranger.arrange", () => {
                 Annotations: null,
             },
         ];
-        const spansByLines = arranger.arrange(spans);
-        expect(spansByLines[0].items[0].source.SpanId).to.eql(spans[0].SpanId);
-        expect(spansByLines[1].items[0].source.SpanId).to.eql(spans[1].SpanId);
+        const spansByLines = arranger.arrange(new TraceTreeBuilder().buildTraceTree(spans));
+        expect(spansByLines[0].items[0].source.source.SpanId).to.eql(spans[0].SpanId);
+        expect(spansByLines[1].items[0].source.source.SpanId).to.eql(spans[1].SpanId);
     });
 });

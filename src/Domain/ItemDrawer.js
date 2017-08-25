@@ -67,7 +67,7 @@ export default function handleCustomDrawItem(
             context.fillText(
                 fittingString(
                     context,
-                    (item.source.Annotations && item.source.Annotations.OriginId) || "",
+                    (item.source.source.Annotations && item.source.source.Annotations.OriginId) || "",
                     width - (8 + 18)
                 ),
                 8 + 18,
@@ -79,7 +79,7 @@ export default function handleCustomDrawItem(
             context.fillText(
                 fittingString(
                     context,
-                    (item.source.Annotations && item.source.Annotations.OriginHost) || "",
+                    (item.source.source.Annotations && item.source.source.Annotations.OriginHost) || "",
                     width - 8
                 ),
                 8,

@@ -8,6 +8,7 @@ import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap
 import type { TraceInfo } from "../src/Domain/TraceInfo";
 import Response62f8278dab21471c8370fa47d4f52f72 from "../src/Domain/Responses/62f8278dab21471c8370fa47d4f52f72.json";
 import Response37fa1a7edcc34ca28204fc50e6681e70 from "../src/Domain/Responses/37fa1a7edcc34ca28204fc50e6681e70.json";
+import TraceTreeBuilder from "../src/Domain/TraceTree/TraceTreeBuilder";
 import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines } from "../src/Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../src/Domain/ItemDrawer";
@@ -41,7 +42,7 @@ function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
 function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: SpanLines } {
     const arranger = new SpansToLinesArranger();
     const spans = response[0].Spans;
-    return { lines: arranger.arrange(spans) };
+    return { lines: arranger.arrange(new TraceTreeBuilder().buildTraceTree(spans)) };
 }
 
 storiesOf("ProfilerChartWithMinimap", module)

@@ -24,6 +24,7 @@
     "eslint-config-skbkontur-retail": "^3.0.2",
     "eslint-import-resolver-webpack": "^0.8.3",
     "flow-bin": "^0.53.1",
+    "flow-coverage-report": "^0.3.0",
     "glamor": "^2.20.37",
     "glamorous": "^3.25.0",
     "html-webpack-plugin": "^2.30.1",
