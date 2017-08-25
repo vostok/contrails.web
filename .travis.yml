@@ -2,10 +2,10 @@ language: node_js
 node_js:
 - '6'
 dist: precise
-install: npm install
+install: yarn install
 script:
-- npm run lint
-- npm run stylelint
-- npm run travis:flow.coverage-report
-- npm run flow.check
-- npm run test
+- yarn run lint
+- yarn run stylelint
+- yarn run travis:flow.coverage-report
+- yarn run flow.check
+- yarn test
