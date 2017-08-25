@@ -59,7 +59,7 @@
     "flow": "flow",
     "flow.check": "flow check",
     "flow.coverage-report": "flow-coverage-report -t html",
-    "travis:flow.coverage-report": "flow-coverage-report -t text",
+    "travis:flow.coverage-report": "flow-coverage-report -t text --threshold 100",
     "lint": "eslint src stories",
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js"
   },
