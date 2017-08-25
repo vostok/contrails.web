@@ -76,9 +76,23 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
     };
 
     handleChartItemClick = (spanLineItem: SpanLineItem) => {
-        console.log(spanLineItem.source);
         this.setState({ focusedSpanNode: spanLineItem.source });
     };
+
+    getSelectedSpanLineItem(): Array<SpanLineItem> {
+        const { focusedSpanNode, spanLines } = this.state;
+        if (focusedSpanNode == null) {
+            return [];
+        }
+        for (const line of spanLines.lines) {
+            for (const item of line.items) {
+                if (item.source === focusedSpanNode) {
+                    return [item];
+                }
+            }
+        }
+        return [];
+    }
 
     render(): React.Node {
         const { traceInfo } = this.props;
@@ -87,6 +101,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
             <ContrailPanelsContainer>
                 <ContrailPanelsTop>
                     <ProfilerChartWithMinimap
+                        selectedItems={this.getSelectedSpanLineItem()}
                         onItemClick={this.handleChartItemClick}
                         onCustomDrawItem={handleCustomDrawItem}
                         {...this.getFromAndTo(traceInfo)}
