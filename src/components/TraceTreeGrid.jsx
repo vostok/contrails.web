@@ -1,14 +1,14 @@
 // @flow
 import * as React from "react";
 
-import type { SpanNode, TraceTree } from "../Domain/TraceTree";
+import type { SpanNode } from "../Domain/TraceTree/SpanNode";
 import Colors from "../Domain/Colors";
 import { millisecondsToString } from "../Domain/TimeUtils";
 
 import TreeGrid from "./TreeGrid";
 
 type TraceTreeGridProps = {
-    traceTree: TraceTree,
+    traceTree: SpanNode,
     onItemClick?: (spanNode: SpanNode) => void,
 };
 

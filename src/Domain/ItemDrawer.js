@@ -1,7 +1,7 @@
 // @flow
 import DatabaseIcon from "../components/Icons/db.png";
 
-import type { SpanLineItem } from "./SpansToLinesArranger";
+import type { SpanLineItem } from "./SpanLines/SpansToLinesArranger";
 import itemColors from "./Colors";
 
 const DatabaseImage = new Image(14, 14);

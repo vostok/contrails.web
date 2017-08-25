@@ -1,7 +1,7 @@
 // @flow
 import moment from "moment";
 
-import type { SpanInfo } from "./SpanInfo";
+import type { SpanInfo } from "../SpanInfo";
 
 export type SpanLineItem = {
     from: number,

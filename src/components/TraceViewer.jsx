@@ -4,11 +4,11 @@ import moment from "moment";
 import glamurous from "glamorous";
 
 import type { TraceInfo } from "../Domain/TraceInfo";
-import type { TraceTree, SpanNode } from "../Domain/TraceTree";
-import SpansToLinesArranger from "../Domain/SpansToLinesArranger";
-import type { SpanLines } from "../Domain/SpansToLinesArranger";
+import type { SpanNode } from "../Domain/TraceTree/SpanNode";
+import SpansToLinesArranger from "../Domain/SpanLines/SpansToLinesArranger";
+import type { SpanLines } from "../Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../Domain/ItemDrawer";
-import { buildTraceTree } from "../Domain/TraceTree";
+import TraceTreeBuilder from "../Domain/TraceTree/TraceTreeBuilder";
 
 import {
     ContrailPanelsContainer,
@@ -31,7 +31,7 @@ type TraceViewerProps = {
 
 type TraceViewerState = {
     focusedSpanNode: ?SpanNode,
-    traceTree: TraceTree,
+    traceTree: SpanNode,
     spanLines: ChartData,
 };
 
@@ -51,7 +51,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         super(props);
         this.state = {
             focusedSpanNode: null,
-            traceTree: buildTraceTree(props.traceInfo.Spans),
+            traceTree: new TraceTreeBuilder().buildTraceTree(props.traceInfo.Spans),
             spanLines: this.generateDataFromDiTraceResponse(props.traceInfo),
         };
     }

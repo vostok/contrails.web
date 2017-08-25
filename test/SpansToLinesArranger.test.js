@@ -2,7 +2,7 @@
 import moment from "moment";
 import { expect } from "chai";
 
-import SpansToLinesArranger from "../src/Domain/SpansToLinesArranger";
+import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
 
 describe("SpansToLinesArranger.arrange", () => {
     it("должен располагать элементы друг под другом", () => {

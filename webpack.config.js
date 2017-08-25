@@ -39,7 +39,17 @@ module.exports = {
                 exclude: /node_modules/,
                 rules: [
                     {
-                        use: ["style-loader", "css-loader", "less-loader"],
+                        use: [
+                            "style-loader",
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    modules: true,
+                                    localIdentName: "[name]-[local]--[hash:base64:3]",
+                                },
+                            },
+                            "less-loader",
+                        ],
                     },
                 ],
             },
@@ -58,16 +68,13 @@ module.exports = {
                 rules: [
                     {
                         use: [
-                            "classnames-loader",
                             "style-loader",
                             {
                                 loader: "css-loader",
                                 options: {
-                                    modules: true,
                                     localIdentName: "[name]-[local]--[hash:base64:3]",
                                 },
                             },
-                            "less-loader",
                         ],
                     },
                 ],

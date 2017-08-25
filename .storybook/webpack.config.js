@@ -57,5 +57,6 @@ module.exports = function(storybookBaseConfig, configType) {
     ]);
     storybookBaseConfig.resolve.alias = storybookBaseConfig.resolve.alias || {};
     storybookBaseConfig.resolve.alias.ui = path.join(__dirname, "../src/commons/ui");
+    storybookBaseConfig.resolve.alias.commons = path.join(__dirname, "../src/commons");
     return storybookBaseConfig;
 };
