@@ -2,7 +2,7 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 
-import TreeGrid from "../src/components/TreeGrid";
+import TreeGrid from "../src/components/TreeGrid/TreeGrid";
 
 const item1 = {
     value1: "value 1",

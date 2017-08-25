@@ -4,6 +4,9 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+const createRules = require("./build/rules.js");
+const { extensions, createAliases } = require("./build/resolve.js");
+
 //const NODE_ENV = process.env.NODE_ENV;
 
 module.exports = {
@@ -21,83 +24,11 @@ module.exports = {
         filename: "[name].js",
     },
     module: {
-        rules: [
-            {
-                test: /\.jsx?$/,
-                use: [
-                    {
-                        loader: "babel-loader",
-                        options: {
-                            cacheDirectory: true,
-                        },
-                    },
-                ],
-                exclude: /node_modules/,
-            },
-            {
-                test: /\.less$/,
-                exclude: /node_modules/,
-                rules: [
-                    {
-                        use: [
-                            "classnames-loader",
-                            "style-loader",
-                            {
-                                loader: "css-loader",
-                                options: {
-                                    modules: true,
-                                    localIdentName: "[name]-[local]--[hash:base64:3]",
-                                },
-                            },
-                            "less-loader",
-                        ],
-                    },
-                ],
-            },
-            {
-                test: /\.json$/,
-                exclude: /node_modules/,
-                rules: [
-                    {
-                        use: ["json-loader"],
-                    },
-                ],
-            },
-            {
-                test: /\.css$/,
-                include: /react-ui/,
-                rules: [
-                    {
-                        use: [
-                            "style-loader",
-                            {
-                                loader: "css-loader",
-                                options: {
-                                    localIdentName: "[name]-[local]--[hash:base64:3]",
-                                },
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                test: /\.(woff|woff2|eot|svg|ttf|gif|png)$/,
-                include: /react-ui/,
-                use: ["file-loader"],
-            },
-            {
-                test: /\.(woff|woff2|eot|svg|ttf|gif|png)$/,
-                exclude: /node_modules/,
-                use: ["file-loader"],
-            },
-        ],
+        rules: createRules(),
     },
     resolve: {
-        extensions: [".js", ".jsx"],
-        alias: {
-            ui: path.join(__dirname, "./src/commons/ui"),
-            commons: path.join(__dirname, "./src/commons"),
-        },
+        extensions: extensions,
+        alias: createAliases(),
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),

@@ -4,7 +4,7 @@ import _ from "lodash";
 import glamorous from "glamorous";
 import { Icon } from "ui";
 
-import { reduceTree, findNodeToReducer } from "../Domain/Utils/TreeTraverseUtils";
+import { reduceTree, findNodeToReducer } from "../../Domain/Utils/TreeTraverseUtils";
 
 import cn from "./TreeGrid.less";
 

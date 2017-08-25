@@ -4,3 +4,4 @@ node_modules
 npm-debug.log
 flow-coverage.json
 flow-coverage/*
+yarn-error.log

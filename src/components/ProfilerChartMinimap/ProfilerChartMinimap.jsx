@@ -5,8 +5,8 @@ import glamorous from "glamorous";
 import Draggable from "react-draggable";
 import type { DraggableData } from "react-draggable";
 
-import generateTimeMarkers from "../Domain/TimeMarkers";
-import type { TimeMarker } from "../Domain/TimeMarkers";
+import generateTimeMarkers from "../../Domain/TimeMarkers";
+import type { TimeMarker } from "../../Domain/TimeMarkers";
 
 import cn from "./ProfilerChartMinimap.less";
 

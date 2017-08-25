@@ -1,25 +1,25 @@
 // @flow
 import * as React from "react";
 import moment from "moment";
-import glamurous from "glamorous";
 
-import type { TraceInfo } from "../Domain/TraceInfo";
-import type { SpanNode } from "../Domain/TraceTree/SpanNode";
-import SpansToLinesArranger from "../Domain/SpanLines/SpansToLinesArranger";
-import type { SpanLines, SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
-import handleCustomDrawItem from "../Domain/ItemDrawer";
-import TraceTreeBuilder from "../Domain/TraceTree/TraceTreeBuilder";
-
+import type { TraceInfo } from "../../Domain/TraceInfo";
+import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
+import type { SpanLines, SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
+import handleCustomDrawItem from "../../Domain/ItemDrawer";
+import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
 import {
     ContrailPanelsContainer,
     ContrailPanelsTop,
     ContrailPanelsBottom,
     ContrailPanelsBottomLeft,
     ContrailPanelsBottomRight,
-} from "./ContrailPanels";
-import ProfilerChartWithMinimap from "./ProfilerChartWithMinimap";
-import TraceTreeGrid from "./TraceTreeGrid";
-import SpanInfoView from "./SpanInfoView";
+} from "../ContrailPanels/ContrailPanels";
+import ProfilerChartWithMinimap from "../ProfilerChartWithMinimap/ProfilerChartWithMinimap";
+import TraceTreeGrid from "../TraceTreeGrid/TraceTreeGrid";
+import SpanInfoView from "../SpanInfoView/SpanInfoView";
+
+import cn from "./TraceViewer.less";
 
 type ChartData = {
     lines: SpanLines,
@@ -117,16 +117,12 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                         />{" "}
                     </ContrailPanelsBottomLeft>
                     <ContrailPanelsBottomRight>
-                        <SpanInfoViewContainer>
+                        <div className={cn("span-info-view-container")}>
                             {focusedSpanNode && <SpanInfoView spanInfo={focusedSpanNode.source} />}
-                        </SpanInfoViewContainer>
+                        </div>
                     </ContrailPanelsBottomRight>
                 </ContrailPanelsBottom>
             </ContrailPanelsContainer>
         );
     }
 }
-
-const SpanInfoViewContainer = glamurous.div({
-    padding: 10,
-});

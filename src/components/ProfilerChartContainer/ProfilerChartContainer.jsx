@@ -1,7 +1,8 @@
 // @flow
 import * as React from "react";
 import ReactDom from "react-dom";
-import glamorous from "glamorous";
+
+import cn from "./ProfilerChartContainer.less";
 
 type ProfilerChartProps = {|
     from: number,
@@ -16,12 +17,6 @@ type ProfilerChartProps = {|
     }) => void,
     children: React.Node,
 |};
-
-const Wrapper = glamorous.div({
-    overflowX: "hidden",
-    overflowY: "auto",
-    position: "relative",
-});
 
 export default class ProfilerChartContainer extends React.Component<ProfilerChartProps> {
     props: ProfilerChartProps;
@@ -86,7 +81,8 @@ export default class ProfilerChartContainer extends React.Component<ProfilerChar
     render(): React.Node {
         const { children } = this.props;
         return (
-            <Wrapper
+            <div
+                className={cn("wrapper")}
                 ref={e => (this.container = e)}
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}
@@ -95,7 +91,7 @@ export default class ProfilerChartContainer extends React.Component<ProfilerChar
                     this.curDown = false;
                 }}>
                 {children}
-            </Wrapper>
+            </div>
         );
     }
 }

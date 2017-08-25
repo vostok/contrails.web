@@ -6,7 +6,7 @@ import Button from "@skbkontur/react-ui/Button";
 
 import ProfilerChart from "../src/components/ProfilerChart/ProfilerChart";
 import type { ProfilerData } from "../src/components/ProfilerChart/ProfilerChart";
-import ProfilerChartContainer from "../src/components/ProfilerChartContainer";
+import ProfilerChartContainer from "../src/components/ProfilerChartContainer/ProfilerChartContainer";
 
 const Border = glamorous.div({
     border: "1px solid #000",

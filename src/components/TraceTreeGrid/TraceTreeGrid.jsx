@@ -1,11 +1,10 @@
 // @flow
 import * as React from "react";
 
-import type { SpanNode } from "../Domain/TraceTree/SpanNode";
-import Colors from "../Domain/Colors";
-import { millisecondsToString } from "../Domain/TimeUtils";
-
-import TreeGrid from "./TreeGrid";
+import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import Colors from "../../Domain/Colors";
+import { millisecondsToString } from "../../Domain/TimeUtils";
+import TreeGrid from "../TreeGrid/TreeGrid";
 
 type TraceTreeGridProps = {
     traceTree: SpanNode,

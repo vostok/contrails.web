@@ -1,12 +1,13 @@
 // @flow
 import * as React from "react";
-import glamorous from "glamorous";
 import ReactDom from "react-dom";
 
-import ProfilerChart from "./ProfilerChart/ProfilerChart";
-import type { ProfilerData, ProfilerItem, ItemDrawContext } from "./ProfilerChart/ProfilerChart";
-import ProfilerChartContainer from "./ProfilerChartContainer";
-import ProfilerChartMinimap from "./ProfilerChartMinimap";
+import ProfilerChart from "../ProfilerChart/ProfilerChart";
+import type { ProfilerData, ProfilerItem, ItemDrawContext } from "../ProfilerChart/ProfilerChart";
+import ProfilerChartContainer from "../ProfilerChartContainer/ProfilerChartContainer";
+import ProfilerChartMinimap from "../ProfilerChartMinimap/ProfilerChartMinimap";
+
+import cn from "./ProfilerChartWithMinimap.less";
 
 type ProfilerChartWithMinimapProps<TItem> = {
     data: ProfilerData<TItem>,
@@ -120,11 +121,11 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         const { data, from, to, onItemClick, selectedItems } = this.props;
         const { width, xScale, viewPortFrom } = this.state;
         return (
-            <Container ref={x => (this.container = x)}>
+            <div className={cn("container")} ref={x => (this.container = x)}>
                 {width != null &&
                     viewPortFrom != null &&
                     xScale != null &&
-                    <MinimapContainer>
+                    <div className={cn("minimap-container")}>
                         <ProfilerChartMinimap
                             data={{
                                 lines: data.lines.map(line => ({
@@ -143,11 +144,11 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                     xScale: width / (x.to - x.from),
                                 })}
                         />
-                    </MinimapContainer>}
+                    </div>}
                 {width != null &&
                     viewPortFrom != null &&
                     xScale != null &&
-                    <ChartContainer onWheel={this.handleWheel}>
+                    <div className={cn("chart-container")} onWheel={this.handleWheel}>
                         <div />
                         <div>
                             <ProfilerChartContainer
@@ -173,25 +174,8 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                 />
                             </ProfilerChartContainer>
                         </div>
-                    </ChartContainer>}
-            </Container>
+                    </div>}
+            </div>
         );
     }
 }
-
-const MinimapContainer = glamorous.div({
-    borderBottom: "1px solid #eee",
-});
-
-const Container = glamorous.div({
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-    maxHeight: "100%",
-});
-
-const ChartContainer = glamorous.div({
-    flexShrink: 1,
-    flexGrow: 0,
-    overflowY: "auto",
-});

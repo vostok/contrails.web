@@ -2,7 +2,7 @@
 import * as React from "react";
 import glamurous from "glamorous";
 
-import type { SpanInfo } from "../Domain/SpanInfo";
+import type { SpanInfo } from "../../Domain/SpanInfo";
 
 type SpanInfoViewProps = {
     spanInfo: SpanInfo,

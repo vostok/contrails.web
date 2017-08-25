@@ -4,7 +4,7 @@ import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import moment from "moment";
 
-import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap";
+import ProfilerChartWithMinimap from "../src/components/ProfilerChartWithMinimap/ProfilerChartWithMinimap";
 import type { TraceInfo } from "../src/Domain/TraceInfo";
 import Response62f8278dab21471c8370fa47d4f52f72 from "../src/Domain/Responses/62f8278dab21471c8370fa47d4f52f72.json";
 import Response37fa1a7edcc34ca28204fc50e6681e70 from "../src/Domain/Responses/37fa1a7edcc34ca28204fc50e6681e70.json";

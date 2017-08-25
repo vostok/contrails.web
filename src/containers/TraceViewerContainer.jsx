@@ -1,11 +1,11 @@
 // @flow
 import * as React from "react";
 
-import ContrailsLayout from "../components/ContrailsLayout";
+import ContrailsLayout from "../components/ContrailsLayout/ContrailsLayout";
 import type { TraceInfo } from "../Domain/TraceInfo";
 import { withContrailsApi } from "../Domain/ContrailsApiInjection";
 import type { IContrailsApi } from "../Domain/IContrailsApi";
-import TraceViewer from "../components/TraceViewer";
+import TraceViewer from "../components/TraceViewer/TraceViewer";
 
 type ContrailsApplicationProps = {
     traceIdPrefix: string,

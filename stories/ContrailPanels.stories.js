@@ -8,7 +8,7 @@ import {
     ContrailPanelsBottom,
     ContrailPanelsBottomLeft,
     ContrailPanelsBottomRight,
-} from "../src/components/ContrailPanels";
+} from "../src/components/ContrailPanels/ContrailPanels";
 import "../src/styles/root.less"; // eslint-disable-line import/no-unassigned-import
 
 storiesOf("ContrailPanels", module).add("Default", () =>
