@@ -2,12 +2,11 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import glamorous from "glamorous";
+import { Icon } from "ui";
 
 import ServiceIcon from "../src/components/Icons/service.svg";
 import CassandraIcon from "../src/components/Icons/cassandra.svg";
 import DatabaseIcon from "../src/components/Icons/db.svg";
-
-import { Icon } from "ui";
 
 const itemColors = [
     {

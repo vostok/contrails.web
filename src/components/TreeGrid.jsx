@@ -4,7 +4,7 @@ import _ from "lodash";
 import glamorous from "glamorous";
 import { Icon } from "ui";
 
-import SpanNodeUtils from "../Domain/TraceTree/SpanNode";
+import { reduceTree, findNodeToReducer } from "../Domain/Utils/TreeTraverseUtils";
 
 import cn from "./TreeGrid.less";
 
@@ -29,14 +29,6 @@ type TreeGridProps<TItem> = {
 type TreeGridState<TItem> = {
     expandedItems: Array<TItem>,
 };
-
-function reduceTree<TNode, TResult>(
-    root: TNode,
-    reducer: (childResults: Array<TResult>, node: TNode) => TResult,
-    childrenGetter: TNode => ?Array<TNode>
-): TResult {
-    return reducer((childrenGetter(root) || []).map(child => reduceTree(child, reducer, childrenGetter)), root);
-}
 
 export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
     props: TreeGridProps<TItem>;
@@ -79,23 +71,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     findNodeTo(item: TItem): TItem[] {
         const { data, onGetChildren } = this.props;
         return data
-            .map(x =>
-                reduceTree(
-                    x,
-                    (result, node) => {
-                        if (node === item) {
-                            return [node];
-                        }
-                        console.log(result)
-                        const results = result.reduce((a, b) => [...a, ...b], []);
-                        if (results.length > 0) {
-                            return [...results, node];
-                        }
-                        return ([]: Array<TItem>);
-                    },
-                    onGetChildren
-                )
-            )
+            .map(rootNode => reduceTree(rootNode, findNodeToReducer(item), onGetChildren))
             .reduce((x, y) => [...x, ...y], []);
     }
 

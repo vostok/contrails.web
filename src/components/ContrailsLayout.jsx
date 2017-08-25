@@ -1,7 +1,6 @@
 // @flow
 import * as React from "react";
 import glamurous from "glamorous";
-
 import { Button, Input, Icon } from "ui";
 
 type ContrailsLayoutProps = {
