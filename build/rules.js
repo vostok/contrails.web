@@ -70,4 +70,4 @@ module.exports = function createRules() {
             use: ["file-loader"],
         },
     ];
-}
+};

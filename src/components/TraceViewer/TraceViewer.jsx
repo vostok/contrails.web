@@ -71,7 +71,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         return result;
     }
 
-    handleItemClick = (spanNode: SpanNode) => {
+    handleTreeGridChangeFocusedItems = (spanNode: SpanNode) => {
         this.setState({ focusedSpanNode: spanNode });
     };
 
@@ -113,7 +113,8 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                         <TraceTreeGrid
                             focusedItem={focusedSpanNode}
                             traceTree={traceTree}
-                            onItemClick={this.handleItemClick}
+                            onItemClick={this.handleTreeGridChangeFocusedItems}
+                            onChangeFocusedItem={this.handleTreeGridChangeFocusedItems}
                         />{" "}
                     </ContrailPanelsBottomLeft>
                     <ContrailPanelsBottomRight>

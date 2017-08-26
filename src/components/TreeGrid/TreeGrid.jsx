@@ -7,12 +7,14 @@ import { reduceTree, findNodeToReducer } from "../../Domain/Utils/TreeTraverseUt
 
 import cn from "./TreeGrid.less";
 
-type ColumnDefintion<TItem> = {
+type ColumnDefintion<TItem> = {|
+    name: string,
     renderHeader: () => React.Node,
     renderValue: TItem => React.Node,
     width?: number,
     align?: "right" | "left" | "center",
-};
+    mainCell?: boolean,
+|};
 
 type TreeGridProps<TItem> = {
     data: Array<TItem>,
@@ -23,6 +25,7 @@ type TreeGridProps<TItem> = {
     onGetItemColor?: TItem => ?string,
     onGetChildren: TItem => ?Array<TItem>,
     onChangeExpandedItems?: (Array<TItem>) => void,
+    onChangeFocusedItem?: TItem => void,
 };
 
 type TreeGridState<TItem> = {
@@ -35,6 +38,34 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         expandedItems: [],
     };
 
+    componentWillMount() {
+        if (this.props.focusedItem != null) {
+            this.expandToFocusedItem(this.props.focusedItem);
+        }
+    }
+
+    componentWillReceiveProps(nextProps: TreeGridProps<TItem>) {
+        if (this.props.focusedItem !== nextProps.focusedItem) {
+            if (nextProps.focusedItem != null) {
+                this.expandToFocusedItem(nextProps.focusedItem);
+            }
+        }
+    }
+
+    expandToFocusedItem(item: TItem) {
+        const nodes = this.findNodeTo(item);
+        this.updateExpandedItems(expandedItems => _.union(expandedItems || [], nodes));
+    }
+
+    findNodeTo(item: TItem): TItem[] {
+        const { data, onGetChildren } = this.props;
+        const result = data
+            .map(rootNode => reduceTree(rootNode, findNodeToReducer(item), onGetChildren))
+            .reduce(flatten, []);
+
+        return result.slice(1);
+    }
+
     getItemColor(item: TItem): string {
         const { onGetItemColor } = this.props;
         const defaultColor = "#000";
@@ -44,70 +75,30 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         return defaultColor;
     }
 
-    renderCell(item: TItem, column: ColumnDefintion<TItem>): React.Node {
-        return (
-            <td
-                className={cn("item-cell")}
-                style={{
-                    width: column.width,
-                    maxWidth: column.width,
-                    textAlign: column.align,
-                }}>
-                {column.renderValue(item)}
-            </td>
-        );
-    }
-
-    componentWillReceiveProps(nextProps: TreeGridProps<TItem>) {
-        if (this.props.focusedItem !== nextProps.focusedItem) {
-            if (nextProps.focusedItem != null) {
-                this.updateFocusedItem(nextProps.focusedItem);
-            }
-        }
-    }
-
-    updateFocusedItem(item: TItem) {
-        const nodes = this.findNodeTo(item);
-        this.setState(({ expandedItems }) => ({
-            expandedItems: _.union(expandedItems || [], nodes),
-        }));
-    }
-
-    findNodeTo(item: TItem): TItem[] {
-        const { data, onGetChildren } = this.props;
-        return data
-            .map(rootNode => reduceTree(rootNode, findNodeToReducer(item), onGetChildren))
-            .reduce((x, y) => [...x, ...y], []);
-    }
-
-    renderCellValue(item: TItem, column: ColumnDefintion<TItem>): React.Node {
-        return column.renderValue(item);
-    }
-
     isItemExpanded(item: TItem): boolean {
         const expandedItems = this.props.expandedItems || this.state.expandedItems;
         return expandedItems.includes(item);
     }
 
-    handleToggleItemExpand(item: TItem) {
-        let expandedItems = this.props.expandedItems || this.state.expandedItems;
-        if (expandedItems.includes(item)) {
-            expandedItems = _.difference(expandedItems, [item]);
-        } else {
-            expandedItems = _.union(expandedItems, [item]);
-        }
-
+    updateExpandedItems(updateAction: (Array<TItem>) => Array<TItem>) {
         if (this.props.expandedItems == null) {
-            this.setState({ expandedItems: expandedItems });
+            this.setState(({ expandedItems }) => ({ expandedItems: updateAction(expandedItems) }));
         } else {
-            const { onChangeExpandedItems } = this.props;
+            const { expandedItems, onChangeExpandedItems } = this.props;
             if (onChangeExpandedItems != null) {
-                onChangeExpandedItems(expandedItems);
+                onChangeExpandedItems(updateAction(expandedItems));
             }
         }
     }
 
-    renderParentBlock(item: TItem): React.Element<*> {
+    handleToggleItemExpand(item: TItem) {
+        this.updateExpandedItems(
+            expandedItems =>
+                expandedItems.includes(item) ? _.difference(expandedItems, [item]) : _.union(expandedItems, [item])
+        );
+    }
+
+    renderParentBlock(item: TItem): React.Node {
         return (
             <div className={cn("parent-line")} style={{ backgroundColor: this.getItemColor(item) }}>
                 &nbsp;
@@ -115,19 +106,56 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         );
     }
 
-    renderItem(item: TItem, parents: Array<TItem>): React.Element<*>[] {
-        const { onItemClick, onGetChildren, columns } = this.props;
+    renderItem(key: string, item: TItem, parents: Array<TItem>): React.Node[] {
+        const { onItemClick, onGetChildren, focusedItem } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = this.isItemExpanded(item);
+        const isItemFocused = focusedItem === item;
         return [
             <tr
-                className={cn("item-row")}
+                ref={e => {
+                    if (e != null && isItemFocused) {
+                        e.focus();
+                        e.scrollIntoView();
+                    }
+                }}
+                tabIndex={-1}
+                key={key}
+                className={cn("item-row", { focused: isItemFocused })}
                 onClick={() => {
                     if (onItemClick != null) {
                         onItemClick(item);
                     }
                 }}>
-                <td className={cn("first-item-cell")}>
+                {this.renderCells(item, parents)}
+            </tr>,
+            ...(expanded
+                ? (itemChildren || [])
+                      .map((x, index) => this.renderItem(`${key}_${index}`, x, [...parents, item]))
+                      .reduce(flatten, [])
+                : []),
+        ];
+    }
+
+    renderCells(item: TItem, parents: Array<TItem>): React.Node[] {
+        const { columns } = this.props;
+        return columns.map(x => this.renderCell(x, item, parents));
+    }
+
+    renderCell(column: ColumnDefintion<TItem>, item: TItem, parents: Array<TItem>): React.Node {
+        const { onGetChildren } = this.props;
+        const itemChildren = onGetChildren(item);
+        const expanded = this.isItemExpanded(item);
+        if (column.mainCell) {
+            return (
+                <td
+                    key={column.name}
+                    className={cn("item-cell", "main-cell")}
+                    style={{
+                        width: column.width,
+                        maxWidth: column.width,
+                        textAlign: column.align,
+                    }}>
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
                         <button
@@ -140,18 +168,26 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                                 itemChildren.length > 0 &&
                                 <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />}
                         </button>
-                        {this.renderCellValue(item, columns[0])}
+                        {column.renderValue(item)}
                     </span>
                 </td>
-                {columns.slice(1).map(x => this.renderCell(item, x))}
-            </tr>,
-            ...(this.isItemExpanded(item)
-                ? (itemChildren || []).map(x => this.renderItem(x, [...parents, item])).reduce(flatten, [])
-                : []),
-        ];
+            );
+        }
+        return (
+            <td
+                key={column.name}
+                className={cn("item-cell")}
+                style={{
+                    width: column.width,
+                    maxWidth: column.width,
+                    textAlign: column.align,
+                }}>
+                {column.renderValue(item)}
+            </td>
+        );
     }
 
-    renderHeaderCell(column: ColumnDefintion<TItem>): React.Element<*> {
+    renderHeaderCell(column: ColumnDefintion<TItem>): React.Node {
         return (
             <th>
                 {column.renderHeader()}
@@ -159,20 +195,83 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         );
     }
 
-    render(): React.Element<*> {
+    buildItemsFlatList(): Array<TItem> {
+        const { data, onGetChildren } = this.props;
+
+        const buildItemsFlatListFrom = (root: TItem): Array<TItem> => {
+            const result = [root];
+            if (this.isItemExpanded(root)) {
+                for (const child of onGetChildren(root) || []) {
+                    result.push(...buildItemsFlatListFrom(child));
+                }
+            }
+            return result;
+        };
+
+        return data.map(x => buildItemsFlatListFrom(x)).reduce(flatten, []);
+    }
+
+    findPreviousExpandedItem(item: TItem): ?TItem {
+        const flatList = this.buildItemsFlatList();
+        const itemIndex = flatList.indexOf(item);
+        return flatList[Math.max(itemIndex - 1, 0)];
+    }
+
+    findNextExpandedItem(item: TItem): ?TItem {
+        const flatList = this.buildItemsFlatList();
+        const itemIndex = flatList.indexOf(item);
+        return flatList[Math.min(itemIndex + 1, flatList.length - 1)];
+    }
+
+    handleTableKeyPress = (e: SyntheticKeyboardEvent<HTMLTableElement>) => {
+        const { focusedItem, onChangeFocusedItem, onGetChildren } = this.props;
+        if (onChangeFocusedItem == null) {
+            return;
+        }
+        if (focusedItem != null && e.key === "ArrowUp") {
+            const prevItem = this.findPreviousExpandedItem(focusedItem);
+            if (prevItem != null) {
+                onChangeFocusedItem(prevItem);
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if (focusedItem != null && e.key === "ArrowDown") {
+            const prevItem = this.findNextExpandedItem(focusedItem);
+            if (prevItem != null) {
+                onChangeFocusedItem(prevItem);
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if (focusedItem != null && e.key === "ArrowLeft") {
+            if (this.isItemExpanded(focusedItem))
+                this.updateExpandedItems(expandedItems => _.difference(expandedItems, [focusedItem]));
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        if (focusedItem != null && e.key === "ArrowRight") {
+            if (!this.isItemExpanded(focusedItem) && (onGetChildren(focusedItem) || []).length > 0)
+                this.updateExpandedItems(expandedItems => _.union(expandedItems, [focusedItem]));
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    };
+
+    render(): React.Node {
         const { data } = this.props;
         const { columns } = this.props;
 
         return (
-            <div className={cn("scroll-container")}>
-                <table className={cn("table")}>
+            <div className={cn("scroll-container")} tabIndex={0}>
+                <table onKeyDown={this.handleTableKeyPress} className={cn("table")}>
                     <thead>
-                        <tr className={cn("head-row")}>
+                        <tr tabIndex={-1} className={cn("head-row")}>
                             {columns.map(x => this.renderHeaderCell(x))}
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map(x => this.renderItem(x, []))}
+                        {data.map((x, index) => this.renderItem(index.toString(), x, []))}
                     </tbody>
                 </table>
             </div>

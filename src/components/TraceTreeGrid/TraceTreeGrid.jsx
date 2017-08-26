@@ -9,6 +9,7 @@ import TreeGrid from "../TreeGrid/TreeGrid";
 type TraceTreeGridProps = {
     traceTree: SpanNode,
     focusedItem?: ?SpanNode,
+    onChangeFocusedItem?: (spanNode: SpanNode) => void,
     onItemClick?: (spanNode: SpanNode) => void,
 };
 
@@ -49,11 +50,11 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                     position: "absolute",
                     top: 1,
                     right: 1,
-                    width: Math.round((120 - 2) * percentage),
+                    width: Math.round((140 - 2) * percentage),
                     bottom: 1,
                 }}
             />,
-            <span style={{ position: "relative" }}>
+            <span style={{ position: "relative", color: "#000000" }}>
                 {millisecondsToString(time, "0")}
                 <span style={{ color: "#999", marginLeft: "5px", width: "50" }}>
                     {Math.round(percentage * 1000) / 10}%
@@ -63,16 +64,11 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     render(): React.Node {
-        const { traceTree, onItemClick, focusedItem } = this.props;
+        const { traceTree, onItemClick, onChangeFocusedItem, focusedItem } = this.props;
         return (
             <TreeGrid
                 focusedItem={focusedItem}
                 columns={[
-                    {
-                        name: "service",
-                        renderHeader: () => "Service",
-                        renderValue: x => x.serviceName,
-                    },
                     {
                         name: "totalTime",
                         width: 120,
@@ -92,9 +88,16 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                                 this.getSpanNodeSelfTimePrecentage(x)
                             ),
                     },
+                    {
+                        name: "service",
+                        renderHeader: () => "Service",
+                        renderValue: x => x.serviceName,
+                        mainCell: true,
+                    },
                 ]}
                 onGetChildren={x => x.children}
                 onGetItemColor={x => Colors[x.colorConfig].background}
+                onChangeFocusedItem={onChangeFocusedItem}
                 onItemClick={onItemClick}
                 data={[traceTree]}
             />

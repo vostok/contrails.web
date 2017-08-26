@@ -28,15 +28,6 @@
     }
 }
 
-.first-item-cell {
-    line-height: 30px;
-    vertical-align: baseline;
-    height: 30px;
-    padding: 0;
-    margin: 0;
-    padding-right: 10px;
-}
-
 .parent-line {
     display: inline-block;
     margin-left: 10px;
@@ -45,6 +36,13 @@
     margin-right: 9px;
     padding: 0;
     background-color: #000000;
+}
+
+.item-row {
+    &.focused {
+        background-color: #5199db;
+        color: #ffffff;
+    }
 }
 
 .item-cell {
@@ -56,4 +54,9 @@
     height: 30;
     padding: 0 10px;
     margin: 0;
+    cursor: default;
+
+    &.main-cell {
+        padding: 0;
+    }
 }
