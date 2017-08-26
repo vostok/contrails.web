@@ -1,18 +1,24 @@
 // @flow
 import * as React from "react";
-import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import Button from "@skbkontur/react-ui/Button";
 
 import ProfilerChartMinimap from "../src/components/ProfilerChartMinimap/ProfilerChartMinimap";
 import type { ProfilerData } from "../src/components/ProfilerChart/ProfilerChart";
 
-const Border = glamorous.div({
-    border: "1px solid #000",
-    width: "400px",
-    height: "200px",
-    margin: "0 auto",
-});
+function Border({ children }: { children: React.Node }): React.Node {
+    return (
+        <div
+            style={{
+                border: "1px solid #000",
+                width: "400px",
+                height: "200px",
+                margin: "0 auto",
+            }}>
+            {children}
+        </div>
+    );
+}
 
 type ProfilerItem = {
     from: number,

@@ -1,6 +1,5 @@
 // @flow
 import * as React from "react";
-import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import moment from "moment";
 
@@ -15,12 +14,19 @@ import handleCustomDrawItem from "../src/Domain/ItemDrawer";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
 
-const Border = glamorous.div({
-    border: "1px solid #000",
-    width: "500px",
-    height: "300px",
-    margin: "0 auto",
-});
+function Border({ children }: { children: React.Node }): React.Node {
+    return (
+        <div
+            style={{
+                border: "1px solid #000",
+                width: "500px",
+                height: "300px",
+                margin: "0 auto",
+            }}>
+            {children}
+        </div>
+    );
+}
 
 function min(x: number, y: number): number {
     return Math.min(x, y);

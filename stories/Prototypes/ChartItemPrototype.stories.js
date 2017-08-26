@@ -1,103 +1,92 @@
 // @flow
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
-import glamorous from "glamorous";
 import { Icon } from "ui";
 
-import ServiceIcon from "../src/components/Icons/service.svg";
-import CassandraIcon from "../src/components/Icons/cassandra.svg";
-import DatabaseIcon from "../src/components/Icons/db.svg";
+import ServiceIcon from "../../src/components/Icons/service.svg";
+import CassandraIcon from "../../src/components/Icons/cassandra.svg";
+import DatabaseIcon from "../../src/components/Icons/db.svg";
+import itemColors from "../../src/Domain/Colors";
 
-const itemColors = [
-    {
-        text: "white",
-        background: "rgba(30, 121, 190, 0.50)",
-        hoverText: "white",
-        hoverBackground: "rgba(30, 121, 190, 0.80)",
-        border: "rgba(30, 121, 190, 1.0)",
-    },
-    {
-        text: "white",
-        background: "rgba(215, 12, 23, 0.50)",
-        hoverText: "white",
-        hoverBackground: "rgba(215, 12, 23, 0.80)",
-        border: "rgba(215, 12, 23, 1.0)",
-    },
-    {
-        text: "white",
-        background: "rgba(255,85,0,0.50)",
-        hoverText: "white",
-        hoverBackground: "rgba(255,85,0,0.80)",
-        border: "rgba(255,85,0,1.0)",
-    },
-    {
-        text: "white",
-        background: "rgba(0,170,144,0.50)",
-        hoverText: "white",
-        hoverBackground: "rgba(0,170,144,0.80)",
-        border: "rgba(0,170,144,1.0)",
-    },
-    {
-        text: "white",
-        background: "rgba(162,58,153,0.50)",
-        hoverText: "white",
-        hoverBackground: "rgba(162,58,153,0.80)",
-        border: "rgba(162,58,153,1.0)",
-    },
-];
+function Line({ children }: { children: React.Node }): React.Node {
+    return (
+        <div
+            style={{
+                position: "relative",
+                height: 52,
+            }}>
+            {children}
+        </div>
+    );
+}
 
-const Line = glamorous.div({
-    position: "relative",
-    height: 52,
-});
+function Text({ children }: { children: React.Node }): React.Node {
+    return (
+        <div
+            style={{
+                cursor: "default",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+            }}>
+            {children}
+        </div>
+    );
+}
 
-const Item = glamorous.div(
-    ({ width, colorIndex }) => ({
-        border: `1px solid ${itemColors[colorIndex].border}`,
-        position: "relative",
-        display: "inline-block",
-        marginTop: 1,
-        padding: "3px 7px",
-        boxSizing: "border-box",
-        backgroundColor: itemColors[colorIndex].background,
-        color: itemColors[colorIndex].text,
-        width: width,
-        height: 50,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        zIndex: 1,
+function SvgIcon({ path }: { path: string }): React.Node {
+    return (
+        <span
+            style={{
+                display: "inline-block",
+                position: "relative",
+                top: 2,
+                width: 14,
+                height: 14,
+                background: `url(${path})`,
+            }}
+        />
+    );
+}
 
-        "&:hover": {
-            backgroundColor: itemColors[colorIndex].hoverBackground,
-            color: itemColors[colorIndex].hoverText,
-            zIndex: 2,
-        },
-    }),
-    ({ focused, colorIndex }: { focused?: boolean, colorIndex: number }) =>
-        focused
-            ? {
-                  border: `3px solid ${itemColors[colorIndex].border}`,
-                  padding: "1px 5px",
-              }
-            : {}
-);
+type ItemProps = {
+    children: React.Node,
+    width: number,
+    colorIndex: number,
+    focused?: boolean,
+    style?: {},
+};
 
-const Text = glamorous.div({
-    cursor: "default",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-});
+function Item({ children, width, colorIndex, focused, style }: ItemProps): React.Node {
+    return (
+        <div
+            style={{
+                border: `1px solid ${itemColors[colorIndex].border}`,
+                position: "relative",
+                display: "inline-block",
+                marginTop: 1,
+                padding: "3px 7px",
+                boxSizing: "border-box",
+                backgroundColor: itemColors[colorIndex].background,
+                color: itemColors[colorIndex].text,
+                width: width,
+                height: 50,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                zIndex: 1,
+                ...(focused
+                    ? {
+                          border: `3px solid ${itemColors[colorIndex].border}`,
+                          padding: "1px 5px",
+                      }
+                    : {}),
+                ...style,
+            }}>
+            {children}
+        </div>
+    );
+}
 
-const SvgIcon = glamorous.span(({ path }) => ({
-    display: "inline-block",
-    position: "relative",
-    top: 2,
-    width: 14,
-    height: 14,
-    background: `url(${path})`,
-}));
-
-storiesOf("ChartItemPrototype", module).add("Default", () =>
+storiesOf("Prototypes/ChartItemPrototype", module).add("Default", () =>
     <div
         style={{
             padding: 20,

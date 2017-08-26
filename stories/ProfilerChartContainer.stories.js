@@ -1,6 +1,5 @@
 // @flow
 import * as React from "react";
-import glamorous from "glamorous";
 import { storiesOf } from "@storybook/react";
 import Button from "@skbkontur/react-ui/Button";
 
@@ -8,11 +7,18 @@ import ProfilerChart from "../src/components/ProfilerChart/ProfilerChart";
 import type { ProfilerData } from "../src/components/ProfilerChart/ProfilerChart";
 import ProfilerChartContainer from "../src/components/ProfilerChartContainer/ProfilerChartContainer";
 
-const Border = glamorous.div({
-    border: "1px solid #000",
-    width: "400px",
-    height: "200px",
-});
+function Border({ children }: { children: React.Node }): React.Node {
+    return (
+        <div
+            style={{
+                border: "1px solid #000",
+                width: "400px",
+                height: "200px",
+            }}>
+            {children}
+        </div>
+    );
+}
 
 type ProfilerItem = {
     from: number,
