@@ -37,7 +37,10 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
     from: number,
     to: number,
     xScale: number,
-
+    viewPort: {
+        from: number,
+        to: number,
+    },
     onItemClick?: (item: TItem, lineIndex: number) => void,
     selectedItems?: TItem[],
     onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, itemDrawContext: ItemDrawContext) => void,
@@ -72,12 +75,12 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         this.drawData();
     }
 
-    toAbsolute(itemX: number): number {
-        const { xScale } = this.props;
-        return itemX * xScale;
+    toAbsoluteX(itemX: number): number {
+        const { xScale, viewPort } = this.props;
+        return (itemX - viewPort.from) * xScale;
     }
 
-    toAbsoluteX(itemX: number): number {
+    toAbsoluteXWihtoutShift(itemX: number): number {
         const { from, xScale } = this.props;
         return (itemX - from) * xScale;
     }
@@ -87,13 +90,17 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 
     drawItem(context: CanvasRenderingContext2D, item: TItem, options: ItemDrawOptions) {
-        const { onCustomDrawItem, onCustomDrawItemContent } = this.props;
+        const { viewPort, onCustomDrawItem, onCustomDrawItemContent } = this.props;
         const { from, to } = item;
 
-        context.clearRect(0, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from), lineHeight);
+        const width =
+            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
+            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
+
+        context.clearRect(0, 0, width, lineHeight);
         if (onCustomDrawItem != null) {
             const itemDrawContext = {
-                width: this.toAbsoluteX(to) - this.toAbsoluteX(from),
+                width: width,
                 lineHeight: lineHeight,
                 options: options,
             };
@@ -205,9 +212,13 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     };
 
     drawItemAtLine(context: CanvasRenderingContext2D, item: TItem, lineIndex: number, options: ItemDrawOptions) {
+        const { viewPort } = this.props;
         context.save();
         try {
-            context.translate(this.toAbsoluteX(item.from), lineIndex * (lineHeight + lineGap));
+            context.translate(
+                Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from)),
+                lineIndex * (lineHeight + lineGap)
+            );
             this.drawItem(context, item, options);
         } finally {
             context.restore();
@@ -239,6 +250,17 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         this.newDrawStarted = false;
     }
 
+    isItemInViewPort(item: TItem): boolean {
+        const { viewPort } = this.props;
+        if (item.from < viewPort.from && item.to < item.from) {
+            return false;
+        }
+        if (item.from > viewPort.to && item.to > viewPort.to) {
+            return false;
+        }
+        return true;
+    }
+
     async drawData(): Promise<void> {
         const canvas = this.canvas;
         if (canvas == null) {
@@ -250,7 +272,6 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         const width = this.toAbsoluteX(to) - this.toAbsoluteX(from);
         const drawContext = canvas.getContext("2d");
 
-        //drawContext.fillStyle = "#eee";
         drawContext.clearRect(0, 0, width, (lineHeight + lineGap) * data.lines.length);
 
         drawContext.save();
@@ -259,6 +280,9 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
             for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
                 const line = data.lines[lineIndex];
                 for (const item of line.items) {
+                    if (!this.isItemInViewPort(item)) {
+                        continue;
+                    }
                     this.drawItemAtLine(drawContext, item, lineIndex, {
                         hovered: false,
                         selected: this.isItemSelected(item, lineIndex),
@@ -304,18 +328,25 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 
     render(): React.Node {
-        const { to, from, data } = this.props;
+        const { viewPort, data } = this.props;
         return (
             <div style={{ position: "relative", zIndex: 0 }}>
                 <div style={{ position: "relative", height: 20 }} />
-                <div style={{ position: "relative", zIndex: 2 }}>
+                <div
+                    style={{
+                        position: "relative",
+                        zIndex: 2,
+                    }}>
                     <canvas
+                        style={{
+                            position: "relative",
+                        }}
+                        width={this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from)}
                         ref={e => (this.canvas = e)}
                         onClick={this.handleMouseClick}
                         onMouseMove={this.handleMouseMove}
                         onMouseLeave={this.handleMouseLeave}
                         height={(lineHeight + lineGap) * data.lines.length}
-                        width={this.toAbsoluteX(to) - this.toAbsoluteX(from)}
                     />
                 </div>
                 {this.renderTimeMarkers()}

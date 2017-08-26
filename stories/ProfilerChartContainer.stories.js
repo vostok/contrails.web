@@ -66,6 +66,7 @@ class ProfilerChartDemo extends React.Component<ProfilerChartDemoProps, Profiler
                         <ProfilerChart
                             from={0}
                             to={6}
+                            viewPort={{ from: 0, to: 6 }}
                             xScale={xScale}
                             data={data}
                             onCustomDrawItem={this.handleCustomDrawItem}

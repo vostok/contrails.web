@@ -14,6 +14,7 @@ storiesOf("ProfilerChart", module)
             selectedItems={[item2]}
             from={0}
             to={5}
+            viewPort={{ from: 0, to: 5 }}
             xScale={100}
             data={{
                 lines: [
@@ -28,6 +29,7 @@ storiesOf("ProfilerChart", module)
         <ProfilerChart
             from={0}
             to={5}
+            viewPort={{ from: 0, to: 5 }}
             xScale={100}
             data={{
                 lines: [
@@ -50,6 +52,7 @@ storiesOf("ProfilerChart", module)
             selectedItems={[item2]}
             from={10}
             to={20}
+            viewPort={{ from: 0, to: 20 }}
             xScale={100}
             data={{
                 lines: [

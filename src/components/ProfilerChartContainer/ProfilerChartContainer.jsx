@@ -33,12 +33,12 @@ export default class ProfilerChartContainer extends React.Component<ProfilerChar
     }
 
     adjustScrollPosition() {
-        const container = ReactDom.findDOMNode(this.container);
-        if (!(container instanceof HTMLElement)) {
-            return;
-        }
-        const { viewPort } = this.props;
-        container.scrollLeft = this.toAbsolute(viewPort.from);
+        // const container = ReactDom.findDOMNode(this.container);
+        // if (!(container instanceof HTMLElement)) {
+        //     return;
+        // }
+        // const { viewPort } = this.props;
+        // container.scrollLeft = this.toAbsolute(viewPort.from);
     }
 
     componentDidUpdate() {

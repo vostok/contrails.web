@@ -86,7 +86,10 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         const from = viewPortFrom;
         const to = viewPortFrom + width / xScale;
         const xPosRelative = this.toRelative(mouseX);
-        const newViewPortWidth = to - from + (to - from) * percentage * (event.deltaY / 100);
+        const newViewPortWidth = Math.max(
+            (to - from) * Math.pow(1 + percentage * Math.sign(event.deltaY), Math.abs(event.deltaY) / 100),
+            1
+        );
 
         let newFrom = xPosRelative - newViewPortWidth * (from - xPosRelative) / (from - to);
         let newTo = xPosRelative + newViewPortWidth * (xPosRelative - to) / (from - to);
@@ -166,6 +169,10 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                 <ProfilerChart
                                     from={from}
                                     to={to}
+                                    viewPort={{
+                                        from: viewPortFrom,
+                                        to: viewPortFrom + width / xScale,
+                                    }}
                                     xScale={xScale}
                                     data={data}
                                     onItemClick={onItemClick}
