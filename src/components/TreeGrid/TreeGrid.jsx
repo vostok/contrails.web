@@ -37,6 +37,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     state: TreeGridState<TItem> = {
         expandedItems: [],
     };
+    focusedRow: ?HTMLTableRowElement;
 
     componentWillMount() {
         if (this.props.focusedItem != null) {
@@ -106,17 +107,25 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         );
     }
 
+    componentDidUpdate(prevProps: TreeGridProps<TItem>) {
+        if (this.props.focusedItem !== prevProps.focusedItem) {
+            if (this.focusedRow != null) {
+                this.focusedRow.focus();
+            }
+        }
+    }
+
     renderItem(key: string, item: TItem, parents: Array<TItem>): React.Node[] {
         const { onItemClick, onGetChildren, focusedItem } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = this.isItemExpanded(item);
         const isItemFocused = focusedItem === item;
+
         return [
             <tr
                 ref={e => {
-                    if (e != null && isItemFocused) {
-                        e.focus();
-                        e.scrollIntoView();
+                    if (isItemFocused) {
+                        this.focusedRow = e;
                     }
                 }}
                 tabIndex={-1}
