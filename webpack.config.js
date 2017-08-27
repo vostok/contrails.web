@@ -4,7 +4,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 const createRules = require("./build/rules.js");
 const { extensions, createAliases } = require("./build/resolve.js");
@@ -42,6 +42,17 @@ module.exports = function createConfig(env) {
                 "process.env.API": JSON.stringify(options.api),
             }),
         ],
+        devServer: {
+            proxy: {
+                "/api": {
+                    target: "http://logsearchapi.dev.kontur:30002",
+                    pathRewrite: { "^/api": "" },
+                },
+            },
+            allowedHosts: ["localhost"],
+            port: 3000,
+            historyApiFallback: true,
+        },
     };
 
     if (NODE_ENV === "development") {
@@ -54,25 +65,14 @@ module.exports = function createConfig(env) {
             new webpack.NamedModulesPlugin(),
             new webpack.NoEmitOnErrorsPlugin()
         );
-        result.devServer = {
-            proxy: {
-                "/api": {
-                    target: "http://logsearchapi.dev.kontur:30002",
-                    pathRewrite: { "^/api": "" },
-                },
-            },
-            allowedHosts: ["localhost"],
-            port: 3000,
-            historyApiFallback: true,
-            hot: true,
-        };
+        result.devServer.hot = true;
     }
 
     if (NODE_ENV === "production") {
         result.output.filename = "[name].[hash].js";
         result.devtool = "cheap-module-source-map";
         result.plugins.push(
-            new MinifyPlugin(true, { comments: false, test: /\.jsx?$/i }),
+            new UglifyJSPlugin(true, { comments: false }),
             new CopyWebpackPlugin([
                 {
                     from: "./build/testing.web.config",

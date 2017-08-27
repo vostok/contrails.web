@@ -11,9 +11,6 @@
         "stage-0"
     ],
     "env": {
-        "production": {
-            "presets": ["minify"]
-        },
         "development": {
             "plugins": ["react-hot-loader/babel"]
         },
