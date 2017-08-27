@@ -9,8 +9,7 @@ import ContrailsApi from "../Domain/ContrailsApi";
 
 import TraceViewerContainer from "./TraceViewerContainer";
 
-//const api = new ContrailsApiFake();
-const api = new ContrailsApi();
+const api = process.env.API === "fake" ? new ContrailsApiFake() : new ContrailsApi();
 
 export default function ContrailsApplication(): React.Node {
     return (
