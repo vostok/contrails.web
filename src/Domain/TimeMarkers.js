@@ -7,6 +7,9 @@ export type TimeMarker = {
 };
 
 const intervals = [
+    { value: 0.1 },
+    { value: 0.2 },
+    { value: 0.5 },
     { value: 1 },
     { value: 2 },
     { value: 5 },

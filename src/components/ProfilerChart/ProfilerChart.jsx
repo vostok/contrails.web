@@ -305,8 +305,10 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 
     generateTimeMarkers(): TimeMarker[] {
-        const { to, from, xScale } = this.props;
-        return generateTimeMarkers(0, to - from, 100 / xScale).map(x => ({ ...x, value: x.value + from }));
+        const { to, from, xScale, viewPort } = this.props;
+        return generateTimeMarkers(0, to - from, 100 / xScale)
+            .map(x => ({ ...x, value: x.value + from }))
+            .filter(x => x.value >= viewPort.from && x.value <= viewPort.to);
     }
 
     renderTimeMarkers(): React.Node {
