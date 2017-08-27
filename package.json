@@ -18,6 +18,7 @@
     "chai": "^4.1.1",
     "classnames": "^2.2.5",
     "classnames-loader": "^2.0.0",
+    "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^5.0.1",
     "css-loader": "^0.28.4",
     "eslint": "^4.3.0",
@@ -43,6 +44,7 @@
     "react-router": "^4.1.2",
     "react-router-dom": "^4.1.2",
     "retail-ui": "^0.8.6",
+    "rimraf": "^2.6.1",
     "style-loader": "^0.18.2",
     "stylelint": "7.x",
     "stylelint-declaration-strict-value": "^1.0.4",
@@ -64,7 +66,9 @@
     "travis:flow.coverage-report": "flow-coverage-report -t text --threshold 100",
     "lint": "eslint src stories",
     "stylelint": "stylelint src/**/*.less stories/**/*.less --syntax less",
-    "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js"
+    "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js",
+    "clean": "rimraf dist",
+    "iis:build": "cross-env NODE_ENV=production webpack"
   },
   "flow-coverage-report": {
     "includeGlob": [

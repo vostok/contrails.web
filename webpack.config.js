@@ -3,6 +3,7 @@ const path = require("path");
 
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const createRules = require("./build/rules.js");
 const { extensions, createAliases } = require("./build/resolve.js");
@@ -37,6 +38,12 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "./src/index.html",
         }),
+        new CopyWebpackPlugin([
+            {
+                from: "./build/testing.web.config",
+                to: "web.config",
+            },
+        ]),
     ],
     devServer: {
         proxy: {
