@@ -62,11 +62,24 @@ export default function SpanInfoView({ spanInfo }: SpanInfoViewProps): React.Nod
                                 {x}:
                             </div>
                             <span className={cn("value")}>
-                                {annotations[x]}
+                                {renderValue(annotations[x])}
                             </span>
                         </div>
                     )}
                 </div>}
         </div>
     );
+}
+
+function renderValue(value: mixed): React.Node {
+    if (typeof value === "string") {
+        return value;
+    }
+    if (typeof value === "boolean") {
+        return value ? "TRUE" : "FALSE";
+    }
+    if (typeof value === "number") {
+        return value;
+    }
+    return JSON.stringify(value);
 }
