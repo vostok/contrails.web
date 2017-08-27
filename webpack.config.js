@@ -71,6 +71,7 @@ module.exports = function createConfig(env) {
 
     if (NODE_ENV === "production") {
         result.output.filename = "[name].[hash].js";
+        // TODO отключить при конечном выпуске в продакшен
         result.devtool = "source-map";
         result.plugins.push(
             new UglifyJSPlugin(true, { comments: false }),
