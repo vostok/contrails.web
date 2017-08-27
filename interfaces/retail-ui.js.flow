@@ -13,33 +13,29 @@ declare module 'retail-ui/components/Autocomplete' {
     declare export default class Autocomplete extends React$Component<AutocompleteProps, void> {}
 }
 
-type ButtonProps = {|
-    'data-tid'?: string;
-    active?: boolean;
-    checked?: boolean;
-    children?: any;
-    disabled?: boolean;
-    focused?: boolean;
-    icon?: ?string;
-    loading?: boolean;
-    narrow?: boolean;
-    size?: 'small' | 'medium' | 'large';
-    type?: 'button' | 'submit' | 'reset';
-    use?: 'default' | 'primary' | 'success' | 'danger' | 'pay' | 'link';
-    width?: ?number | ?string;
-    arrow?: boolean;
-    onClick?: (e: SyntheticMouseEvent<>) => void;
-    onKeyDown?: (e: SyntheticKeyboardEvent<>) => void;
-    onMouseEnter?: (e: SyntheticMouseEvent<>) => void;
-    onMouseLeave?: (e: SyntheticMouseEvent<>) => void;
-    onMouseOver?: (e: SyntheticMouseEvent<>) => void;
-|};
-
-declare module 'retail-ui/components/Button' {
-    declare export default class Button extends React$Component<ButtonProps, void> {}
-}
-
 declare module '@skbkontur/react-ui/Button' {
+    declare type ButtonProps = {|
+        'data-tid'?: string;
+        active?: boolean;
+        checked?: boolean;
+        children?: any;
+        disabled?: boolean;
+        focused?: boolean;
+        icon?: ?string;
+        loading?: boolean;
+        narrow?: boolean;
+        size?: 'small' | 'medium' | 'large';
+        type?: 'button' | 'submit' | 'reset';
+        use?: 'default' | 'primary' | 'success' | 'danger' | 'pay' | 'link';
+        width?: ?number | ?string;
+        arrow?: boolean;
+        onClick?: (e: SyntheticMouseEvent<>) => void;
+        onKeyDown?: (e: SyntheticKeyboardEvent<>) => void;
+        onMouseEnter?: (e: SyntheticMouseEvent<>) => void;
+        onMouseLeave?: (e: SyntheticMouseEvent<>) => void;
+        onMouseOver?: (e: SyntheticMouseEvent<>) => void;
+    |};
+
     declare export default class Button extends React$Component<ButtonProps, void> {}
 }
 
@@ -134,7 +130,7 @@ declare module 'retail-ui/components/Group' {
     declare export default class Group extends React$Component<GroupProps, void> {}
 }
 
-declare module 'retail-ui/components/Icon' {
+declare module '@skbkontur/react-ui/Icon' {
     declare type IconProps = {|
         'data-tid'?: string;
         name: ?string;
@@ -144,7 +140,7 @@ declare module 'retail-ui/components/Icon' {
     declare export default class Icon extends React$Component<IconProps, void> {}
 }
 
-declare module 'retail-ui/components/Input' {
+declare module '@skbkontur/react-ui/Input' {
     declare type InputProps = {|
         borderless?: boolean;
         className?: ?string;
@@ -161,11 +157,11 @@ declare module 'retail-ui/components/Input' {
         width?: number | string;
         placeholder?: ?string;
         value: string;
-        onBlur?: (event: Event) => void;
-        onFocus?: (event: Event) => void;
-        onKeyDown?: (event: Event) => void;
-        onKeyPress?: (event: Event) => void;
-        onChange?: (event: Event, value: string) => void;
+        onBlur?: (event: SyntheticEvent<>) => void;
+        onFocus?: (event: SyntheticEvent<>) => void;
+        onKeyDown?: (event: SyntheticEvent<>) => void;
+        onKeyPress?: (event: SyntheticEvent<>) => void;
+        onChange?: (event: SyntheticEvent<>, value: string) => void;
     |};
     declare export default class Input extends React$Component<InputProps, void> {
         setSelectionRange(start: number, end: number): void;

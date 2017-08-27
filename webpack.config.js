@@ -39,6 +39,12 @@ module.exports = {
         }),
     ],
     devServer: {
+        proxy: {
+            "/api": {
+                target: "http://logsearchapi.dev.kontur:30002",
+                pathRewrite: { "^/api": "" },
+            },
+        },
         allowedHosts: ["localhost", ".dev.kontur"],
         port: 3000,
         historyApiFallback: true,

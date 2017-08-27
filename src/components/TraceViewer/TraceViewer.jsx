@@ -49,10 +49,12 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
 
     constructor(props: TraceViewerProps) {
         super(props);
-        const traceTree = new TraceTreeBuilder().buildTraceTree(props.traceInfo.Spans);
+        const treeBuilder = new TraceTreeBuilder();
+        const traceTree = treeBuilder.buildTraceTree(props.traceInfo.Spans);
         this.state = {
             focusedSpanNode: null,
             traceTree: traceTree,
+            spanNodesMap: treeBuilder.buildNodeMap(traceTree),
             spanLines: this.generateDataFromDiTraceResponse(traceTree),
         };
     }

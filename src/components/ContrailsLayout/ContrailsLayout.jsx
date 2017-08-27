@@ -1,11 +1,12 @@
 // @flow
 import * as React from "react";
-import { Button, Input, Icon } from "ui";
+import { Icon } from "ui";
 
 import cn from "./ContrailsLayout.less";
 
 type ContrailsLayoutProps = {
     children: React.Node,
+    header: React.Node,
 };
 
 type ContrailsLayoutState = {};
@@ -15,7 +16,7 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
     state: ContrailsLayoutState;
 
     render(): React.Element<*> {
-        const { children } = this.props;
+        const { children, header } = this.props;
         return (
             <div className={cn("container")}>
                 <div className={cn("header")}>
@@ -25,10 +26,8 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
                         </span>
                         <span className={cn("logo-text")}>Contrails</span>
                     </div>
-                    <div className={cn("trace-id-container")}>
-                        <Input placeholder="Введите TraceId" autoFocus width={500} />
-                        <span className={cn("gap")} />
-                        <Button use="success">Открыть</Button>
+                    <div className={cn("header-content")}>
+                        {header}
                     </div>
                 </div>
                 <div className={cn("content")}>

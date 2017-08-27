@@ -9,9 +9,14 @@ export function getDefaultTimeIntervalAsString(totalMilliSeconds: number): strin
 
 export function millisecondsToString(totalMilliSeconds: number, zeroValue: string): string {
     // TODO добавить минуты, часы, дни, недели, месяцы, года(?)
-    const numSeconds = Math.floor(totalMilliSeconds / 1000);
+    const numMinutes = Math.floor(totalMilliSeconds / 1000 / 60);
+    const numSeconds = Math.floor(totalMilliSeconds / 1000 % 60);
     const milliSeconds = Math.round(totalMilliSeconds % 1000 * 10) / 10;
     let result = "";
+    if (numMinutes !== 0) {
+        result += result === "" ? "" : " ";
+        result += `${numMinutes} min`;
+    }
     if (numSeconds !== 0) {
         result += result === "" ? "" : " ";
         result += `${numSeconds}s`;

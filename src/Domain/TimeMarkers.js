@@ -24,6 +24,13 @@ const intervals = [
     { value: 2000 },
     { value: 5000 },
     { value: 10000 },
+    { value: 30000 },
+    { value: 60000 },
+    { value: 120000 },
+    { value: 300000 },
+    { value: 600000 },
+    { value: 1800000 },
+    { value: 3600000 },
 ];
 
 function getIntervalConfig(minIntervalMs: number): { value: number } {

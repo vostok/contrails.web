@@ -3,6 +3,7 @@ import moment from "moment";
 import { NotImplementedError } from "commons/Errors";
 
 import type { SpanInfo } from "../SpanInfo";
+import { reduceTree } from "../Utils/TreeTraverseUtils";
 
 import type { SpanNode } from "./SpanNode";
 
@@ -31,5 +32,13 @@ export default class TraceTreeBuilder {
             throw new NotImplementedError();
         }
         return this.spanInfoToSpanNode(root, spans);
+    }
+
+    buildNodeMap(tree: SpanNode): { [key: string]: SpanNode } {
+        return reduceTree(
+            tree,
+            (childResults, node) => childResults.reduce((x, y) => ({ ...x, ...y }), { [node.source.SpanId]: node }),
+            x => x.children
+        );
     }
 }

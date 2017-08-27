@@ -6,7 +6,14 @@ declare module 'react-router' {
         replace(location: RouterLocationDescriptor): void;
     }
 
-    declare function withRouter<P>(Comp: React$ComponentType<P>): React$ComponentType<$Diff<P, { router: ReactRouter }>>;
+    declare interface IBrowserHistory {
+        push(location: RouterLocationDescriptor): void;
+        replace(location: RouterLocationDescriptor): void;
+    }
+
+    declare type Injected = { history: IBrowserHistory };
+
+    declare function withRouter<P: {}>(Comp: React$ComponentType<Injected & P>): React$ComponentType<P>;
 
     declare type LocationDescriptor = {
         pathname: string;
@@ -22,11 +29,6 @@ declare module 'react-router' {
             state?: ?Object;
         };
 
-
-    declare interface IBrowserHistory {
-        push(location: RouterLocationDescriptor): void;
-        replace(location: RouterLocationDescriptor): void;
-    }
 
     declare var Link: any;
     declare var IndexRedirect: any;
@@ -45,7 +47,7 @@ declare module 'react-router' {
             query?: { [key: string]: ?string };
             state?: ?Object;
         };
-        children?: any;
+        children: React$Node;
     }
 
     declare type RouteProps = {

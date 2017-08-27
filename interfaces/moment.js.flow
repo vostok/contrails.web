@@ -62,7 +62,7 @@ declare module 'moment' {
     }
 
     declare export default class MomentStatic  {
-        static (date?: ?string | ?Date, format?: ?string, ...rest: void[]): Moment;
+        static (date?: ?string | ?Date | ?number, format?: ?string, ...rest: void[]): Moment;
         static utc(date?: ?string | ?Date, format?: ?string, ...rest: void[]): Moment;
     }
 }

@@ -5,10 +5,12 @@ import { Switch, Route } from "react-router";
 
 import { ApiProvider } from "../Domain/ContrailsApiInjection";
 import ContrailsApiFake from "../Domain/ContrailsApiFake";
+import ContrailsApi from "../Domain/ContrailsApi";
 
 import TraceViewerContainer from "./TraceViewerContainer";
 
-const api = new ContrailsApiFake();
+//const api = new ContrailsApiFake();
+const api = new ContrailsApi();
 
 export default function ContrailsApplication(): React.Node {
     return (
@@ -21,7 +23,7 @@ export default function ContrailsApplication(): React.Node {
                     <Route
                         path="/:traceIdPrefix"
                         component={({ match }) =>
-                            match.params.traceIdPrefix &&
+                            typeof match.params.traceIdPrefix === "string" &&
                             <TraceViewerContainer traceIdPrefix={match.params.traceIdPrefix} />}
                     />
                 </Switch>
