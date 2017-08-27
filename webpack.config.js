@@ -52,7 +52,7 @@ module.exports = {
                 pathRewrite: { "^/api": "" },
             },
         },
-        allowedHosts: ["localhost", ".dev.kontur"],
+        allowedHosts: "localhost",
         port: 3000,
         historyApiFallback: true,
         hot: true,
