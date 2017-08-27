@@ -56,6 +56,7 @@ module.exports = function createConfig(env) {
     };
 
     if (NODE_ENV === "development") {
+        result.devtool = "eval-source-map";
         result.entry.index = []
             .concat(["react-hot-loader/patch", "webpack-dev-server/client?http://localhost:3000"])
             .concat(result.entry.index);
@@ -70,7 +71,7 @@ module.exports = function createConfig(env) {
 
     if (NODE_ENV === "production") {
         result.output.filename = "[name].[hash].js";
-        result.devtool = "cheap-module-source-map";
+        result.devtool = "source-map";
         result.plugins.push(
             new UglifyJSPlugin(true, { comments: false }),
             new CopyWebpackPlugin([
