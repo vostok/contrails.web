@@ -1,5 +1,6 @@
 /* eslint-disable import/unambiguous */
-module.exports = function createRules() {
+module.exports = function createRules(NODE_ENV) {
+    const PROD = (NODE_ENV || "development") === "production";
     return [
         {
             test: /\.jsx?$/,
@@ -25,7 +26,7 @@ module.exports = function createRules() {
                             loader: "css-loader",
                             options: {
                                 modules: true,
-                                localIdentName: "[name]-[local]--[hash:base64:3]",
+                                localIdentName: PROD ? "[hash:base64:6]" : "[name]-[local]--[hash:base64:3]",
                             },
                         },
                         "less-loader",
@@ -52,7 +53,7 @@ module.exports = function createRules() {
                         {
                             loader: "css-loader",
                             options: {
-                                localIdentName: "[name]-[local]--[hash:base64:3]",
+                                localIdentName: PROD ? "[hash:base64:6]" : "[name]-[local]--[hash:base64:3]",
                             },
                         },
                     ],

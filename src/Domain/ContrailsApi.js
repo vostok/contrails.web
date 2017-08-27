@@ -1,10 +1,11 @@
 // @flow
+/* eslint-disable import/prefer-default-export */
 import moment from "moment";
 
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
-export default class ContrailsApi implements IContrailsApi {
+export class ContrailsApi implements IContrailsApi {
     async getTrace(id: string): Promise<TraceInfo[]> {
         const resp = await (await fetch(`/api/findTrace?traceId=${id}&out=vostok`)).json();
         //const resp = await (await fetch(`/api/findTrace?traceId=${id}&out=vostok`)).json();

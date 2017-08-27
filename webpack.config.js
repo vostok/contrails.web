@@ -12,6 +12,9 @@ const { extensions, createAliases } = require("./build/resolve.js");
 const NODE_ENV = process.env.NODE_ENV;
 
 module.exports = function createConfig(env) {
+    const options = env || {};
+    options.api = options.api || "real";
+
     const result = {
         entry: {
             index: ["babel-polyfill", "./src/index.js"],
@@ -22,7 +25,7 @@ module.exports = function createConfig(env) {
             filename: "[name].js",
         },
         module: {
-            rules: createRules(),
+            rules: createRules(NODE_ENV),
         },
         resolve: {
             extensions: extensions,
@@ -30,12 +33,13 @@ module.exports = function createConfig(env) {
         },
         plugins: [
             new webpack.optimize.ModuleConcatenationPlugin(),
+            new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
             }),
             new webpack.DefinePlugin({
                 "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
-                "process.env.API": JSON.stringify(env.api || "real"),
+                "process.env.API": JSON.stringify(options.api),
             }),
         ],
     };

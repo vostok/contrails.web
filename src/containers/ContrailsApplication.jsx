@@ -1,15 +1,21 @@
 // @flow
+/* eslint-disable global-require */
 import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Switch, Route } from "react-router";
 
 import { ApiProvider } from "../Domain/ContrailsApiInjection";
-import ContrailsApiFake from "../Domain/ContrailsApiFake";
-import ContrailsApi from "../Domain/ContrailsApi";
 
 import TraceViewerContainer from "./TraceViewerContainer";
 
-const api = process.env.API === "fake" ? new ContrailsApiFake() : new ContrailsApi();
+let api;
+if (process.env.API === "fake") {
+    const ContrailsApiFake = require("../Domain/ContrailsApiFake");
+    api = new ContrailsApiFake.ContrailsApiFake();
+} else {
+    const ContrailsApi = require("../Domain/ContrailsApi");
+    api = new ContrailsApi.ContrailsApi();
+}
 
 export default function ContrailsApplication(): React.Node {
     return (
