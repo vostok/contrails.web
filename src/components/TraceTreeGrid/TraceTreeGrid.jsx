@@ -6,6 +6,8 @@ import Colors from "../../Domain/Colors";
 import { millisecondsToString } from "../../Domain/TimeUtils";
 import TreeGrid from "../TreeGrid/TreeGrid";
 
+import cn from "./TraceTreeGrid.less";
+
 type TraceTreeGridProps = {
     traceTree: SpanNode,
     focusedItem?: ?SpanNode,
@@ -42,21 +44,20 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
         );
     }
 
-    renderPercentageAndTime(time: number, percentage: number): React.Node {
+    renderPercentageAndTime(time: number, percentage: number, focused: boolean): React.Node {
         return [
             <div
+                key="BarChart"
+                className={cn("cell-bar-chart")}
                 style={{
-                    backgroundColor: "#FFEFBF",
-                    position: "absolute",
-                    top: 1,
-                    right: 1,
-                    width: Math.round((140 - 2) * percentage),
-                    bottom: 1,
+                    width: Math.round((140 - 8) * percentage),
                 }}
             />,
-            <span style={{ position: "relative", color: "#000000" }}>
-                {millisecondsToString(time, "0")}
-                <span style={{ color: "#999", marginLeft: "5px", width: "50" }}>
+            <span key="Value" className={cn("cell-values", { focused: focused })}>
+                <span className={cn("value")}>
+                    {millisecondsToString(time, "0")}
+                </span>
+                <span className={cn("percentage")}>
                     {Math.round(percentage * 1000) / 10}%
                 </span>
             </span>,
@@ -74,18 +75,23 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                         width: 120,
                         align: "right",
                         renderHeader: () => "Total time",
-                        renderValue: x =>
-                            this.renderPercentageAndTime(x.to - x.from, this.getSpanNodeTotalTimePrecentage(x)),
+                        renderValue: (x, focused) =>
+                            this.renderPercentageAndTime(
+                                x.to - x.from,
+                                this.getSpanNodeTotalTimePrecentage(x),
+                                focused
+                            ),
                     },
                     {
                         name: "selfTime",
                         width: 120,
                         align: "right",
                         renderHeader: () => "Self time",
-                        renderValue: x =>
+                        renderValue: (x, focused) =>
                             this.renderPercentageAndTime(
                                 this.getSpanNodeSelfTime(x),
-                                this.getSpanNodeSelfTimePrecentage(x)
+                                this.getSpanNodeSelfTimePrecentage(x),
+                                focused
                             ),
                     },
                     {

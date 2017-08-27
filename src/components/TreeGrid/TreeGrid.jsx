@@ -10,7 +10,7 @@ import cn from "./TreeGrid.less";
 type ColumnDefintion<TItem> = {|
     name: string,
     renderHeader: () => React.Node,
-    renderValue: TItem => React.Node,
+    renderValue: (item: TItem, focused: boolean) => React.Node,
     width?: number,
     align?: "right" | "left" | "center",
     mainCell?: boolean,
@@ -152,7 +152,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     }
 
     renderCell(column: ColumnDefintion<TItem>, item: TItem, parents: Array<TItem>): React.Node {
-        const { onGetChildren } = this.props;
+        const { onGetChildren, focusedItem } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = this.isItemExpanded(item);
         if (column.mainCell) {
@@ -177,7 +177,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                                 itemChildren.length > 0 &&
                                 <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />}
                         </button>
-                        {column.renderValue(item)}
+                        {column.renderValue(item, focusedItem === item)}
                     </span>
                 </td>
             );
@@ -191,7 +191,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                     maxWidth: column.width,
                     textAlign: column.align,
                 }}>
-                {column.renderValue(item)}
+                {column.renderValue(item, focusedItem === item)}
             </td>
         );
     }
