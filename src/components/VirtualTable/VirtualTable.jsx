@@ -1,6 +1,5 @@
 // @flow
 import * as React from "react";
-import ReactDOM from "react-dom";
 import _ from "lodash";
 
 import cn from "./VirtualTable.less";
@@ -10,55 +9,61 @@ type VirtualTableProps<T> = {
     renderHeader: () => React.Node,
     renderRow: T => React.Node,
     rowHeight: number,
+    headerHeight?: number,
 };
 
-type VirtualTableState<T> = {
+type VirtualTableState = {
     scrollTop: number,
     height: number,
 };
 
-export default class VirtualTable<T> extends React.Component<VirtualTableProps<T>, *> {
+export default class VirtualTable<T> extends React.Component<VirtualTableProps<T>, VirtualTableState> {
     props: VirtualTableProps<T>;
-    state: VirtualTableState<T> = {
+    state: VirtualTableState = {
         scrollTop: 0,
         height: 100,
     };
     scrollContainer: ?HTMLElement;
+    bottomOffsetRow: ?HTMLElement;
+    topOffsetRow: ?HTMLElement;
 
-    update = _.debounce((e) => {
-        const { rowHeight, data } = this.props;
-        const height = rowHeight * data.length;
-        const scrollTop = this.scrollContainer.scrollTop;
-        const renderFrom = Math.min(data.length - 40, Math.max(0, Math.round(scrollTop / rowHeight) - 1));
+    updatePosition = () => {
+        const { scrollContainer, bottomOffsetRow, topOffsetRow } = this;
+        if (scrollContainer != null && bottomOffsetRow != null && topOffsetRow != null) {
+            const { rowHeight, data } = this.props;
+            const height = rowHeight * data.length;
+            const scrollTop = scrollContainer.scrollTop;
+            const renderFrom = Math.min(data.length - 40, Math.max(0, Math.round(scrollTop / rowHeight) - 1));
 
-        const topOffset = renderFrom * rowHeight;
-        const bottomOffset = height - (renderFrom + 40) * rowHeight;
-        this.bottomOffsetRow.style.height = `${bottomOffset}px`;
-        this.topOffsetRow.style.height = `${topOffset}px`;
-        this.scrollContainer.scrollTop = scrollTop;
-        this.setState({
-            scrollTop: this.scrollContainer.scrollTop,
-        });
+            const topOffset = renderFrom * rowHeight;
+            const bottomOffset = height - (renderFrom + 40) * rowHeight;
 
-    }, 100, { trailing: true });
+            bottomOffsetRow.style.height = `${bottomOffset}px`;
+            topOffsetRow.style.height = `${topOffset}px`;
+            scrollContainer.scrollTop = scrollTop;
+            this.setState({}, () => {
+                scrollContainer.scrollTop = scrollTop;
+            });
+        }
+    };
+
+    updateDebounce = _.debounce(this.updatePosition, 100, { trailing: true });
 
     handleScroll = (e: Event<*>) => {
-        const { rowHeight, data } = this.props;
-        const height = rowHeight * data.length;
-        this.update(e);
+        this.updateDebounce(e);
     };
 
     componentDidMount() {
-        this.setState({
-            scrollTop: this.scrollContainer.scrollTop,
-        });
+        this.updatePosition();
     }
 
     render(): React.Node {
         const { data, renderRow, renderHeader, rowHeight } = this.props;
-        const scrollTop = this.scrollContainer != null ? this.scrollContainer.scrollTop : 0;
+        const { scrollContainer } = this;
+        const scrollTop = scrollContainer != null ? scrollContainer.scrollTop : 0;
         const renderFrom = Math.min(data.length - 40, Math.max(0, Math.round(scrollTop / rowHeight) - 1));
-        //const { scrollTop } = this.state;
+        const headerHeight = this.props.headerHeight == null ? rowHeight : this.props.headerHeight;
+
         return (
             <div className={cn("root")}>
                 <table>
@@ -68,9 +73,10 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
                 </table>
                 <div
                     className={cn("scroll-container")}
+                    style={{ top: headerHeight }}
                     onScroll={this.handleScroll}
                     ref={x => (this.scrollContainer = x)}>
-                    <table className={cn('table')}>
+                    <table className={cn("table")}>
                         <tbody>
                             <tr>
                                 <td ref={x => (this.topOffsetRow = x)} />

@@ -9,10 +9,13 @@ storiesOf("VirtualTable", module).add("Default", () =>
     <VirtualTable
         rowHeight={20}
         data={_.range(100).map(x => ({ value: `value${x}` }))}
-        renderHeader={() => <tr><th>Value</th></tr>}
-        renderRow={x =>
+        renderHeader={() =>
             <tr>
-                <td key={x.value} style={{ height: 20 }}>
+                <th>Value</th>
+            </tr>}
+        renderRow={x =>
+            <tr key={x.value}>
+                <td style={{ height: 20 }}>
                     {x.value}
                 </td>
             </tr>}
