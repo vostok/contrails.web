@@ -37,8 +37,12 @@ export default class TraceTreeBuilder {
     buildNodeMap(tree: SpanNode): { [key: string]: SpanNode } {
         return reduceTree(
             tree,
-            (childResults, node) => childResults.reduce((x, y) => ({ ...x, ...y }), { [node.source.SpanId]: node }),
+            (childResults, node) => childResults.reduce(merge, { [node.source.SpanId]: node }),
             x => x.children
         );
     }
+}
+
+function merge<T, U>(x: T, y: U): T & U {
+    return Object.assign(x, y);
 }

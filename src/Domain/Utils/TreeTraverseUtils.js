@@ -13,10 +13,17 @@ export function findNodeToReducer<TItem>(target: TItem): (Array<Array<TItem>>, T
         if (node === target) {
             return [node];
         }
-        const results: Array<TItem> = childResults.reduce((x, y) => [...x, ...y], []);
+        const results: Array<TItem> = childResults.reduce(flatten, []);
         if (results.length > 0) {
-            return [...results, node];
+            results.push(node);
         }
-        return [];
+        return results;
     };
+}
+
+function flatten<T>(memo: Array<T>, item: Array<T>): Array<T> {
+    for (let i = 0; i < item.length; i++) {
+        memo.push(item[i]);
+    }
+    return memo;
 }

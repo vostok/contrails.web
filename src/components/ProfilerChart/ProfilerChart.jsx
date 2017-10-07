@@ -252,7 +252,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
     isItemInViewPort(item: TItem): boolean {
         const { viewPort } = this.props;
-        if (item.from < viewPort.from && item.to < item.from) {
+        if (item.from < viewPort.from && item.to < viewPort.from) {
             return false;
         }
         if (item.from > viewPort.to && item.to > viewPort.to) {
@@ -289,6 +289,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
                     });
                     drawedCount++;
                     if (drawedCount === 500) {
+                        console.log(500);
                         drawedCount = 0;
                         // eslint-disable-next-line max-depth
                         if (await this.checkRedraw()) {

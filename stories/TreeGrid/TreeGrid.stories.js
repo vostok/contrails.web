@@ -3,7 +3,9 @@ import * as React from "react";
 import _ from "lodash";
 import { storiesOf } from "@storybook/react";
 
-import TreeGrid from "../../src/components/TreeGrid/TreeGrid";
+import TreeGrid, { withExpandedItems } from "../../src/components/TreeGrid/TreeGrid";
+
+const TreeGrid2 = withExpandedItems(TreeGrid);
 
 const item1 = {
     value1: "value 1",
@@ -24,7 +26,7 @@ const item1 = {
 
 storiesOf("TreeGrid/Default", module)
     .add("Default", () =>
-        <TreeGrid
+        <TreeGrid2
             onGetChildren={x => x.children}
             columns={[
                 {
@@ -73,7 +75,7 @@ storiesOf("TreeGrid/Default", module)
         />
     )
     .add("Many children", () =>
-        <TreeGrid
+        <TreeGrid2
             onGetChildren={x => x.children}
             columns={[
                 {

@@ -4,9 +4,11 @@ import * as React from "react";
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import Colors from "../../Domain/Colors";
 import { millisecondsToString } from "../../Domain/TimeUtils";
-import TreeGrid from "../TreeGrid/TreeGrid";
+import TreeGrid, { withExpandedItems } from "../TreeGrid/TreeGrid";
 
 import cn from "./TraceTreeGrid.less";
+
+const TreeGridWithState = withExpandedItems(TreeGrid);
 
 type TraceTreeGridProps = {
     traceTree: SpanNode,
@@ -67,7 +69,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     render(): React.Node {
         const { traceTree, onItemClick, onChangeFocusedItem, focusedItem } = this.props;
         return (
-            <TreeGrid
+            <TreeGridWithState
                 focusedItem={focusedItem}
                 columns={[
                     {

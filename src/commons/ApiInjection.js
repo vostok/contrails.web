@@ -27,7 +27,7 @@ export function createWithApiWrapper(key: string) {
 }
 
 function merge(x, y) {
-    return { ...x, ...y };
+    return Object.assign(x, y);
 }
 
 export function createApiProvider(propsToContextNames: string[]) {
@@ -35,7 +35,7 @@ export function createApiProvider(propsToContextNames: string[]) {
         static propTypes = {
             children: PropTypes.element,
         };
-        static childContextTypes = propsToContextNames.map(x => ({ [x]: PropTypes.any })).reduce(merge);
+        static childContextTypes = propsToContextNames.map(x => ({ [x]: PropTypes.any })).reduce(merge, {});
 
         getChildContext() {
             // eslint-disable-next-line no-unused-vars

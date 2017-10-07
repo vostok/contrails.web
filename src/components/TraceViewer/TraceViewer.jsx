@@ -33,7 +33,10 @@ type TraceViewerState = {
     focusedSpanNode: ?SpanNode,
     traceTree: SpanNode,
     spanLines: ChartData,
+    timeRange: TimeRange,
 };
+
+type TimeRange = { from: number, to: number };
 
 function min(x: number, y: number): number {
     return Math.min(x, y);
@@ -56,6 +59,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
             traceTree: traceTree,
             spanNodesMap: treeBuilder.buildNodeMap(traceTree),
             spanLines: this.generateDataFromDiTraceResponse(traceTree),
+            timeRange: this.getFromAndTo(props.traceInfo),
         };
     }
 
@@ -97,8 +101,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
     }
 
     render(): React.Node {
-        const { traceInfo } = this.props;
-        const { traceTree, focusedSpanNode, spanLines } = this.state;
+        const { traceTree, focusedSpanNode, spanLines, timeRange } = this.state;
         return (
             <ContrailPanelsContainer>
                 <ContrailPanelsTop>
@@ -106,7 +109,8 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                         selectedItems={this.getSelectedSpanLineItem()}
                         onItemClick={this.handleChartItemClick}
                         onCustomDrawItem={handleCustomDrawItem}
-                        {...this.getFromAndTo(traceInfo)}
+                        from={timeRange.from}
+                        to={timeRange.to}
                         data={spanLines}
                     />
                 </ContrailPanelsTop>
