@@ -10,6 +10,7 @@ type VirtualTableProps<T> = {
     renderRow: T => React.Node,
     rowHeight: number,
     headerHeight?: number,
+    tableClassName?: string,
 };
 
 type VirtualTableState = {
@@ -58,7 +59,7 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
     }
 
     render(): React.Node {
-        const { data, renderRow, renderHeader, rowHeight } = this.props;
+        const { data, renderRow, renderHeader, rowHeight, tableClassName } = this.props;
         const { scrollContainer } = this;
         const scrollTop = scrollContainer != null ? scrollContainer.scrollTop : 0;
         const renderFrom = Math.min(data.length - 40, Math.max(0, Math.round(scrollTop / rowHeight) - 1));
@@ -66,7 +67,7 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
 
         return (
             <div className={cn("root")}>
-                <table>
+                <table className={cn("table", tableClassName)}>
                     <thead>
                         {renderHeader()}
                     </thead>
@@ -76,7 +77,7 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
                     style={{ top: headerHeight }}
                     onScroll={this.handleScroll}
                     ref={x => (this.scrollContainer = x)}>
-                    <table className={cn("table")}>
+                    <table className={cn("table", tableClassName)}>
                         <tbody>
                             <tr>
                                 <td ref={x => (this.topOffsetRow = x)} />

@@ -4,6 +4,7 @@ import _ from "lodash";
 import { Icon } from "ui";
 
 import { reduceTree, findNodeToReducer } from "../../Domain/Utils/TreeTraverseUtils";
+import VirtualTable from "../VirtualTable/VirtualTable";
 
 import cn from "./TreeGrid.less";
 
@@ -29,23 +30,59 @@ type TreeGridProps<TItem> = {
 };
 
 type TreeGridState<TItem> = {
+    visibleRows: Array<VisibleRowInfo<TItem>>,
     expandedItems: Array<TItem>,
+};
+
+type VisibleRowInfo<TItem> = {
+    item: TItem,
+    parents: TItem[],
+    key: string,
 };
 
 export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
     props: TreeGridProps<TItem>;
     state: TreeGridState<TItem> = {
+        visibleRows: [],
         expandedItems: [],
     };
     focusedRow: ?HTMLTableRowElement;
 
+    updateRows() {
+        const { data } = this.props;
+        this.setState({
+            visibleRows: data.map((x, index) => this.buildVisibleRows(index.toString(), x, [])).reduce(flatten, []),
+        });
+    }
+
+    buildVisibleRows(key: string, item: TItem, parents: TItem[]): Array<VisibleRowInfo<TItem>> {
+        const { onGetChildren } = this.props;
+        const itemChildren = onGetChildren(item);
+        const expanded = this.isItemExpanded(item);
+
+        return [
+            {
+                item: item,
+                key: key,
+                parents: parents,
+            },
+            ...(expanded
+                ? (itemChildren || [])
+                      .map((x, index) => this.buildVisibleRows(`${key}_${index}`, x, [...parents, item]))
+                      .reduce(flatten, [])
+                : []),
+        ];
+    }
+
     componentWillMount() {
+        this.updateRows();
         if (this.props.focusedItem != null) {
             this.expandToFocusedItem(this.props.focusedItem);
         }
     }
 
     componentWillReceiveProps(nextProps: TreeGridProps<TItem>) {
+        this.updateRows();
         if (this.props.focusedItem !== nextProps.focusedItem) {
             if (nextProps.focusedItem != null) {
                 this.expandToFocusedItem(nextProps.focusedItem);
@@ -83,7 +120,10 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
 
     updateExpandedItems(updateAction: (Array<TItem>) => Array<TItem>) {
         if (this.props.expandedItems == null) {
-            this.setState(({ expandedItems }) => ({ expandedItems: updateAction(expandedItems) }));
+            this.setState(
+                ({ expandedItems }) => ({ expandedItems: updateAction(expandedItems) }),
+                () => this.updateRows()
+            );
         } else {
             const { expandedItems, onChangeExpandedItems } = this.props;
             if (onChangeExpandedItems != null) {
@@ -115,13 +155,12 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         }
     }
 
-    renderItem(key: string, item: TItem, parents: Array<TItem>): React.Node[] {
-        const { onItemClick, onGetChildren, focusedItem } = this.props;
-        const itemChildren = onGetChildren(item);
-        const expanded = this.isItemExpanded(item);
+    renderVisibleRow(visibleRowInfo: VisibleRowInfo<TItem>): React.Node[] {
+        const { key, item, parents } = visibleRowInfo;
+        const { onItemClick, focusedItem } = this.props;
         const isItemFocused = focusedItem === item;
 
-        return [
+        return (
             <tr
                 ref={e => {
                     if (isItemFocused) {
@@ -137,13 +176,8 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                     }
                 }}>
                 {this.renderCells(item, parents)}
-            </tr>,
-            ...(expanded
-                ? (itemChildren || [])
-                      .map((x, index) => this.renderItem(`${key}_${index}`, x, [...parents, item]))
-                      .reduce(flatten, [])
-                : []),
-        ];
+            </tr>
+        );
     }
 
     renderCells(item: TItem, parents: Array<TItem>): React.Node[] {
@@ -163,7 +197,6 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                     style={{
                         width: column.width,
                         maxWidth: column.width,
-                        textAlign: column.align,
                     }}>
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
@@ -198,7 +231,12 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
 
     renderHeaderCell(column: ColumnDefintion<TItem>): React.Node {
         return (
-            <th>
+            <th
+                style={{
+                    width: column.width,
+                    maxWidth: column.width,
+                    textAlign: column.align,
+                }}>
                 {column.renderHeader()}
             </th>
         );
@@ -268,26 +306,27 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     };
 
     render(): React.Node {
-        const { data } = this.props;
         const { columns } = this.props;
 
         return (
-            <div className={cn("scroll-container")} tabIndex={0}>
-                <table onKeyDown={this.handleTableKeyPress} className={cn("table")}>
-                    <thead>
-                        <tr tabIndex={-1} className={cn("head-row")}>
-                            {columns.map(x => this.renderHeaderCell(x))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((x, index) => this.renderItem(index.toString(), x, []))}
-                    </tbody>
-                </table>
-            </div>
+            <VirtualTable
+                tableClassName={cn("table")}
+                renderHeader={() =>
+                    <tr tabIndex={-1} className={cn("head-row")}>
+                        {columns.map(x => this.renderHeaderCell(x))}
+                    </tr>}
+                headerHeight={20}
+                rowHeight={20}
+                renderRow={x => this.renderVisibleRow(x)}
+                data={this.state.visibleRows}
+            />
         );
     }
 }
 
 function flatten<T>(memo: Array<T>, item: Array<T>): Array<T> {
-    return [...memo, ...item];
+    for (let i = 0; i < item.length; i++) {
+        memo.push(item[i]);
+    }
+    return memo;
 }
