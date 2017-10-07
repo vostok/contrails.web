@@ -11,6 +11,8 @@
 .*/stylelint/.*
 .*/retail-ui/docs/stories/.*
 .*/storypage/.*
+.*/flow-coverage-report/.*
+.*/immutable/.*
 
 [include]
 
