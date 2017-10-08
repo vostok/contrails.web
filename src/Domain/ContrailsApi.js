@@ -12,6 +12,9 @@ export class ContrailsApi implements IContrailsApi {
             throw new Error("500");
         }
         const resp = await response.json();
+        if (resp.length === 0) {
+            return resp;
+        }
         const firstItem = resp[0].Spans[0];
         for (const item of resp[0].Spans) {
             const diffMs = moment(firstItem.BeginTimestamp).valueOf() - moment(item.BeginTimestamp).valueOf();
