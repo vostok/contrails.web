@@ -37,7 +37,6 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
 
     getSpanNodeSelfTime(spanNode: SpanNode): number {
         // TODO вынести в домен
-        // TODO учесть перекрытие детей
         return Math.max(
             0,
             spanNode.to -
