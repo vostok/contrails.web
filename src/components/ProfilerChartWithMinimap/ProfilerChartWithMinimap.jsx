@@ -1,5 +1,6 @@
 // @flow
 import * as React from "react";
+import _ from "lodash";
 import ReactDom from "react-dom";
 
 import ProfilerChart from "../ProfilerChart/ProfilerChart";
@@ -37,12 +38,63 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     container: ?React.ElementRef<*>;
     chartContainer: ?React.ElementRef<*>;
 
+    getViewPortRange(): { from: number, to: number } {
+        const { viewPortFrom, width, xScale } = this.state;
+        if (viewPortFrom != null && xScale != null && width != null) {
+            return {
+                from: viewPortFrom,
+                to: viewPortFrom + width / xScale,
+            };
+        }
+        return {
+            from: this.props.from,
+            to: this.props.to,
+        };
+    }
+
     componentDidUpdate() {
         this.updateWidth();
     }
 
     componentDidMount() {
         this.updateWidth();
+    }
+
+    isItemInViewPort(item: TItem): boolean {
+        const viewPortRange = this.getViewPortRange();
+        return item.to > viewPortRange.from && item.from < viewPortRange.to;
+    }
+
+    setViewPortFrom(value: number) {
+        this.setState({
+            viewPortFrom: value,
+        });
+    }
+
+    setViewPortTo(value: number) {
+        const { width, xScale } = this.state;
+        if (width != null && xScale != null) {
+            this.setState({
+                viewPortFrom: value - width / xScale,
+            });
+        }
+    }
+
+    componentWillReceiveProps(nextProps: ProfilerChartWithMinimapProps<TItem>) {
+        if (!_.isEqual(nextProps.selectedItems, this.props.selectedItems)) {
+            if (nextProps.selectedItems != null && nextProps.selectedItems.length > 0) {
+                const firstSelectedItem = nextProps.selectedItems[0];
+                const viewPortRange = this.getViewPortRange();
+
+                if (!this.isItemInViewPort(firstSelectedItem)) {
+                    if (firstSelectedItem.to < viewPortRange.from) {
+                        this.setViewPortFrom(firstSelectedItem.from);
+                    } else {
+                        this.setViewPortTo(firstSelectedItem.to);
+                    }
+                }
+            }
+        }
     }
 
     updateWidth() {
