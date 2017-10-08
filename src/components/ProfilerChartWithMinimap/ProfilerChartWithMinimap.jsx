@@ -35,6 +35,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         xScale: null,
     };
     container: ?React.ElementRef<*>;
+    chartContainer: ?React.ElementRef<*>;
 
     componentDidUpdate() {
         this.updateWidth();
@@ -69,6 +70,14 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     }
 
     handleWheel = (event: SyntheticWheelEvent<>) => {
+        if (event.shiftKey) {
+            const chartContainer = ReactDom.findDOMNode(this.chartContainer);
+            if (!(chartContainer instanceof HTMLElement)) {
+                return;
+            }
+            chartContainer.scrollTop += event.deltaY / 3;
+            return;
+        }
         const { width, xScale, viewPortFrom } = this.state;
         const { from: maxFrom, to: maxTo } = this.props;
         const container = ReactDom.findDOMNode(this.container);
@@ -151,7 +160,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                 {width != null &&
                     viewPortFrom != null &&
                     xScale != null &&
-                    <div className={cn("chart-container")} onWheel={this.handleWheel}>
+                    <div className={cn("chart-container")} onWheel={this.handleWheel}  ref={x => (this.chartContainer = x)}>
                         <div />
                         <div>
                             <ProfilerChartContainer
