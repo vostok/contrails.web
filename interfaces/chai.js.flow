@@ -21,6 +21,7 @@ declare module 'chai' {
         deep: IExpectToDeep<T>;
         have: IExpectToHave<T>;
         be: IExpectToBe<T>;
+        not: IExpectTo<T>;
     }
 
     declare interface IExpectToDeep<T> {
@@ -32,6 +33,7 @@ declare module 'chai' {
         equal(expectedValue: T): void;
         equals(expectedValue: T): void;
         empty(): void;
+        exist: void;
         null(): void;
         false(): void;
         true(): void;

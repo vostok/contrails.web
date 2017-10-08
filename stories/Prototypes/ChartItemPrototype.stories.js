@@ -177,5 +177,13 @@ storiesOf("Prototypes/ChartItemPrototype", module).add("Default", () =>
                 <Text>/trygetcolumn</Text>
             </Item>
         </Line>
+        <Line>
+            <Item width={300} colorIndex={5}>
+                <Text>
+                    <Icon name="PC" /> Fake item
+                </Text>
+                <Text>/trygetcolumn</Text>
+            </Item>
+        </Line>
     </div>
 );

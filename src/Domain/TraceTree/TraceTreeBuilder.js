@@ -9,6 +9,22 @@ import type { SpanNode } from "./SpanNode";
 
 export default class TraceTreeBuilder {
     spanInfoToSpanNode(span: SpanInfo, spans: Array<SpanInfo>): SpanNode {
+        if (span.OperationName === "FakeSpan") {
+            return {
+                type: "FakeSpan",
+                from: moment(span.BeginTimestamp).valueOf(),
+                to: moment(span.EndTimestamp).valueOf(),
+                serviceName: "FakeSpan",
+                spanTitle: "",
+                colorConfig: 5,
+                source: span,
+                children: spans
+                    .filter(x => x !== span)
+                    .filter(x => x.ParentSpanId != null)
+                    .filter(x => x.ParentSpanId === span.SpanId)
+                    .map(x => this.spanInfoToSpanNode(x, spans)),
+            };
+        }
         return {
             type: "SingleSpan",
             from: moment(span.BeginTimestamp).valueOf(),

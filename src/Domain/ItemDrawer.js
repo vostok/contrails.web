@@ -41,21 +41,22 @@ export default function handleCustomDrawItem(
 ) {
     context.save();
     try {
+        const colorIndex = item.source.colorConfig;
         const { width, lineHeight } = itemContext;
         const { selected, hovered } = itemContext.options;
         if (hovered) {
-            context.fillStyle = itemColors[0].hoverBackground;
+            context.fillStyle = itemColors[colorIndex].hoverBackground;
             context.fillRect(0, 0, width, lineHeight);
         } else {
-            context.fillStyle = itemColors[0].background;
+            context.fillStyle = itemColors[colorIndex].background;
             context.fillRect(0, 0, width, lineHeight);
         }
         if (selected) {
             context.lineWidth = 3;
-            context.strokeStyle = itemColors[0].border;
+            context.strokeStyle = itemColors[colorIndex].border;
             context.strokeRect(1.5, 1.5, width - 3, lineHeight - 3);
         } else {
-            context.strokeStyle = itemColors[0].border;
+            context.strokeStyle = itemColors[colorIndex].border;
             context.strokeRect(0.5, 0.5, width - 1, lineHeight - 1);
         }
 

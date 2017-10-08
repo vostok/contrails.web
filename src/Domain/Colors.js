@@ -36,6 +36,13 @@ const itemColors = [
         hoverBackground: "rgba(162,58,153,0.80)",
         border: "rgba(162,58,153,1.0)",
     },
+    {
+        text: "white",
+        background: "rgba(53, 53, 53, 0.50)",
+        hoverText: "white",
+        hoverBackground: "rgba(53, 53, 53, 0.80)",
+        border: "rgba(53, 53, 53, 1.0)",
+    },
 ];
 
 export default itemColors;

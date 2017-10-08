@@ -2,7 +2,7 @@
 import type { SpanInfo } from "../SpanInfo";
 
 export type SpanNode = {
-    type: "SingleSpan",
+    type: "SingleSpan" | "FakeSpan",
     from: number,
     to: number,
     serviceName: string,

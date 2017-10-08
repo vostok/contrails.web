@@ -3,11 +3,14 @@ import * as React from "react";
 import moment from "moment";
 
 import type { TraceInfo } from "../../Domain/TraceInfo";
+import type { SpanInfo } from "../../Domain/SpanInfo";
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines, SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../../Domain/ItemDrawer";
 import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
+import LostSpanFixer from "../../Domain/TraceTree/LostSpanFixer";
+import type { SpanFactory } from "../../Domain/TraceTree/LostSpanFixer";
 import {
     ContrailPanelsContainer,
     ContrailPanelsTop,
@@ -46,6 +49,18 @@ function max(x: number, y: number): number {
     return Math.max(x, y);
 }
 
+function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
+    return (spanId: string, parentSpanId: string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
+        TraceId: traceId,
+        SpanId: spanId,
+        ParentSpanId: parentSpanId,
+        OperationName: "FakeSpan",
+        BeginTimestamp: beginTimestamp,
+        EndTimestamp: endTimestamp,
+        Annotations: {},
+    });
+}
+
 export default class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     props: TraceViewerProps;
     state: TraceViewerState;
@@ -53,7 +68,9 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
     constructor(props: TraceViewerProps) {
         super(props);
         const treeBuilder = new TraceTreeBuilder();
-        const traceTree = treeBuilder.buildTraceTree(props.traceInfo.Spans);
+        const lostSpanFixer = new LostSpanFixer();
+        const recoveredSpan = lostSpanFixer.fix(props.traceInfo.Spans, fakeSpanFactory(props.traceInfo.TraceId));
+        const traceTree = treeBuilder.buildTraceTree(recoveredSpan);
         this.state = {
             focusedSpanNode: null,
             traceTree: traceTree,
