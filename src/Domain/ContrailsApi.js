@@ -7,8 +7,11 @@ import type { IContrailsApi } from "./IContrailsApi";
 
 export class ContrailsApi implements IContrailsApi {
     async getTrace(id: string): Promise<TraceInfo[]> {
-        const resp = await (await fetch(`/api/findTrace?traceId=${id}&out=vostok`)).json();
-        //const resp = await (await fetch(`/api/findTrace?traceId=${id}&out=vostok`)).json();
+        const response = await fetch(`/api/findTrace?traceId=${id}&out=vostok`);
+        if (response.status !== 200) {
+            throw new Error("500");
+        }
+        const resp = await response.json();
         const firstItem = resp[0].Spans[0];
         for (const item of resp[0].Spans) {
             const diffMs = moment(firstItem.BeginTimestamp).valueOf() - moment(item.BeginTimestamp).valueOf();

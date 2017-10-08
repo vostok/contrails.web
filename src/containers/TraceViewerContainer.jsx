@@ -10,6 +10,8 @@ import { withContrailsApi } from "../Domain/ContrailsApiInjection";
 import type { IContrailsApi } from "../Domain/IContrailsApi";
 import TraceViewer from "../components/TraceViewer/TraceViewer";
 
+import cn from "./TraceViewerContainer.less";
+
 type ContrailsApplicationProps = {
     traceIdPrefix: string,
     contrailsApi: IContrailsApi,
@@ -17,6 +19,9 @@ type ContrailsApplicationProps = {
 };
 
 type ContrailsApplicationState = {
+    error: boolean,
+    errorTitle: ?string,
+    errorMessage: ?string,
     loading: boolean,
     traceInfo: ?TraceInfo,
     currentTraceIdPrefix: string,
@@ -28,6 +33,9 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         loading: false,
         traceInfo: null,
         currentTraceIdPrefix: "",
+        error: false,
+        errorTitle: null,
+        errorMessage: null,
     };
 
     componentWillReceiveProps(nextProps: ContrailsApplicationProps) {
@@ -42,12 +50,37 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
 
     async updateTrace(traceIdPrefix: string): Promise<void> {
         const { contrailsApi } = this.props;
-        this.setState({ traceInfo: null, loading: true, currentTraceIdPrefix: traceIdPrefix });
-        const tracesInfos = await contrailsApi.getTrace(traceIdPrefix);
-        if (tracesInfos.length > 0) {
-            this.setState({ traceInfo: tracesInfos[0] });
+        this.setState({ error: false, traceInfo: null, loading: true, currentTraceIdPrefix: traceIdPrefix });
+        try {
+            const tracesInfos = await contrailsApi.getTrace(traceIdPrefix);
+            if (tracesInfos.length > 0) {
+                this.setState({ traceInfo: tracesInfos[0] });
+            } else {
+                this.setState({
+                    error: true,
+                    errorTitle: "404",
+                    errorMessage: "Трассировок не найдено.",
+                });
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                if (e.message === "500") {
+                    this.setState({
+                        error: true,
+                        errorTitle: "500",
+                        errorMessage: "Кажется что-то пошло не так :-(",
+                    });
+                    return;
+                }
+            }
+            this.setState({
+                error: true,
+                errorTitle: "Упс :-(",
+                errorMessage: "Произошла непредвиденная ошибка",
+            });
+        } finally {
+            this.setState({ loading: false });
         }
-        this.setState({ loading: false });
     }
 
     renderHeaderContent(): React.Node {
@@ -62,11 +95,28 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         );
     }
 
+    renderErrorMessage(): React.Node {
+        const { errorTitle, errorMessage } = this.state;
+        return (
+            <div className={cn("error-container")}>
+                <div>
+                    <h1>
+                        {errorTitle}
+                    </h1>
+                    <div className={cn("message")}>
+                        {errorMessage}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     render(): React.Node {
-        const { loading, traceInfo } = this.state;
+        const { loading, traceInfo, error } = this.state;
         return (
             <ContrailsLayout header={this.renderHeaderContent()}>
                 {loading && <span>Loading...</span>}
+                {error && this.renderErrorMessage()}
                 {traceInfo != null && <TraceViewer traceInfo={traceInfo} />}
             </ContrailsLayout>
         );
