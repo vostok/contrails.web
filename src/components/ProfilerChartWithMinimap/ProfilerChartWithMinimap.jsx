@@ -129,6 +129,34 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         return viewPortFrom + value / xScale;
     }
 
+    initialScrollTop: number;
+    curYPos: number;
+    curDown: boolean;
+
+    handleMouseMove = (e: SyntheticMouseEvent<>) => {
+        if (this.curDown) {
+            const chartContainer = ReactDom.findDOMNode(this.chartContainer);
+            if (!(chartContainer instanceof HTMLElement)) {
+                return;
+            }
+            chartContainer.scrollTop = this.initialScrollTop + (this.curYPos - e.pageY);
+        }
+    };
+
+    handleMouseDown = (e: SyntheticMouseEvent<>) => {
+        const chartContainer = ReactDom.findDOMNode(this.chartContainer);
+        if (!(chartContainer instanceof HTMLElement)) {
+            return;
+        }
+        this.initialScrollTop = chartContainer.scrollTop;
+        this.curYPos = e.pageY;
+        this.curDown = true;
+    };
+
+    handleMouseUp = () => {
+        this.curDown = false;
+    };
+
     render(): React.Element<*> {
         const { data, from, to, onItemClick, selectedItems } = this.props;
         const { width, xScale, viewPortFrom } = this.state;
@@ -160,9 +188,18 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                 {width != null &&
                     viewPortFrom != null &&
                     xScale != null &&
-                    <div className={cn("chart-container")} onWheel={this.handleWheel}  ref={x => (this.chartContainer = x)}>
+                    <div
+                        className={cn("chart-container")}
+                        onWheel={this.handleWheel}
+                        ref={x => (this.chartContainer = x)}>
                         <div />
-                        <div>
+                        <div
+                            onMouseDown={this.handleMouseDown}
+                            onMouseUp={this.handleMouseUp}
+                            onMouseMove={this.handleMouseMove}
+                            onMouseLeave={() => {
+                                this.curDown = false;
+                            }}>
                             <ProfilerChartContainer
                                 from={from}
                                 to={to}
