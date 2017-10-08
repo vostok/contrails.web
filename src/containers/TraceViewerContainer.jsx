@@ -1,17 +1,14 @@
 // @flow
-/* eslint-disable */
-import * as React from 'react';
-import { Button, Input } from 'ui';
-import { withRouter } from 'react-router';
-import type { IBrowserHistory } from 'react-router';
+import * as React from "react";
+import { withRouter } from "react-router";
+import type { IBrowserHistory } from "react-router";
 
-import ContrailsLayout from '../components/ContrailsLayout/ContrailsLayout';
-import type { TraceInfo } from '../Domain/TraceInfo';
-import { withContrailsApi } from '../Domain/ContrailsApiInjection';
-import type { IContrailsApi } from '../Domain/IContrailsApi';
-import TraceViewer from '../components/TraceViewer/TraceViewer';
-
-import cn from './TraceViewerContainer.less';
+import ContrailsLayout from "../components/ContrailsLayout/ContrailsLayout";
+import TraceIdInput from "../components/TraceIdInput/TraceIdInput";
+import type { TraceInfo } from "../Domain/TraceInfo";
+import { withContrailsApi } from "../Domain/ContrailsApiInjection";
+import type { IContrailsApi } from "../Domain/IContrailsApi";
+import TraceViewer from "../components/TraceViewer/TraceViewer";
 
 type ContrailsApplicationProps = {
     traceIdPrefix: string,
@@ -30,7 +27,7 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
     state: ContrailsApplicationState = {
         loading: false,
         traceInfo: null,
-        currentTraceIdPrefix: '',
+        currentTraceIdPrefix: "",
     };
 
     componentWillReceiveProps(nextProps: ContrailsApplicationProps) {
@@ -53,28 +50,15 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         this.setState({ loading: false });
     }
 
-    handleOpenTrace = () => {
+    renderHeaderContent(): React.Node {
         const { history } = this.props;
         const { currentTraceIdPrefix } = this.state;
-        history.push(`/${currentTraceIdPrefix}`);
-    };
-
-    renderHeaderContent(): React.Node {
-        const { currentTraceIdPrefix } = this.state;
         return (
-            <div>
-                <Input
-                    placeholder="Введите TraceId"
-                    autoFocus
-                    width={500}
-                    value={currentTraceIdPrefix}
-                    onChange={(e, value) => this.setState({ currentTraceIdPrefix: value })}
-                />
-                <span className={cn('gap')} />
-                <Button use="success" onClick={this.handleOpenTrace}>
-                    Открыть
-                </Button>
-            </div>
+            <TraceIdInput
+                value={currentTraceIdPrefix}
+                onChange={value => this.setState({ currentTraceIdPrefix: value })}
+                onOpenTrace={() => history.push(`/${currentTraceIdPrefix}`)}
+            />
         );
     }
 

@@ -6,7 +6,7 @@ import cn from "./ContrailsLayout.less";
 
 type ContrailsLayoutProps = {
     children: React.Node,
-    header: React.Node,
+    header?: React.Node,
 };
 
 type ContrailsLayoutState = {};
@@ -26,9 +26,10 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
                         </span>
                         <span className={cn("logo-text")}>Contrails</span>
                     </div>
-                    <div className={cn("header-content")}>
-                        {header}
-                    </div>
+                    {header &&
+                        <div className={cn("header-content")}>
+                            {header}
+                        </div>}
                 </div>
                 <div className={cn("content")}>
                     {children}

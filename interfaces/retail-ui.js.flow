@@ -159,8 +159,8 @@ declare module '@skbkontur/react-ui/Input' {
         value: string;
         onBlur?: (event: SyntheticEvent<>) => void;
         onFocus?: (event: SyntheticEvent<>) => void;
-        onKeyDown?: (event: SyntheticEvent<>) => void;
-        onKeyPress?: (event: SyntheticEvent<>) => void;
+        onKeyDown?: (event: SyntheticKeyboardEvent<>) => void;
+        onKeyPress?: (event: SyntheticKeyboardEvent<>) => void;
         onChange?: (event: SyntheticEvent<>, value: string) => void;
     |};
     declare export default class Input extends React$Component<InputProps, void> {

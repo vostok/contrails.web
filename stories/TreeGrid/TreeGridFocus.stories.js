@@ -8,8 +8,17 @@ import TreeGrid, { withExpandedItems } from "../../src/components/TreeGrid/TreeG
 
 const TreeGrid2 = withExpandedItems(TreeGrid);
 
+type Item = {
+    value1: string,
+    value2: string,
+    children: ?Array<Item>,
+};
+
 class TreeGridFocusMangement extends React.Component<{}, *> {
-    state = {
+    state: {
+        focusedItem: ?Item,
+        data: Array<Item>,
+    } = {
         focusedItem: null,
         data: [
             {
@@ -84,6 +93,7 @@ class TreeGridFocusMangement extends React.Component<{}, *> {
             this.setState({
                 focusedItem: data[0],
             });
+            return;
         }
         if (focusedItem.children != null) {
             this.setState({
@@ -95,7 +105,7 @@ class TreeGridFocusMangement extends React.Component<{}, *> {
     handleFocusInvisible() {
         const { data } = this.state;
         this.setState({
-            focusedItem: data[2].children[1].children[700],
+            focusedItem: data[2].children && data[2].children[1].children && data[2].children[1].children[700],
         });
     }
 

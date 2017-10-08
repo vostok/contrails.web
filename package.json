@@ -84,7 +84,8 @@
     "excludeGlob": [
       "src/Domain/Responses/index.js",
       "src/commons/ApiInjection.js",
-      "src/commons/ApplicationError.js"
+      "src/commons/ApplicationError.js",
+      "src/Domain/ContrailsApi.js"
     ]
   }
 }

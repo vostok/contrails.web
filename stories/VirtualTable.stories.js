@@ -6,10 +6,11 @@ import { storiesOf } from "@storybook/react";
 
 import VirtualTable from "../src/components/VirtualTable/VirtualTable";
 
-class VirtualTableContainer extends React.Component<*, *> {
-    table: ?VirtualTable;
+class VirtualTableContainer extends React.Component<{}, *> {
+    props: {};
+    table: ?VirtualTable<*>;
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             intoViewIndex: 0,
@@ -26,7 +27,7 @@ class VirtualTableContainer extends React.Component<*, *> {
                 <div>
                     <Button
                         onClick={() => {
-                            this.table.scrollIntoView(items[500]);
+                            if (this.table != null) this.table.scrollIntoView(items[500]);
                             this.setState({
                                 intoViewIndex: 500,
                             });
@@ -39,7 +40,7 @@ class VirtualTableContainer extends React.Component<*, *> {
                             this.setState({
                                 intoViewIndex: intoViewIndex - 1,
                             });
-                            this.table.scrollIntoView(items[intoViewIndex - 1]);
+                            if (this.table != null) this.table.scrollIntoView(items[intoViewIndex - 1]);
                         }}>
                         Scroll into view up
                     </Button>
@@ -49,7 +50,7 @@ class VirtualTableContainer extends React.Component<*, *> {
                             this.setState({
                                 intoViewIndex: intoViewIndex + 1,
                             });
-                            this.table.scrollIntoView(items[intoViewIndex + 1]);
+                            if (this.table != null) this.table.scrollIntoView(items[intoViewIndex + 1]);
                         }}>
                         Scroll into view down
                     </Button>

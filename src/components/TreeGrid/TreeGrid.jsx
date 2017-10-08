@@ -170,7 +170,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         }
     }
 
-    renderVisibleRow(visibleRowInfo: VisibleRowInfo<TItem>): React.Node[] {
+    renderVisibleRow(visibleRowInfo: VisibleRowInfo<TItem>): React.Node {
         const { key, item, parents } = visibleRowInfo;
         const { onItemClick, focusedItem } = this.props;
         const isItemFocused = focusedItem === item;
@@ -350,6 +350,7 @@ export function withExpandedItems<T, Props: {}>(
         } & Props
     >
 ): React.ComponentType<Props> {
+    // eslint-disable-next-line react/no-multi-comp
     return class ExpandedItemsContainer extends React.Component<Props, *> {
         props: Props;
         state: {
