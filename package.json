@@ -65,7 +65,7 @@
     "flow": "flow",
     "flow.check": "flow check",
     "flow.coverage-report": "flow-coverage-report -t html",
-    "travis:flow.coverage-report": "flow-coverage-report -t text --threshold 100",
+    "travis:flow.coverage-report": "flow-coverage-report -t text --threshold 99",
     "lint": "eslint src stories",
     "stylelint": "stylelint src/**/*.less stories/**/*.less --syntax less",
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js",
