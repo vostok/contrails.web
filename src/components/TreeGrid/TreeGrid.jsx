@@ -245,7 +245,6 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                 style={{
                     width: column.width,
                     maxWidth: column.width,
-                    textAlign: column.align,
                 }}>
                 {column.renderHeader()}
             </th>
@@ -327,7 +326,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                     <tr tabIndex={-1} className={cn("head-row")}>
                         {columns.map(x => this.renderHeaderCell(x))}
                     </tr>}
-                headerHeight={30}
+                headerHeight={20}
                 rowHeight={30}
                 renderRow={x => this.renderVisibleRow(x)}
                 data={this.state.visibleRows}

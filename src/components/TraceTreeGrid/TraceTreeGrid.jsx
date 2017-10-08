@@ -74,7 +74,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                 columns={[
                     {
                         name: "totalTime",
-                        width: 120,
+                        width: 140,
                         align: "right",
                         renderHeader: () => "Total time",
                         renderValue: (x, focused) =>
@@ -86,7 +86,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                     },
                     {
                         name: "selfTime",
-                        width: 120,
+                        width: 140,
                         align: "right",
                         renderHeader: () => "Self time",
                         renderValue: (x, focused) =>
