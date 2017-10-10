@@ -70,6 +70,7 @@
     "stylelint": "stylelint src/**/*.less stories/**/*.less --syntax less",
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js",
     "clean": "rimraf dist",
+    "build": "cross-env NODE_ENV=production webpack",
     "iis:build": "cross-env NODE_ENV=production webpack"
   },
   "flow-coverage-report": {
