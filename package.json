@@ -60,6 +60,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server",
+    "start:vostok-dev": "cross-env NODE_ENV=development webpack-dev-server --env.api=vostok-dev",
     "start:fake": "cross-env NODE_ENV=development webpack-dev-server --env.api=fake",
     "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
     "flow": "flow",
@@ -70,8 +71,8 @@
     "stylelint": "stylelint src/**/*.less stories/**/*.less --syntax less",
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js",
     "clean": "rimraf dist",
-    "build": "cross-env NODE_ENV=production webpack",
-    "iis:build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack --env.api=vostok --env.target=vostok",
+    "iis:build": "cross-env NODE_ENV=production webpack --env.api=logsearch --env.target=logsearch-test-iis"
   },
   "flow-coverage-report": {
     "includeGlob": [

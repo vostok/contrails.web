@@ -13,9 +13,18 @@ let api;
 if (process.env.API === "fake") {
     const ContrailsApiFake = require("../Domain/ContrailsApiFake");
     api = new ContrailsApiFake.ContrailsApiFake();
-} else {
-    const ContrailsApi = require("../Domain/ContrailsApi");
-    api = new ContrailsApi.ContrailsApi();
+}
+if (process.env.API === "vostok-dev") {
+    const ContrailsApi = require("../Domain/ContrailsVostokApi");
+    api = new ContrailsApi.ContrailsVostokApi("http://localhost:54266");
+}
+if (process.env.API === "vostok") {
+    const ContrailsApi = require("../Domain/ContrailsVostokApi");
+    api = new ContrailsApi.ContrailsVostokApi("");
+}
+if (process.env.API === "logsearch") {
+    const ContrailsApi = require("../Domain/ContrailsLogsearchApi");
+    api = new ContrailsApi.ContrailsLogsearchApi("");
 }
 
 export default function ContrailsApplication(): React.Node {

@@ -11,11 +11,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export class ContrailsApiFake implements IContrailsApi {
-    async getTrace(id: string): Promise<TraceInfo[]> {
+    async getTrace(id: string): Promise<TraceInfo> {
         await PromiseUtils.delay(2000);
         const result = Object.keys(responses).find(x => x.replace(/^\.\//, "").startsWith(id));
         if (result != null) {
-            return responses[result];
+            return responses[result][0];
         }
         throw new Error("NotFound");
     }

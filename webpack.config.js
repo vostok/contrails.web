@@ -13,7 +13,8 @@ const NODE_ENV = process.env.NODE_ENV;
 
 module.exports = function createConfig(env) {
     const options = env || {};
-    options.api = options.api || "real";
+    options.api = options.api || "logsearch";
+    options.target = options.target || "vostok";
 
     const result = {
         entry: {
@@ -50,7 +51,7 @@ module.exports = function createConfig(env) {
                 },
             },
             allowedHosts: ["localhost"],
-            port: 3000,
+            port: 3001,
             historyApiFallback: true,
         },
     };
@@ -58,7 +59,7 @@ module.exports = function createConfig(env) {
     if (NODE_ENV === "development") {
         result.devtool = "eval-source-map";
         result.entry.index = []
-            .concat(["react-hot-loader/patch", "webpack-dev-server/client?http://localhost:3000"])
+            .concat(["react-hot-loader/patch", "webpack-dev-server/client?http://localhost:3001"])
             .concat(result.entry.index);
 
         result.plugins.push(
@@ -73,15 +74,17 @@ module.exports = function createConfig(env) {
         result.output.filename = "[name].[hash].js";
         // TODO отключить при конечном выпуске в продакшен
         result.devtool = "source-map";
-        result.plugins.push(
-            new UglifyJSPlugin(true, { comments: false }),
-            new CopyWebpackPlugin([
-                {
-                    from: "./build/testing.web.config",
-                    to: "web.config",
-                },
-            ])
-        );
+        result.plugins.push(new UglifyJSPlugin(true, { comments: false }));
+        if (options.target === "logsearch-test-iis") {
+            result.plugins.push(
+                new CopyWebpackPlugin([
+                    {
+                        from: "./build/testing.web.config",
+                        to: "web.config",
+                    },
+                ])
+            );
+        }
     }
 
     return result;

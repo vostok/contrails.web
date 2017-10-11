@@ -52,16 +52,8 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         const { contrailsApi } = this.props;
         this.setState({ error: false, traceInfo: null, loading: true, currentTraceIdPrefix: traceIdPrefix });
         try {
-            const tracesInfos = await contrailsApi.getTrace(traceIdPrefix);
-            if (tracesInfos.length > 0) {
-                this.setState({ traceInfo: tracesInfos[0] });
-            } else {
-                this.setState({
-                    error: true,
-                    errorTitle: "404",
-                    errorMessage: "Трассировок не найдено.",
-                });
-            }
+            const traceInfo = await contrailsApi.getTrace(traceIdPrefix);
+            this.setState({ traceInfo: traceInfo });
         } catch (e) {
             if (e instanceof Error) {
                 if (e.message === "500") {
@@ -69,6 +61,14 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
                         error: true,
                         errorTitle: "500",
                         errorMessage: "Кажется что-то пошло не так :-(",
+                    });
+                    return;
+                }
+                if (e.message === "404") {
+                    this.setState({
+                        error: true,
+                        errorTitle: "404",
+                        errorMessage: "Трассировок не найдено.",
                     });
                     return;
                 }

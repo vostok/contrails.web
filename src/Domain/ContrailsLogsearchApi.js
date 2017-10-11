@@ -5,15 +5,21 @@ import moment from "moment";
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
-export class ContrailsApi implements IContrailsApi {
-    async getTrace(id: string): Promise<TraceInfo[]> {
-        const response = await fetch(`/api/findTrace?traceId=${id}&out=vostok`);
+export class ContrailsLogsearchApi implements IContrailsApi {
+    urlPrefix: string;
+
+    constructor(urlPrefix: string) {
+        this.urlPrefix = urlPrefix;
+    }
+
+    async getTrace(id: string): Promise<TraceInfo> {
+        const response = await fetch(`${this.urlPrefix}/api/findTrace?traceId=${id}&out=vostok`);
         if (response.status !== 200) {
             throw new Error("500");
         }
         const resp = await response.json();
         if (resp.length === 0) {
-            return resp;
+            throw new Error("404");
         }
         const firstItem = resp[0].Spans[0];
         for (const item of resp[0].Spans) {
@@ -28,6 +34,6 @@ export class ContrailsApi implements IContrailsApi {
                 item.TimeFixed = true;
             }
         }
-        return resp;
+        return resp[0];
     }
 }
