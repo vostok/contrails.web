@@ -8,7 +8,7 @@ RUN yarn install && yarn run build
 
 
 # build runtime image
-FROM nginx:latest
+FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 COPY --from=build-env /app/dist /usr/share/nginx/html
