@@ -15,7 +15,7 @@ function timestamp(relativeValue: number): string {
     return moment("2013-02-08 12:00:00.000").add(relativeValue, "seconds").format();
 }
 
-function spanFactory(spanId: string, parentSpanId: string, beginTimestamp: string, endTimestamp: string): Span {
+function spanFactory(spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string): Span {
     return {
         SpanId: spanId,
         ParentSpanId: parentSpanId,
@@ -45,7 +45,7 @@ describe("LostSpanFixer.fix", () => {
         const fakeSpan = fixedSpans.find(x => x.SpanId === "2");
         expect(fakeSpan).to.be.exist;
     });
-    it("простейший случай", () => {
+    it("простейший случай с тремя спанами", () => {
         const fixer = new LostSpanFixer();
         const spans = [
             {
@@ -75,5 +75,19 @@ describe("LostSpanFixer.fix", () => {
             expect(fakeSpan.BeginTimestamp).to.be.eql(timestamp(1));
             expect(fakeSpan.EndTimestamp).to.be.eql(timestamp(2));
         }
+    });
+    it("добавление корневого спана #1", () => {
+        const fixer = new LostSpanFixer();
+        const spans = [
+            {
+                SpanId: "2",
+                ParentSpanId: "1",
+                BeginTimestamp: timestamp(1),
+                EndTimestamp: timestamp(3),
+            },
+        ];
+        const fixedSpans = fixer.fix(spans, spanFactory);
+        const fakeSpan = fixedSpans.find(x => x.SpanId === "1");
+        expect(fakeSpan).to.be.exist;
     });
 });

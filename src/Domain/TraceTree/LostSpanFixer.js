@@ -9,16 +9,17 @@ type SpanBase = {
     EndTimestamp: string,
 };
 
-export type SpanFactory<T> = (spanId: string, parentSpanId: string, beginTimestamp: string, endTimestamp: string) => T;
+export type SpanFactory<T> = (spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string) => T;
 
 export default class LostSpanFixer {
     fix<T: SpanBase>(spans: Array<T>, createFakeSpan: SpanFactory<T>): Array<T> {
-        const fakeSpans = [];
+        let result = [...spans];
         const spanIds = spans.map(x => x.SpanId);
+        result = this.fixParentSpanIfNeed(result, createFakeSpan);
         const lostSpans = spans.filter(x => x.ParentSpanId != null).filter(x => !spanIds.includes(x.ParentSpanId));
         for (const lostSpan of lostSpans) {
             const parentSpanId = lostSpan.ParentSpanId;
-            const mostSuitableParent = this.findMostSuitableParent(spans, lostSpan);
+            const mostSuitableParent = this.findMostSuitableParent(result, lostSpan);
             if (mostSuitableParent == null) {
                 continue;
             }
@@ -31,9 +32,24 @@ export default class LostSpanFixer {
                 lostSpan.BeginTimestamp,
                 lostSpan.EndTimestamp
             );
-            fakeSpans.push(fakeSpan);
+            result.push(fakeSpan);
         }
-        return [...spans, ...fakeSpans];
+        return result;
+    }
+
+    fixParentSpanIfNeed<T: SpanBase>(spans: Array<T>, createFakeSpan: SpanFactory<T>): Array<T> {
+        if (spans.find(x => x.ParentSpanId == null) != null) {
+            return spans;
+        }
+        return [
+            ...spans,
+            createFakeSpan(
+                "FakeRootSpanId",
+                null,
+                _.minBy(spans, x => moment(x.BeginTimestamp).toDate()).BeginTimestamp,
+                _.maxBy(spans, x => moment(x.EndTimestamp).toDate()).EndTimestamp
+            ),
+        ];
     }
 
     findMostSuitableParent<T: SpanBase>(spans: Array<T>, target: T): ?T {

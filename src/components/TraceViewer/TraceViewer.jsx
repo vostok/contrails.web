@@ -50,7 +50,7 @@ function max(x: number, y: number): number {
 }
 
 function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
-    return (spanId: string, parentSpanId: string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
+    return (spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
         TraceId: traceId,
         SpanId: spanId,
         ParentSpanId: parentSpanId,
