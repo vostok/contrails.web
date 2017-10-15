@@ -65,8 +65,21 @@
     box-sizing: border-box;
     top: 0;
     bottom: 0;
-    // TODO сделать курсорчик
-    // cursor: grab;
+
+    &:hover {
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+    }
+
+    &:active {
+        cursor: move;
+        cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+    }
+
 }
 
 .container {
