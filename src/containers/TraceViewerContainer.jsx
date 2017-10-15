@@ -1,5 +1,6 @@
 // @flow
 import * as React from "react";
+import { Spinner } from "ui";
 import { withRouter } from "react-router";
 import type { IBrowserHistory } from "react-router";
 import { Helmet } from "react-helmet";
@@ -128,6 +129,17 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         );
     }
 
+    renderLoader(): React.Node {
+        return (
+            <div className={cn("loader-container")}>
+                <div className={cn("shadow")} />
+                <div className={cn("message")}>
+                    <Spinner type="mini" caption="Loading..." />
+                </div>
+            </div>
+        );
+    }
+
     render(): React.Node {
         const { traceIdPrefix } = this.props;
         const { loading, traceInfo, error } = this.state;
@@ -138,7 +150,7 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
                         {`Trace ${traceIdPrefix}`}
                     </title>
                 </Helmet>
-                {loading && <span>Loading...</span>}
+                {loading && this.renderLoader()}
                 {error && this.renderErrorMessage()}
                 {traceInfo != null && <TraceViewer traceInfo={traceInfo} />}
             </ContrailsLayout>
