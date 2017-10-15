@@ -189,7 +189,6 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
 
         return (
             <tr
-                tabIndex={-1}
                 key={key}
                 className={cn("item-row", { focused: isItemFocused })}
                 onClick={() => {
@@ -336,7 +335,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                 onKeyDown={this.handleTableKeyPress}
                 tableClassName={cn("table")}
                 renderHeader={() =>
-                    <tr tabIndex={-1} className={cn("head-row")}>
+                    <tr className={cn("head-row")}>
                         {columns.map(x => this.renderHeaderCell(x))}
                     </tr>}
                 headerHeight={20}

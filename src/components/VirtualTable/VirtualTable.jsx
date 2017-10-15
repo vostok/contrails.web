@@ -157,7 +157,7 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
                     onScroll={this.handleScroll}
                     ref={x => (this.scrollContainer = x)}>
                     <div ref={x => (this.topOffsetRow = x)} style={{ height: topOffset }} />
-                    <table className={cn("table", tableClassName)} onKeyDown={onKeyDown}>
+                    <table tabIndex="-1" className={cn("table", tableClassName)} onKeyDown={onKeyDown}>
                         <tbody>
                             {data.slice(renderRange.from, renderRange.to).map(renderRow)}
                         </tbody>
