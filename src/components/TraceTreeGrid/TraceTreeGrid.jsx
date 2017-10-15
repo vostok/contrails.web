@@ -13,7 +13,7 @@ const TreeGridWithState = withExpandedItems(TreeGrid);
 type TraceTreeGridProps = {
     traceTree: SpanNode,
     focusedItem?: ?SpanNode,
-    onChangeFocusedItem?: (spanNode: SpanNode) => void,
+    onChangeFocusedItem: (spanNode: SpanNode) => void,
     onItemClick?: (spanNode: SpanNode) => void,
 };
 

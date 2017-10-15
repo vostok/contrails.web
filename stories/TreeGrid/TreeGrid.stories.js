@@ -2,6 +2,7 @@
 import * as React from "react";
 import _ from "lodash";
 import { storiesOf } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
 
 import TreeGrid, { withExpandedItems } from "../../src/components/TreeGrid/TreeGrid";
 
@@ -41,6 +42,7 @@ storiesOf("TreeGrid/Default", module)
                     mainCell: true,
                 },
             ]}
+            onChangeFocusedItem={action("onChangeFocusedItem")}
             focusedItem={item1}
             data={[
                 item1,
@@ -76,6 +78,7 @@ storiesOf("TreeGrid/Default", module)
     )
     .add("Many children", () =>
         <TreeGrid2
+            onChangeFocusedItem={action("onChangeFocusedItem")}
             onGetChildren={x => x.children}
             columns={[
                 {

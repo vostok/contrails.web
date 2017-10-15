@@ -26,7 +26,7 @@ type TreeGridProps<TItem> = {
     onGetItemColor?: TItem => ?string,
     onGetChildren: TItem => ?Array<TItem>,
     onChangeExpandedItems: (Array<TItem>) => void,
-    onChangeFocusedItem?: TItem => void,
+    onChangeFocusedItem: TItem => void,
 };
 
 type TreeGridState<TItem> = {
@@ -147,10 +147,22 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     }
 
     handleToggleItemExpand(item: TItem) {
-        this.updateExpandedItems(
-            expandedItems =>
-                expandedItems.includes(item) ? _.difference(expandedItems, [item]) : _.union(expandedItems, [item])
-        );
+        const { focusedItem, expandedItems, onChangeExpandedItems, onChangeFocusedItem } = this.props;
+        if (expandedItems.includes(item)) {
+            if (focusedItem == null) {
+                onChangeExpandedItems(_.difference(expandedItems, [item]));
+            } else {
+                const nodes = this.findNodeTo(focusedItem);
+                const index = nodes.indexOf(item);
+                if (index >= 0) {
+                    const nodeToHide = nodes.slice(index);
+                    onChangeFocusedItem(item);
+                    onChangeExpandedItems(_.difference(expandedItems, nodeToHide));
+                }
+            }
+        } else {
+            onChangeExpandedItems(_.union(expandedItems, [item]));
+        }
     }
 
     renderParentBlock(item: TItem): React.Node {
