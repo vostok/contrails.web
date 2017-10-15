@@ -2,6 +2,9 @@
 import * as React from "react";
 import ReactDom from "react-dom";
 
+import DocumentUtils from "../DocumentUtils";
+import type { IListenerHandler } from "../DocumentUtils";
+
 import cn from "./ProfilerChartContainer.less";
 
 type ProfilerChartProps = {|
@@ -47,49 +50,49 @@ export default class ProfilerChartContainer extends React.Component<ProfilerChar
 
     initialFrom: number;
     curXPos: number;
-    curDown: boolean;
+    mouseMoveListener: ?IListenerHandler = null;
+    mouseUpListener: ?IListenerHandler = null;
 
-    handleMouseMove = (e: SyntheticMouseEvent<>) => {
-        if (this.curDown) {
-            const container = ReactDom.findDOMNode(this.container);
-            if (!(container instanceof HTMLElement)) {
-                return;
-            }
-            const { onChangeViewPort, viewPort } = this.props;
-            if (onChangeViewPort != null) {
-                onChangeViewPort({ ...viewPort, from: this.initialFrom + (this.curXPos - e.pageX) / viewPort.scale });
-            }
-        }
-    };
-
-    handleMouseDown = (e: SyntheticMouseEvent<>) => {
+    handleMouseMove = (e: MouseEvent) => {
         const container = ReactDom.findDOMNode(this.container);
         if (!(container instanceof HTMLElement)) {
             return;
         }
+        const { onChangeViewPort, viewPort } = this.props;
+        if (onChangeViewPort != null) {
+            onChangeViewPort({ ...viewPort, from: this.initialFrom + (this.curXPos - e.pageX) / viewPort.scale });
+        }
+    };
 
+    handleMouseDown = (e: MouseEvent) => {
+        const container = ReactDom.findDOMNode(this.container);
+        if (!(container instanceof HTMLElement)) {
+            return;
+        }
         const { viewPort } = this.props;
         this.initialFrom = viewPort.from;
         this.curXPos = e.pageX;
-        this.curDown = true;
+        DocumentUtils.beginDragging();
+        this.mouseMoveListener = DocumentUtils.addMouseMoveListener(this.handleMouseMove);
+        this.mouseUpListener = DocumentUtils.addMouseUpListener(this.handleMouseUp);
     };
 
     handleMouseUp = () => {
-        this.curDown = false;
+        DocumentUtils.endDragging();
+        if (this.mouseMoveListener != null) {
+            this.mouseMoveListener.remove();
+            this.mouseMoveListener = null;
+        }
+        if (this.mouseUpListener != null) {
+            this.mouseUpListener.remove();
+            this.mouseUpListener = null;
+        }
     };
 
     render(): React.Node {
         const { children } = this.props;
         return (
-            <div
-                className={cn("wrapper")}
-                ref={e => (this.container = e)}
-                onMouseDown={this.handleMouseDown}
-                onMouseUp={this.handleMouseUp}
-                onMouseMove={this.handleMouseMove}
-                onMouseLeave={() => {
-                    this.curDown = false;
-                }}>
+            <div className={cn("wrapper")} ref={e => (this.container = e)} onMouseDown={this.handleMouseDown}>
                 {children}
             </div>
         );

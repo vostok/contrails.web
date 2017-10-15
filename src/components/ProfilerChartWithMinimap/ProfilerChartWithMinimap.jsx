@@ -3,6 +3,8 @@ import * as React from "react";
 import _ from "lodash";
 import ReactDom from "react-dom";
 
+import DocumentUtils from "../DocumentUtils";
+import type { IListenerHandler } from "../DocumentUtils";
 import ProfilerChart from "../ProfilerChart/ProfilerChart";
 import type { ProfilerData, ProfilerItem, ItemDrawContext } from "../ProfilerChart/ProfilerChart";
 import ProfilerChartContainer from "../ProfilerChartContainer/ProfilerChartContainer";
@@ -37,6 +39,10 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     };
     container: ?React.ElementRef<*>;
     chartContainer: ?React.ElementRef<*>;
+    initialScrollTop: number;
+    curYPos: number;
+    mouseMoveListener: ?IListenerHandler = null;
+    mouseUpListener: ?IListenerHandler = null;
 
     getViewPortRange(): { from: number, to: number } {
         const { viewPortFrom, width, xScale } = this.state;
@@ -181,32 +187,34 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         return viewPortFrom + value / xScale;
     }
 
-    initialScrollTop: number;
-    curYPos: number;
-    curDown: boolean;
-
-    handleMouseMove = (e: SyntheticMouseEvent<>) => {
-        if (this.curDown) {
-            const chartContainer = ReactDom.findDOMNode(this.chartContainer);
-            if (!(chartContainer instanceof HTMLElement)) {
-                return;
-            }
-            chartContainer.scrollTop = this.initialScrollTop + (this.curYPos - e.pageY);
+    handleMouseMove = (e: MouseEvent) => {
+        const chartContainer = ReactDom.findDOMNode(this.chartContainer);
+        if (!(chartContainer instanceof HTMLElement)) {
+            return;
         }
+        chartContainer.scrollTop = this.initialScrollTop + (this.curYPos - e.pageY);
     };
 
-    handleMouseDown = (e: SyntheticMouseEvent<>) => {
+    handleMouseDown = (e: MouseEvent) => {
         const chartContainer = ReactDom.findDOMNode(this.chartContainer);
         if (!(chartContainer instanceof HTMLElement)) {
             return;
         }
         this.initialScrollTop = chartContainer.scrollTop;
         this.curYPos = e.pageY;
-        this.curDown = true;
+        this.mouseMoveListener = DocumentUtils.addMouseMoveListener(this.handleMouseMove);
+        this.mouseUpListener = DocumentUtils.addMouseUpListener(this.handleMouseUp);
     };
 
     handleMouseUp = () => {
-        this.curDown = false;
+        if (this.mouseMoveListener != null) {
+            this.mouseMoveListener.remove();
+            this.mouseMoveListener = null;
+        }
+        if (this.mouseUpListener != null) {
+            this.mouseUpListener.remove();
+            this.mouseUpListener = null;
+        }
     };
 
     render(): React.Element<*> {
@@ -245,13 +253,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                         onWheel={this.handleWheel}
                         ref={x => (this.chartContainer = x)}>
                         <div />
-                        <div
-                            onMouseDown={this.handleMouseDown}
-                            onMouseUp={this.handleMouseUp}
-                            onMouseMove={this.handleMouseMove}
-                            onMouseLeave={() => {
-                                this.curDown = false;
-                            }}>
+                        <div onMouseDown={this.handleMouseDown}>
                             <ProfilerChartContainer
                                 from={from}
                                 to={to}
