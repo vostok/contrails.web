@@ -158,6 +158,8 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                     const nodeToHide = nodes.slice(index);
                     onChangeFocusedItem(item);
                     onChangeExpandedItems(_.difference(expandedItems, nodeToHide));
+                } else {
+                    onChangeExpandedItems(_.difference(expandedItems, [item]));
                 }
             }
         } else {
