@@ -132,7 +132,6 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
     renderLoader(): React.Node {
         return (
             <div className={cn("loader-container")}>
-                <div className={cn("shadow")} />
                 <div className={cn("message")}>
                     <Spinner type="mini" caption="Loading..." />
                 </div>
