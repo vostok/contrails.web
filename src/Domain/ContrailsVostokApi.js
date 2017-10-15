@@ -18,7 +18,7 @@ export class ContrailsVostokApi implements IContrailsApi {
         const resp = await response.json();
         const result = {
             TraceId: resp.traceId,
-            Spans: resp.spans.map(span => {
+            Spans: (resp.spans || []).map(span => {
                 const { operationName, ...annotations } = span.annotations;
                 return {
                     BeginTimestamp: span.beginTimestamp,

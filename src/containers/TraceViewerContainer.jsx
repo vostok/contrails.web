@@ -49,36 +49,52 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         this.updateTrace(this.props.traceIdPrefix);
     }
 
+    setServerError() {
+        this.setState({
+            error: true,
+            errorTitle: "500",
+            errorMessage: "Кажется что-то пошло не так :-(",
+        });
+    }
+
+    setTraceNotFound() {
+        this.setState({
+            error: true,
+            errorTitle: "404",
+            errorMessage: "Трассировок не найдено.",
+        });
+    }
+
+    setUnexpectedError() {
+        this.setState({
+            error: true,
+            errorTitle: "Упс :-(",
+            errorMessage: "Произошла непредвиденная ошибка",
+        });
+    }
+
     async updateTrace(traceIdPrefix: string): Promise<void> {
         const { contrailsApi } = this.props;
         this.setState({ error: false, traceInfo: null, loading: true, currentTraceIdPrefix: traceIdPrefix });
         try {
             const traceInfo = await contrailsApi.getTrace(traceIdPrefix);
+            if (traceInfo.Spans.length === 0) {
+                this.setTraceNotFound();
+                return;
+            }
             this.setState({ traceInfo: traceInfo });
         } catch (e) {
             if (e instanceof Error) {
                 if (e.message === "500") {
-                    this.setState({
-                        error: true,
-                        errorTitle: "500",
-                        errorMessage: "Кажется что-то пошло не так :-(",
-                    });
+                    this.setServerError();
                     return;
                 }
                 if (e.message === "404") {
-                    this.setState({
-                        error: true,
-                        errorTitle: "404",
-                        errorMessage: "Трассировок не найдено.",
-                    });
+                    this.setTraceNotFound();
                     return;
                 }
             }
-            this.setState({
-                error: true,
-                errorTitle: "Упс :-(",
-                errorMessage: "Произошла непредвиденная ошибка",
-            });
+            this.setUnexpectedError();
         } finally {
             this.setState({ loading: false });
         }
