@@ -1,6 +1,7 @@
 // @flow
 import * as React from "react";
 import { Icon } from "ui";
+import { Helmet } from "react-helmet";
 
 import cn from "./ContrailsLayout.less";
 
@@ -32,6 +33,7 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
                         </div>}
                 </div>
                 <div className={cn("content")}>
+                    <Helmet defaultTitle="Contrails | SKB Kontur" titleTemplate="%s | Contrails | SKB Kontur" />
                     {children}
                 </div>
             </div>

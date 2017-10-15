@@ -2,6 +2,7 @@
 import * as React from "react";
 import { withRouter } from "react-router";
 import type { IBrowserHistory } from "react-router";
+import { Helmet } from "react-helmet";
 
 import ContrailsLayout from "../components/ContrailsLayout/ContrailsLayout";
 import TraceIdInput from "../components/TraceIdInput/TraceIdInput";
@@ -112,9 +113,15 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
     }
 
     render(): React.Node {
+        const { traceIdPrefix } = this.props;
         const { loading, traceInfo, error } = this.state;
         return (
             <ContrailsLayout header={this.renderHeaderContent()}>
+                <Helmet>
+                    <title>
+                        {`Trace ${traceIdPrefix}`}
+                    </title>
+                </Helmet>
                 {loading && <span>Loading...</span>}
                 {error && this.renderErrorMessage()}
                 {traceInfo != null && <TraceViewer traceInfo={traceInfo} />}
