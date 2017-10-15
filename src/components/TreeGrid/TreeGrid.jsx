@@ -242,6 +242,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     renderHeaderCell(column: ColumnDefintion<TItem>): React.Node {
         return (
             <th
+                key={column.name}
                 style={{
                     width: column.width,
                     maxWidth: column.width,
