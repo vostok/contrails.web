@@ -52,7 +52,7 @@ storiesOf("ProfilerChart", module)
             selectedItems={[item2]}
             from={10}
             to={20}
-            viewPort={{ from: 0, to: 20 }}
+            viewPort={{ from: 11, to: 20 }}
             xScale={100}
             data={{
                 lines: [
