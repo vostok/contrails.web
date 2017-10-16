@@ -74,6 +74,7 @@
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js",
     "clean": "rimraf dist",
     "build": "cross-env NODE_ENV=production webpack --env.api=vostok --env.target=vostok",
+    "logsearch:build": "cross-env NODE_ENV=production webpack --env.api=logsearch --env.target=logsearch-test-iis",
     "iis:build": "cross-env NODE_ENV=production webpack --env.api=logsearch --env.target=logsearch-test-iis"
   },
   "flow-coverage-report": {
