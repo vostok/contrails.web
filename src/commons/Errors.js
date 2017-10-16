@@ -8,8 +8,8 @@ export class NotImplementedError extends ApplicationError {
 }
 
 export class InvalidProgramStateError extends ApplicationError {
-    constructor() {
-        super("InvalidProgramState");
+    constructor(message?: string) {
+        super(message != null ? `InvalidProgramState: ${message}` : "InvalidProgramState");
     }
 }
 

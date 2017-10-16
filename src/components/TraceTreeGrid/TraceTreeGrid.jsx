@@ -3,7 +3,7 @@ import * as React from "react";
 
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import Colors from "../../Domain/Colors";
-import { millisecondsToString } from "../../Domain/TimeUtils";
+import DateTimeUtils from "../../Domain/DateTimeUtils";
 import TreeGrid, { withExpandedItems } from "../TreeGrid/TreeGrid";
 
 import cn from "./TraceTreeGrid.less";
@@ -56,7 +56,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
             />,
             <span key="Value" className={cn("cell-values", { focused: focused })}>
                 <span className={cn("value")}>
-                    {millisecondsToString(time, "0")}
+                    {DateTimeUtils.millisecondsToString(time, "0")}
                 </span>
                 <span className={cn("percentage")}>
                     {Math.round(percentage * 1000) / 10}%

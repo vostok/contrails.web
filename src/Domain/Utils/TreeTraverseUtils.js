@@ -1,8 +1,10 @@
 // @flow
 
+export type TreeReducer<TResult, TNode> = (Array<TResult>, TNode) => TResult;
+
 export function reduceTree<TNode, TResult>(
     root: TNode,
-    reducer: (childResults: Array<TResult>, node: TNode) => TResult,
+    reducer: TreeReducer<TResult, TNode>,
     childrenGetter: TNode => ?Array<TNode>
 ): TResult {
     return reducer((childrenGetter(root) || []).map(child => reduceTree(child, reducer, childrenGetter)), root);

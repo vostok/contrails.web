@@ -142,7 +142,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                     </ContrailPanelsBottomLeft>
                     <ContrailPanelsBottomRight>
                         <div className={cn("span-info-view-container")}>
-                            {focusedSpanNode && <SpanInfoView spanInfo={focusedSpanNode.source} />}
+                            {focusedSpanNode != null && <SpanInfoView root={traceTree} span={focusedSpanNode} />}
                         </div>
                     </ContrailPanelsBottomRight>
                 </ContrailPanelsBottom>

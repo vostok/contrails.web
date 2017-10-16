@@ -1,15 +1,19 @@
 // @flow
 import * as React from "react";
 
-import type { SpanInfo } from "../../Domain/SpanInfo";
+import DateTimeUtils from "../../Domain/DateTimeUtils";
+import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import TraceTreeUtils from "../../Domain/TraceTree/TraceTreeUtils";
 
 import cn from "./SpanInfoView.less";
 
 type SpanInfoViewProps = {
-    spanInfo: SpanInfo,
+    root: SpanNode,
+    span: SpanNode,
 };
 
-export default function SpanInfoView({ spanInfo }: SpanInfoViewProps): React.Node {
+export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.Node {
+    const spanInfo = span.source;
     const annotations = spanInfo.Annotations;
     return (
         <div>
@@ -41,16 +45,20 @@ export default function SpanInfoView({ spanInfo }: SpanInfoViewProps): React.Nod
                     </span>
                 </div>
                 <div className={cn("item")}>
-                    <div className={cn("caption")}>BeginTimestamp:</div>
+                    <div className={cn("caption")}>Duration:</div>
                     <span className={cn("value")}>
-                        {spanInfo.BeginTimestamp}
+                        {DateTimeUtils.formatDurationTicks(
+                            DateTimeUtils.difference(spanInfo.EndTimestamp, spanInfo.BeginTimestamp)
+                        )}
                     </span>
                 </div>
                 <div className={cn("item")}>
+                    <div className={cn("caption")}>BeginTimestamp:</div>
+                    {renderTimestampSection(root, span, spanInfo.BeginTimestamp)}
+                </div>
+                <div className={cn("item")}>
                     <div className={cn("caption")}>EndTimestamp:</div>
-                    <span className={cn("value")}>
-                        {spanInfo.EndTimestamp}
-                    </span>
+                    {renderTimestampSection(root, span, spanInfo.EndTimestamp)}
                 </div>
             </div>
             {annotations != null &&
@@ -67,6 +75,33 @@ export default function SpanInfoView({ spanInfo }: SpanInfoViewProps): React.Nod
                         </div>
                     )}
                 </div>}
+        </div>
+    );
+}
+
+function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): React.Node {
+    return (
+        <div className={cn("sub-section")}>
+            <div className={cn("item")}>
+                <div className={cn("caption")}>UTC: </div>
+                <span className={cn("value")}>
+                    {DateTimeUtils.formatDatePreciseUtc(value)}
+                </span>
+            </div>
+            <div className={cn("item")}>
+                <div className={cn("caption")}>Relative (root begin):</div>
+                <span className={cn("value")}>
+                    {DateTimeUtils.formatDurationTicks(DateTimeUtils.difference(value, root.source.BeginTimestamp))}
+                </span>
+            </div>
+            <div className={cn("item")}>
+                <div className={cn("caption")}>Relative (parent begin):</div>
+                <span className={cn("value")}>
+                    {DateTimeUtils.formatDurationTicks(
+                        DateTimeUtils.difference(value, TraceTreeUtils.getParentSpan(root, node).source.BeginTimestamp)
+                    )}
+                </span>
+            </div>
         </div>
     );
 }

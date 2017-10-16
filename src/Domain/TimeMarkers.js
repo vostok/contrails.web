@@ -1,5 +1,5 @@
 // @flow
-import { getDefaultTimeIntervalAsString, millisecondsToString } from "./TimeUtils";
+import DateTimeUtils from "./DateTimeUtils";
 
 export type TimeMarker = {
     title: string,
@@ -51,10 +51,10 @@ export default function generateTimeMarkers(fromMs: number, toMs: number, minInt
     const paceInterval = intervalConfig.value;
     const start = Math.ceil(fromMs / paceInterval) * paceInterval;
     const result = [];
-    const zeroValue = getDefaultTimeIntervalAsString(paceInterval);
+    const zeroValue = DateTimeUtils.getDefaultTimeIntervalAsString(paceInterval);
     for (let value = start; value <= toMs; value += paceInterval) {
         result.push({
-            title: millisecondsToString(value, zeroValue),
+            title: DateTimeUtils.millisecondsToString(value, zeroValue),
             value: value,
         });
     }
