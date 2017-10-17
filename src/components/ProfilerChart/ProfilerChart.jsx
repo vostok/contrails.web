@@ -141,15 +141,13 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
     handleMouseClick = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
         const canvas = this.canvas;
-        if (canvas == null) {
+        const { onItemClick } = this.props;
+        if (canvas == null || onItemClick == null) {
             return;
         }
-        const { onItemClick } = this.props;
-        if (onItemClick != null) {
-            const itemAtCursor = this.getItemAtCursor(event);
-            if (itemAtCursor != null) {
-                onItemClick(itemAtCursor.item, itemAtCursor.lineIndex);
-            }
+        const itemAtCursor = this.getItemAtCursor(event);
+        if (itemAtCursor != null) {
+            onItemClick(itemAtCursor.item, itemAtCursor.lineIndex);
         }
     };
 
@@ -163,30 +161,27 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
         const drawContext = canvas.getContext("2d");
 
-        if (prevHoveredItem != null && nextHoveredItem !== prevHoveredItem.item) {
+        if (prevHoveredItem != null && (nextHoveredItem == null || nextHoveredItem.item !== prevHoveredItem.item)) {
             this.drawItemAtLine(drawContext, prevHoveredItem.item, prevHoveredItem.lineIndex, {
                 hovered: false,
                 selected: this.isItemSelected(prevHoveredItem.item, prevHoveredItem.lineIndex),
             });
         }
-        if (nextHoveredItem != null && (prevHoveredItem == null || nextHoveredItem !== prevHoveredItem.item)) {
+        if (nextHoveredItem != null && (prevHoveredItem == null || nextHoveredItem.item !== prevHoveredItem.item)) {
             this.drawItemAtLine(drawContext, nextHoveredItem.item, nextHoveredItem.lineIndex, {
                 hovered: true,
                 selected: this.isItemSelected(nextHoveredItem.item, nextHoveredItem.lineIndex),
             });
-            this.currentHoveredItem = nextHoveredItem;
         }
+        this.currentHoveredItem = nextHoveredItem;
     }
 
     handleMouseLeave = () => {
-        const currentHoveredItem = this.currentHoveredItem;
-        this.handleChangeHoveredItem(currentHoveredItem, null);
+        this.handleChangeHoveredItem(this.currentHoveredItem, null);
     };
 
     handleMouseMove = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
-        const itemAtCursor = this.getItemAtCursor(event);
-        const currentHoveredItem = this.currentHoveredItem;
-        this.handleChangeHoveredItem(currentHoveredItem, itemAtCursor);
+        this.handleChangeHoveredItem(this.currentHoveredItem, this.getItemAtCursor(event));
     };
 
     drawItemAtLine(context: CanvasRenderingContext2D, item: TItem, lineIndex: number, options: ItemDrawOptions) {

@@ -217,6 +217,17 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         }
     };
 
+    handleChangeViewPort = (viewPort: { from: number, to: number }) => {
+        const { width } = this.state;
+        if (width == null) {
+            return;
+        }
+        this.setState({
+            viewPortFrom: viewPort.from,
+            xScale: width / (viewPort.to - viewPort.from),
+        });
+    };
+
     render(): React.Element<*> {
         const { data, from, to, onItemClick, selectedItems } = this.props;
         const { width, xScale, viewPortFrom } = this.state;
@@ -238,11 +249,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                 from: viewPortFrom,
                                 to: viewPortFrom + width / xScale,
                             }}
-                            onChangeViewPort={x =>
-                                this.setState({
-                                    viewPortFrom: x.from,
-                                    xScale: width / (x.to - x.from),
-                                })}
+                            onChangeViewPort={this.handleChangeViewPort}
                         />
                     </div>}
                 {width != null &&
