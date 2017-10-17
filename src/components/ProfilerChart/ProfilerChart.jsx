@@ -4,6 +4,9 @@ import * as React from "react";
 import generateTimeMarkers from "../../Domain/TimeMarkers";
 import type { TimeMarker } from "../../Domain/TimeMarkers";
 
+import defaultCustomDrawHandler from "./DefaultCustomDrawHandler";
+import type { IInterruptibleContext } from "./AsyncInterruptible";
+import { interruptible } from "./AsyncInterruptible";
 import cn from "./ProfilerChart.less";
 
 type Color = string;
@@ -30,6 +33,7 @@ export type ItemDrawContext = {
     width: number,
     lineHeight: number,
     options: ItemDrawOptions,
+    itemPositionToAbsolute: number => number,
 };
 
 type ProfilerChartProps<TItem: ProfilerItem> = {|
@@ -43,25 +47,18 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
     },
     onItemClick?: (item: TItem, lineIndex: number) => void,
     selectedItems?: TItem[],
-    onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, itemDrawContext: ItemDrawContext) => void,
-    onCustomDrawItemContent?: (context: CanvasRenderingContext2D, item: TItem) => void,
-    onGetBackgroundColor?: (item: TItem) => Color,
+    onCustomDrawItem: (context: CanvasRenderingContext2D, item: TItem, itemDrawContext: ItemDrawContext) => void,
 |};
 
 const lineHeight = 50;
 const lineGap = 1;
 
-function delay(timeout: number): Promise<void> {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, timeout);
-    });
-}
-
 export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<ProfilerChartProps<TItem>, void> {
     props: ProfilerChartProps<TItem>;
     canvas: ?HTMLCanvasElement = null;
+    static defaultProps = {
+        onCustomDrawItem: defaultCustomDrawHandler,
+    };
     currentHoveredItem: ?{
         item: TItem,
         lineIndex: number,
@@ -80,45 +77,15 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         return (itemX - viewPort.from) * xScale;
     }
 
-    toAbsoluteXWihtoutShift(itemX: number): number {
-        const { from, xScale } = this.props;
-        return (itemX - from) * xScale;
-    }
-
-    getBackgroundColor(item: TItem, options: ItemDrawOptions): Color {
-        return options.hovered ? "rgba(120, 255, 120, 0.5)" : "rgba(255, 120, 120, 0.5)";
-    }
-
-    drawItem(context: CanvasRenderingContext2D, item: TItem, options: ItemDrawOptions) {
-        const { viewPort, onCustomDrawItem, onCustomDrawItemContent } = this.props;
-        const { from, to } = item;
-
-        const width =
-            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-
-        context.clearRect(0, 0, width, lineHeight);
-        if (onCustomDrawItem != null) {
-            const itemDrawContext = {
-                width: width,
-                lineHeight: lineHeight,
-                options: options,
-            };
-            onCustomDrawItem(context, item, itemDrawContext);
-        } else {
-            context.fillStyle = this.getBackgroundColor(item, options);
-            context.fillRect(1, 0, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 2, lineHeight - 1);
-            if (onCustomDrawItemContent != null) {
-                onCustomDrawItemContent(context, item);
-            }
-            if (options.selected) {
-                context.save();
-                context.strokeStyle = "#44f";
-                context.lineWidth = 2;
-                context.strokeRect(2, 1, this.toAbsoluteX(to) - this.toAbsoluteX(from) - 4, lineHeight - 2 - 1);
-                context.restore();
-            }
+    isItemInViewPort(item: TItem): boolean {
+        const { viewPort } = this.props;
+        if (item.from < viewPort.from && item.to < viewPort.from) {
+            return false;
         }
+        if (item.from > viewPort.to && item.to > viewPort.to) {
+            return false;
+        }
+        return true;
     }
 
     isItemHovered(item: TItem, lineIndex: number, mouseX: number, mouseY: number): boolean {
@@ -128,24 +95,6 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         const itemBottom = (lineIndex + 1) * (lineHeight + lineGap) - lineGap;
         return mouseX > itemFrom && mouseX < itemTo && mouseY > itemTop && mouseY < itemBottom;
     }
-
-    handleMouseLeave = () => {
-        const canvas = this.canvas;
-        if (canvas == null) {
-            return;
-        }
-        const drawContext = canvas.getContext("2d");
-        const currentHoveredItem = this.currentHoveredItem;
-        drawContext.save();
-        if (currentHoveredItem != null) {
-            this.drawItemAtLine(drawContext, currentHoveredItem.item, currentHoveredItem.lineIndex, {
-                hovered: false,
-                selected: this.isItemSelected(currentHoveredItem.item, currentHoveredItem.lineIndex),
-            });
-            this.currentHoveredItem = null;
-        }
-        drawContext.restore();
-    };
 
     isItemSelected(item: TItem, _lineIndex: number): boolean {
         const { selectedItems } = this.props;
@@ -173,6 +122,23 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         return null;
     }
 
+    drawItem(context: CanvasRenderingContext2D, item: TItem, options: ItemDrawOptions) {
+        const { viewPort, onCustomDrawItem } = this.props;
+
+        const width =
+            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
+            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
+
+        context.clearRect(0, 0, width, lineHeight);
+        const itemDrawContext = {
+            width: width,
+            lineHeight: lineHeight,
+            options: options,
+            itemPositionToAbsolute: value => this.toAbsoluteX(value) - this.toAbsoluteX(viewPort.from),
+        };
+        onCustomDrawItem(context, item, itemDrawContext);
+    }
+
     handleMouseClick = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
         const canvas = this.canvas;
         if (canvas == null) {
@@ -187,28 +153,40 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     };
 
-    handleMouseMove = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
+    handleChangeHoveredItem(
+        prevHoveredItem: ?{ item: TItem, lineIndex: number },
+        nextHoveredItem: ?{ item: TItem, lineIndex: number }
+    ) {
         const canvas = this.canvas;
         if (canvas == null) {
             return;
         }
         const drawContext = canvas.getContext("2d");
+
+        if (prevHoveredItem != null && nextHoveredItem !== prevHoveredItem.item) {
+            this.drawItemAtLine(drawContext, prevHoveredItem.item, prevHoveredItem.lineIndex, {
+                hovered: false,
+                selected: this.isItemSelected(prevHoveredItem.item, prevHoveredItem.lineIndex),
+            });
+        }
+        if (nextHoveredItem != null && (prevHoveredItem == null || nextHoveredItem !== prevHoveredItem.item)) {
+            this.drawItemAtLine(drawContext, nextHoveredItem.item, nextHoveredItem.lineIndex, {
+                hovered: true,
+                selected: this.isItemSelected(nextHoveredItem.item, nextHoveredItem.lineIndex),
+            });
+            this.currentHoveredItem = nextHoveredItem;
+        }
+    }
+
+    handleMouseLeave = () => {
+        const currentHoveredItem = this.currentHoveredItem;
+        this.handleChangeHoveredItem(currentHoveredItem, null);
+    };
+
+    handleMouseMove = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
         const itemAtCursor = this.getItemAtCursor(event);
         const currentHoveredItem = this.currentHoveredItem;
-
-        if (currentHoveredItem != null && itemAtCursor !== currentHoveredItem.item) {
-            this.drawItemAtLine(drawContext, currentHoveredItem.item, currentHoveredItem.lineIndex, {
-                hovered: false,
-                selected: this.isItemSelected(currentHoveredItem.item, currentHoveredItem.lineIndex),
-            });
-        }
-        if (itemAtCursor != null && (currentHoveredItem == null || itemAtCursor !== currentHoveredItem.item)) {
-            this.drawItemAtLine(drawContext, itemAtCursor.item, itemAtCursor.lineIndex, {
-                hovered: true,
-                selected: this.isItemSelected(itemAtCursor.item, itemAtCursor.lineIndex),
-            });
-            this.currentHoveredItem = itemAtCursor;
-        }
+        this.handleChangeHoveredItem(currentHoveredItem, itemAtCursor);
     };
 
     drawItemAtLine(context: CanvasRenderingContext2D, item: TItem, lineIndex: number, options: ItemDrawOptions) {
@@ -225,57 +203,18 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         }
     }
 
-    newDrawStarted: boolean = false;
-    drawing: boolean = false;
-
-    async checkRedraw(): Promise<boolean> {
-        await delay(1);
-        if (this.newDrawStarted) {
-            return true;
-        }
-        return false;
-    }
-
-    setDrawBegin() {
-        if (this.drawing) {
-            this.newDrawStarted = true;
-        } else {
-            this.newDrawStarted = false;
-        }
-        this.drawing = true;
-    }
-
-    setDrawFullyCompleted() {
-        this.drawing = false;
-        this.newDrawStarted = false;
-    }
-
-    isItemInViewPort(item: TItem): boolean {
-        const { viewPort } = this.props;
-        if (item.from < viewPort.from && item.to < viewPort.from) {
-            return false;
-        }
-        if (item.from > viewPort.to && item.to > viewPort.to) {
-            return false;
-        }
-        return true;
-    }
-
-    async drawData(): Promise<void> {
+    drawData = interruptible((interruptibleContext: IInterruptibleContext) => async (): Promise<void> => {
         const canvas = this.canvas;
         if (canvas == null) {
             return;
         }
 
-        this.setDrawBegin();
         const { data, from, to } = this.props;
-        const width = this.toAbsoluteX(to) - this.toAbsoluteX(from);
+        const width = Math.round(this.toAbsoluteX(to) - this.toAbsoluteX(from));
         const drawContext = canvas.getContext("2d");
 
         drawContext.clearRect(0, 0, width, (lineHeight + lineGap) * data.lines.length);
-
         drawContext.save();
-        let drawedCount = 0;
         try {
             for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
                 const line = data.lines[lineIndex];
@@ -287,22 +226,13 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
                         hovered: false,
                         selected: this.isItemSelected(item, lineIndex),
                     });
-                    drawedCount++;
-                    if (drawedCount === 500) {
-                        drawedCount = 0;
-                        // eslint-disable-next-line max-depth
-                        if (await this.checkRedraw()) {
-                            this.newDrawStarted = false;
-                            return;
-                        }
-                    }
+                    await interruptibleContext.check();
                 }
             }
-            this.setDrawFullyCompleted();
         } finally {
             drawContext.restore();
         }
-    }
+    });
 
     generateTimeMarkers(): TimeMarker[] {
         const { from, xScale, viewPort } = this.props;
@@ -314,6 +244,7 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
     renderTimeMarkers(): React.Node {
         const timeMarkers = this.generateTimeMarkers();
+
         return (
             <div className={cn("time-markers-container")}>
                 {timeMarkers.map(timeMarker =>
@@ -332,19 +263,14 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
     render(): React.Node {
         const { viewPort, data } = this.props;
+
         return (
-            <div style={{ position: "relative", zIndex: 0 }}>
-                <div style={{ position: "relative", height: 20 }} />
-                <div
-                    style={{
-                        position: "relative",
-                        zIndex: 2,
-                    }}>
+            <div className={cn("root")}>
+                <div className={cn("spacer-for-markers")} />
+                <div className={cn("canvas-container")}>
                     <canvas
-                        style={{
-                            position: "relative",
-                        }}
-                        width={this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from)}
+                        className={cn("primary-canvas")}
+                        width={Math.round(this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from))}
                         ref={e => (this.canvas = e)}
                         onClick={this.handleMouseClick}
                         onMouseMove={this.handleMouseMove}
