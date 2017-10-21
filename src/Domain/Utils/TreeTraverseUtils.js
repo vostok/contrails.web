@@ -23,6 +23,15 @@ export function findNodeToReducer<TItem>(target: TItem): (Array<Array<TItem>>, T
     };
 }
 
+export function isChildReducer<TItem>(target: TItem): (Array<boolean>, TItem) => boolean {
+    return function reducer(childResults: Array<boolean>, node: TItem): boolean {
+        if (node === target) {
+            return true;
+        }
+        return childResults.some(x => x);
+    };
+}
+
 function flatten<T>(memo: Array<T>, item: Array<T>): Array<T> {
     for (let i = 0; i < item.length; i++) {
         memo.push(item[i]);
