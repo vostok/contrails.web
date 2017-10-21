@@ -2,6 +2,7 @@
 import * as React from "react";
 
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import TraceTreeUtils from "../../Domain/TraceTree/TraceTreeUtils";
 import Colors from "../../Domain/Colors";
 import DateTimeUtils from "../../Domain/DateTimeUtils";
 import TreeGrid, { withExpandedItems } from "../TreeGrid/TreeGrid";
@@ -39,13 +40,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     getSpanNodeSelfTime(spanNode: SpanNode): number {
-        // TODO вынести в домен
-        return Math.max(
-            0,
-            spanNode.to -
-                spanNode.from -
-                spanNode.children.map(x => x.to - x.from).reduce((result, value) => result + value, 0)
-        );
+        return TraceTreeUtils.getSpanNodeSelfTime(spanNode);
     }
 
     renderPercentageAndTime(time: number, percentage: number, focused: boolean): React.Node {
