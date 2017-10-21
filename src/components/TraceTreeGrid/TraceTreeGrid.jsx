@@ -5,12 +5,15 @@ import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import Colors from "../../Domain/Colors";
 import DateTimeUtils from "../../Domain/DateTimeUtils";
 import TreeGrid, { withExpandedItems } from "../TreeGrid/TreeGrid";
+import type { TimeRange } from "../../Domain/TimeRange";
+import SpanNodeTimeLine from "../SpanNodeTimeLine/SpanNodeTimeLine";
 
 import cn from "./TraceTreeGrid.less";
 
 const TreeGridWithState = withExpandedItems(TreeGrid);
 
 type TraceTreeGridProps = {
+    totalTimeRange: TimeRange,
     traceTree: SpanNode,
     focusedItem?: ?SpanNode,
     onChangeFocusedItem: (spanNode: SpanNode) => void,
@@ -65,6 +68,15 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
         ];
     }
 
+    renderTimeLine(node: SpanNode): React.Node {
+        const { totalTimeRange } = this.props;
+        return (
+            <div>
+                <SpanNodeTimeLine node={node} totalTimeRange={totalTimeRange} />
+            </div>
+        );
+    }
+
     render(): React.Node {
         const { traceTree, onItemClick, onChangeFocusedItem, focusedItem } = this.props;
         return (
@@ -97,9 +109,15 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                     },
                     {
                         name: "service",
+                        width: 300,
                         renderHeader: () => "Service",
                         renderValue: x => x.serviceName,
                         mainCell: true,
+                    },
+                    {
+                        name: "timeline",
+                        renderHeader: () => "Timeline",
+                        renderValue: x => this.renderTimeLine(x),
                     },
                 ]}
                 onGetChildren={x => x.children}

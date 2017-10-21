@@ -1,8 +1,8 @@
 // @flow
 import * as React from "react";
-import moment from "moment";
 
 import type { TraceInfo } from "../../Domain/TraceInfo";
+import { TraceInfoUtils } from "../../Domain/TraceInfo";
 import type { SpanInfo } from "../../Domain/SpanInfo";
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
@@ -41,14 +41,6 @@ type TraceViewerState = {
 
 type TimeRange = { from: number, to: number };
 
-function min(x: number, y: number): number {
-    return Math.min(x, y);
-}
-
-function max(x: number, y: number): number {
-    return Math.max(x, y);
-}
-
 function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
     return (spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
         TraceId: traceId,
@@ -86,12 +78,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
     }
 
     getFromAndTo(traceInfo: TraceInfo): { from: number, to: number } {
-        const spans = traceInfo.Spans;
-        const result = {
-            from: spans.map(x => x.BeginTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(min),
-            to: spans.map(x => x.EndTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(max),
-        };
-        return result;
+        return TraceInfoUtils.getTraceTimeRange(traceInfo);
     }
 
     handleTreeGridChangeFocusedItems = (spanNode: SpanNode) => {
@@ -134,6 +121,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                 <ContrailPanelsBottom>
                     <ContrailPanelsBottomLeft>
                         <TraceTreeGrid
+                            totalTimeRange={timeRange}
                             focusedItem={focusedSpanNode}
                             traceTree={traceTree}
                             onItemClick={this.handleTreeGridChangeFocusedItems}
