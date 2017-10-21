@@ -9,6 +9,7 @@ import ProfilerChart from "../ProfilerChart/ProfilerChart";
 import type { ProfilerData, ProfilerItem, ItemDrawContext } from "../ProfilerChart/ProfilerChart";
 import ProfilerChartContainer from "../ProfilerChartContainer/ProfilerChartContainer";
 import ProfilerChartMinimap from "../ProfilerChartMinimap/ProfilerChartMinimap";
+import normalizeWheel from "../../Domain/NormalizeWheel";
 
 import cn from "./ProfilerChartWithMinimap.less";
 
@@ -128,12 +129,13 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     }
 
     handleWheel = (event: SyntheticWheelEvent<>) => {
+        const { spinY, pixelY } = normalizeWheel(event);
         if (event.shiftKey) {
             const chartContainer = ReactDom.findDOMNode(this.chartContainer);
             if (!(chartContainer instanceof HTMLElement)) {
                 return;
             }
-            chartContainer.scrollTop += event.deltaY / 3;
+            chartContainer.scrollTop += pixelY;
             event.preventDefault();
             return;
         }
@@ -155,7 +157,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         const to = viewPortFrom + width / xScale;
         const xPosRelative = this.toRelative(mouseX);
         const newViewPortWidth = Math.max(
-            (to - from) * Math.pow(1 + percentage * Math.sign(event.deltaY), Math.abs(event.deltaY) / 100),
+            (to - from) * Math.pow(1 + percentage * Math.sign(spinY), Math.abs(spinY)),
             1
         );
 
