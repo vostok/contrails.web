@@ -15,6 +15,7 @@ type ColumnDefintion<TItem> = {|
     width?: number,
     align?: "right" | "left" | "center",
     mainCell?: boolean,
+    cellClassName?: ?string,
 |};
 
 type TreeGridProps<TItem> = {
@@ -217,7 +218,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
             return (
                 <td
                     key={column.name}
-                    className={cn("item-cell", "main-cell")}
+                    className={cn("item-cell", "main-cell", column.cellClassName)}
                     style={{
                         width: column.width || "100%",
                     }}>
@@ -241,7 +242,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
         return (
             <td
                 key={column.name}
-                className={cn("item-cell")}
+                className={cn("item-cell", column.cellClassName)}
                 style={{
                     width: column.width,
                     maxWidth: column.width,

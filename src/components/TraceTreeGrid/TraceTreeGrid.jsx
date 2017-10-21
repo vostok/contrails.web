@@ -105,6 +105,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                     {
                         name: "service",
                         width: 300,
+                        cellClassName: cn("servive-cell"),
                         renderHeader: () => "Service",
                         renderValue: x => x.serviceName,
                         mainCell: true,
