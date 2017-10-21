@@ -5,6 +5,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const createRules = require("./build/rules.js");
 const { extensions, createAliases } = require("./build/resolve.js");
@@ -75,6 +76,7 @@ module.exports = function createConfig(env) {
         // TODO отключить при конечном выпуске в продакшен
         result.devtool = "source-map";
         result.plugins.push(new UglifyJSPlugin(true, { comments: false }));
+
         if (options.target === "logsearch-test-iis") {
             result.plugins.push(
                 new CopyWebpackPlugin([
@@ -85,6 +87,10 @@ module.exports = function createConfig(env) {
                 ])
             );
         }
+    }
+
+    if (env.mode === "debug-build") {
+        result.plugins.push(new BundleAnalyzerPlugin());
     }
 
     return result;

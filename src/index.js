@@ -1,7 +1,8 @@
 // @flow
+/* eslint-disable global-require */
+/* eslint-disable no-inner-declarations */
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { AppContainer } from "react-hot-loader";
 
 import ContrailsApplication from "./containers/ContrailsApplication";
 
@@ -11,17 +12,23 @@ import "./styles/root.less";
 
 const rootEl = document.getElementById("root");
 
-function render(Component: React.ComponentType<{||}>) {
-    ReactDOM.render(
-        <AppContainer>
-            <Component />
-        </AppContainer>,
-        rootEl
-    );
-}
+if (process.env.NODE_ENV === "development") {
+    const { AppContainer } = require("react-hot-loader");
 
-render(ContrailsApplication);
+    function render(Component: React.ComponentType<{||}>) {
+        ReactDOM.render(
+            <AppContainer>
+                <Component />
+            </AppContainer>,
+            rootEl
+        );
+    }
 
-if (module.hot) {
-    module.hot.accept("./containers/ContrailsApplication", () => render(ContrailsApplication));
+    render(ContrailsApplication);
+
+    if (module.hot) {
+        module.hot.accept("./containers/ContrailsApplication", () => render(ContrailsApplication));
+    }
+} else {
+    ReactDOM.render(<ContrailsApplication />, rootEl);
 }
