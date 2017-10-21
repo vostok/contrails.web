@@ -4,6 +4,7 @@ import { Spinner } from "ui";
 import { withRouter } from "react-router";
 import type { IBrowserHistory } from "react-router";
 import { Helmet } from "react-helmet";
+import takeLastAndRejectPrevious from "commons/TakeLastAndRejectPrevious";
 
 import ContrailsLayout from "../components/ContrailsLayout/ContrailsLayout";
 import TraceIdInput from "../components/TraceIdInput/TraceIdInput";
@@ -74,11 +75,14 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         });
     }
 
+    getTrace = takeLastAndRejectPrevious((traceIdPrefix: string): Promise<TraceInfo> =>
+        this.props.contrailsApi.getTrace(traceIdPrefix)
+    );
+
     async updateTrace(traceIdPrefix: string): Promise<void> {
-        const { contrailsApi } = this.props;
         this.setState({ error: false, traceInfo: null, loading: true, currentTraceIdPrefix: traceIdPrefix });
         try {
-            const traceInfo = await contrailsApi.getTrace(traceIdPrefix);
+            const traceInfo = await this.getTrace(traceIdPrefix);
             if (traceInfo.Spans.length === 0) {
                 this.setTraceNotFound();
                 return;

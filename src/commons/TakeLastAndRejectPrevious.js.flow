@@ -1,0 +1,19 @@
+// @flow
+type TakeLastAndRejectPrevious = (<TA1, TA2, TA3, TA4, TA5, TA6, TR>(
+    fn: (a1: TA1, a2: TA2, a3: TA3, a4: TA4, a5: TA5, a6: TA6, ...rest: void[]) => Promise<TR>
+) => (a1: TA1, a2: TA2, a3: TA3, a4: TA4, a5: TA5, a6: TA6, ...rest: void[]) => Promise<TR>) &
+    (<TA1, TA2, TA3, TA4, TA5, TR>(
+        fn: (a1: TA1, a2: TA2, a3: TA3, a4: TA4, a5: TA5, ...rest: void[]) => Promise<TR>
+    ) => (a1: TA1, a2: TA2, a3: TA3, a4: TA4, a5: TA5, ...rest: void[]) => Promise<TR>) &
+    (<TA1, TA2, TA3, TA4, TR>(
+        fn: (a1: TA1, a2: TA2, a3: TA3, a4: TA4, ...rest: void[]) => Promise<TR>
+    ) => (a1: TA1, a2: TA2, a3: TA3, a4: TA4, ...rest: void[]) => Promise<TR>) &
+    (<TA1, TA2, TA3, TR>(
+        fn: (a1: TA1, a2: TA2, a3: TA3, ...rest: void[]) => Promise<TR>
+    ) => (a1: TA1, a2: TA2, a3: TA3, ...rest: void[]) => Promise<TR>) &
+    (<TA1, TA2, TR>(
+        fn: (a1: TA1, a2: TA2, ...rest: void[]) => Promise<TR>
+    ) => (a1: TA1, a2: TA2, ...rest: void[]) => Promise<TR>) &
+    (<TA1, TR>(fn: (a1: TA1, ...rest: void[]) => Promise<TR>) => (a1: TA1, ...rest: void[]) => Promise<TR>);
+
+declare export default TakeLastAndRejectPrevious
