@@ -69,11 +69,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
 
     renderTimeLine(node: SpanNode): React.Node {
         const { totalTimeRange } = this.props;
-        return (
-            <div>
-                <SpanNodeTimeLine node={node} totalTimeRange={totalTimeRange} />
-            </div>
-        );
+        return <SpanNodeTimeLine node={node} totalTimeRange={totalTimeRange} />;
     }
 
     render(): React.Node {
