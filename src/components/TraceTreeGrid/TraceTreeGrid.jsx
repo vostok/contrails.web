@@ -26,6 +26,7 @@ type TraceTreeGridState = {};
 export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, TraceTreeGridState> {
     props: TraceTreeGridProps;
     state: TraceTreeGridState;
+    getSpanNodeSelfTimeCache: { [spanId: string]: number } = {};
 
     getSpanNodeTotalTimePrecentage(spanNode: SpanNode): number {
         const { traceTree } = this.props;
@@ -40,7 +41,10 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     getSpanNodeSelfTime(spanNode: SpanNode): number {
-        return TraceTreeUtils.getSpanNodeSelfTime(spanNode);
+        if (this.getSpanNodeSelfTimeCache[spanNode.source.SpanId] == null) {
+            this.getSpanNodeSelfTimeCache[spanNode.source.SpanId] = TraceTreeUtils.getSpanNodeSelfTime(spanNode);
+        }
+        return this.getSpanNodeSelfTimeCache[spanNode.source.SpanId];
     }
 
     renderPercentageAndTime(time: number, percentage: number, focused: boolean): React.Node {
