@@ -9,8 +9,6 @@ import type { IInterruptibleContext } from "./AsyncInterruptible";
 import { interruptible } from "./AsyncInterruptible";
 import cn from "./ProfilerChart.less";
 
-type Color = string;
-
 export type ProfilerItem = {
     from: number,
     to: number,
