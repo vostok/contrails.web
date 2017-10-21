@@ -18,11 +18,8 @@ function findParentSpanReducer(target: SpanNode): TreeReducer<?SpanNode, SpanNod
 }
 
 export default class TraceTreeUtils {
-    static getParentSpan(root: SpanNode, span: SpanNode): SpanNode {
+    static getParentSpan(root: SpanNode, span: SpanNode): ?SpanNode {
         const result = reduceTree(root, findParentSpanReducer(span), x => x.children);
-        if (result == null) {
-            throw new Error("span is not a part of tree");
-        }
         return result;
     }
 }

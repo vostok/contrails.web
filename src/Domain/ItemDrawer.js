@@ -34,6 +34,18 @@ function fittingString(context: CanvasRenderingContext2D, str: string, maxWidth:
     return result + ellipsis;
 }
 
+const options = {
+    fontSize: 12,
+    lineHeight: 15,
+    smallFontSize: 10,
+    smallLineHeight: 12,
+    paddingTop: 2,
+    iconSize: 12,
+    paddingLeft: 4,
+    paddingRight: 4,
+    iconLeftMargin: 2,
+};
+
 export default function handleCustomDrawItem(
     context: CanvasRenderingContext2D,
     item: SpanLineItem,
@@ -61,30 +73,40 @@ export default function handleCustomDrawItem(
         }
 
         if (itemContext.width > 50) {
-            context.drawImage(DatabaseImage, 0, 0, DatabaseImage.width, DatabaseImage.height, 4 + 2, 6, 14, 14);
+            context.drawImage(
+                DatabaseImage,
+                0,
+                0,
+                DatabaseImage.width,
+                DatabaseImage.height,
+                options.paddingTop + 2,
+                options.paddingTop + 2,
+                options.iconSize,
+                options.iconSize
+            );
 
             context.fillStyle = itemColors[0].text;
-            context.font = "14px Segoe UI";
+            context.font = `${options.fontSize}px Segoe UI`;
             context.fillText(
                 fittingString(
                     context,
                     (item.source.source.Annotations && item.source.source.Annotations.OriginId) || "",
-                    width - (8 + 18)
+                    width - (options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight)
                 ),
-                8 + 18,
-                14 + 4
+                options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight,
+                options.fontSize + options.paddingTop
             );
 
             context.fillStyle = itemColors[0].text;
-            context.font = "12px Segoe UI";
+            context.font = `${options.smallFontSize}px Segoe UI`;
             context.fillText(
                 fittingString(
                     context,
                     (item.source.source.Annotations && item.source.source.Annotations.OriginHost) || "",
-                    width - 8
+                    width - options.paddingLeft - options.paddingRight
                 ),
-                8,
-                14 + 4 + 22
+                options.paddingLeft + 2,
+                options.paddingTop + options.lineHeight + options.smallLineHeight
             );
         }
     } finally {

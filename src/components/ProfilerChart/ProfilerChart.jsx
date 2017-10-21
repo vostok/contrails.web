@@ -48,7 +48,7 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
     onCustomDrawItem: (context: CanvasRenderingContext2D, item: TItem, itemDrawContext: ItemDrawContext) => void,
 |};
 
-const lineHeight = 50;
+const lineHeight = 35;
 const lineGap = 1;
 
 export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<ProfilerChartProps<TItem>, void> {

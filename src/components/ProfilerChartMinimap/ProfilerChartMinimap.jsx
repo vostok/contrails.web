@@ -92,7 +92,7 @@ export default class ProfilerChartMinimap extends React.Component<
             const { data } = this.props;
             context.fillStyle = "rgba(255, 255, 255, 0.0)";
             context.fillRect(0, 0, width, 100);
-            const lineHeight = 10;
+            const lineHeight = 5;
 
             let lineIndex = 0;
             for (const line of data.lines) {

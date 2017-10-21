@@ -80,6 +80,7 @@ export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.N
 }
 
 function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): React.Node {
+    const parentSpan = TraceTreeUtils.getParentSpan(root, node);
     return (
         <div className={cn("sub-section")}>
             <div className={cn("item")}>
@@ -94,14 +95,15 @@ function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): 
                     {DateTimeUtils.formatDurationTicks(DateTimeUtils.difference(value, root.source.BeginTimestamp))}
                 </span>
             </div>
-            <div className={cn("item")}>
-                <div className={cn("caption")}>Relative (parent begin):</div>
-                <span className={cn("value")}>
-                    {DateTimeUtils.formatDurationTicks(
-                        DateTimeUtils.difference(value, TraceTreeUtils.getParentSpan(root, node).source.BeginTimestamp)
-                    )}
-                </span>
-            </div>
+            {parentSpan != null &&
+                <div className={cn("item")}>
+                    <div className={cn("caption")}>Relative (parent begin):</div>
+                    <span className={cn("value")}>
+                        {DateTimeUtils.formatDurationTicks(
+                            DateTimeUtils.difference(value, parentSpan.source.BeginTimestamp)
+                        )}
+                    </span>
+                </div>}
         </div>
     );
 }
