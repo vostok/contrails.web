@@ -134,6 +134,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                 return;
             }
             chartContainer.scrollTop += event.deltaY / 3;
+            event.preventDefault();
             return;
         }
         const { width, xScale, viewPortFrom } = this.state;
