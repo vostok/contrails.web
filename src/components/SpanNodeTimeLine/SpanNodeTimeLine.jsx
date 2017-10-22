@@ -34,9 +34,8 @@ export default class SpanNodeTimeLine extends React.Component<SpanNodeTimeLinePr
         const { node, totalTimeRange } = this.props;
         const timeRangeDuration = totalTimeRange.to - totalTimeRange.from;
         const nodeDuration = node.to - node.from;
-
         const left = Math.round((node.from - totalTimeRange.from) / timeRangeDuration * containerWidth);
-        const width = Math.max(4, Math.round(nodeDuration / timeRangeDuration) * containerWidth);
+        const width = Math.max(4, nodeDuration / timeRangeDuration * containerWidth);
         return {
             width: width,
             left: left,
