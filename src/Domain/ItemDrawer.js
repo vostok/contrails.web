@@ -85,7 +85,7 @@ export default function handleCustomDrawItem(
                 options.iconSize
             );
 
-            context.fillStyle = itemColors[0].text;
+            context.fillStyle = itemColors[colorIndex].text;
             context.font = `${options.fontSize}px Segoe UI`;
             context.fillText(
                 fittingString(
@@ -97,7 +97,7 @@ export default function handleCustomDrawItem(
                 options.fontSize + options.paddingTop
             );
 
-            context.fillStyle = itemColors[0].text;
+            context.fillStyle = itemColors[colorIndex].text;
             context.font = `${options.smallFontSize}px Segoe UI`;
             context.fillText(
                 fittingString(

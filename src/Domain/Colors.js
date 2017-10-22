@@ -17,16 +17,16 @@ const itemColors = [
     },
     {
         text: "white",
-        background: "rgba(255,85,0,0.50)",
+        background: "rgba(255, 85, 0, 0.50)",
         hoverText: "white",
-        hoverBackground: "rgba(255,85,0,0.80)",
+        hoverBackground: "rgba(255, 85, 0, 0.80)",
         border: "rgba(255,85,0,1.0)",
     },
     {
         text: "white",
-        background: "rgba(0,170,144,0.50)",
+        background: "rgba(0, 170, 144, 0.50)",
         hoverText: "white",
-        hoverBackground: "rgba(0,170,144,0.80)",
+        hoverBackground: "rgba(0, 170, 144, 0.80)",
         border: "rgba(0,170,144,1.0)",
     },
     {

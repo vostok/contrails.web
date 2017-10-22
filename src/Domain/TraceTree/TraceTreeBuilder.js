@@ -31,7 +31,7 @@ export default class TraceTreeBuilder {
             to: moment(span.EndTimestamp).valueOf(),
             serviceName: (span.Annotations && span.Annotations.OriginId) || "Unknown Service",
             spanTitle: "",
-            colorConfig: 0,
+            colorConfig: this.getColorConfig(span),
             source: span,
             children: spans
                 .filter(x => x !== span)
@@ -39,6 +39,22 @@ export default class TraceTreeBuilder {
                 .filter(x => x.ParentSpanId === span.SpanId)
                 .map(x => this.spanInfoToSpanNode(x, spans)),
         };
+    }
+
+    getColorConfig(span: SpanInfo): number {
+        if (span.Annotations == null) {
+            return 0;
+        }
+        if (
+            (typeof span.Annotations.OriginId === "string" && span.Annotations.OriginId.startsWith("Billy")) ||
+            span.Annotations.OriginId.startsWith("Billing")
+        ) {
+            return 3;
+        }
+        if (typeof span.Annotations.OriginId === "string" && span.Annotations.OriginId.startsWith("Web.UI")) {
+            return 2;
+        }
+        return 0;
     }
 
     buildTraceTree(spans: Array<SpanInfo>): SpanNode {

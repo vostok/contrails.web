@@ -89,28 +89,36 @@ export default class ProfilerChartMinimap extends React.Component<
 
     drawItems() {
         this.executeWithDrawContext((context, width) => {
-            const { data } = this.props;
-            context.fillStyle = "rgba(255, 255, 255, 0.0)";
-            context.fillRect(0, 0, width, 100);
-            const lineHeight = 5;
+            context.save();
+            try {
+                const { data } = this.props;
+                context.clearRect(0, 0, width, 100);
+                const lineHeight = 5;
 
-            let lineIndex = 0;
-            for (const line of data.lines) {
-                for (const item of line.items) {
-                    context.fillStyle = item.color || "rgba(30, 121, 190, 0.50)";
-                    context.strokeStyle = "rgba(30, 121, 190, 1.0)";
-                    context.lineWidth = 0.5;
-                    context.rect(
-                        this.toAbsoluteX(item.from),
-                        lineIndex * lineHeight,
-                        this.toAbsoluteX(item.to) - this.toAbsoluteX(item.from),
-                        lineHeight
-                    );
+                let lineIndex = 0;
+                for (const line of data.lines) {
+                    for (const item of line.items) {
+                        context.fillStyle = item.color || "rgba(30, 121, 190, 0.50)";
+                        context.strokeStyle = "rgba(30, 121, 190, 1.0)";
+                        context.lineWidth = 0.5;
+                        context.fillRect(
+                            this.toAbsoluteX(item.from),
+                            lineIndex * lineHeight,
+                            this.toAbsoluteX(item.to) - this.toAbsoluteX(item.from),
+                            lineHeight
+                        );
+                        context.strokeRect(
+                            this.toAbsoluteX(item.from),
+                            lineIndex * lineHeight,
+                            this.toAbsoluteX(item.to) - this.toAbsoluteX(item.from),
+                            lineHeight
+                        );
+                    }
+                    lineIndex++;
                 }
-                lineIndex++;
+            } finally {
+                context.restore();
             }
-            context.stroke();
-            context.fill();
         });
     }
 

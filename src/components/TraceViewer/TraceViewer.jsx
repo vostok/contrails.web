@@ -6,10 +6,10 @@ import type { TraceInfo } from "../../Domain/TraceInfo";
 import { TraceInfoUtils } from "../../Domain/TraceInfo";
 import type { SpanInfo } from "../../Domain/SpanInfo";
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
-import { reduceTree, filterNodesBy } from "../../Domain/Utils/TreeTraverseUtils";
 import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines, SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../../Domain/ItemDrawer";
+import itemColors from "../../Domain/Colors";
 import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
 import LostSpanFixer from "../../Domain/TraceTree/LostSpanFixer";
 import type { SpanFactory } from "../../Domain/TraceTree/LostSpanFixer";
@@ -141,6 +141,10 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
         );
     };
 
+    handleGetMinimapItemColor = (item: SpanLineItem): ?string => {
+        return itemColors[item.source.colorConfig].background;
+    };
+
     render(): React.Node {
         const { onChangeViewPort } = this.props;
         const { traceTree, focusedSpanNode, spanLines, timeRange } = this.state;
@@ -150,6 +154,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
                     <ProfilerChartWithMinimap
                         selectedItems={this.getSelectedSpanLineItem()}
                         onItemClick={this.handleChartItemClick}
+                        onGetMinimapColor={this.handleGetMinimapItemColor}
                         onCustomDrawItem={handleCustomDrawItem}
                         from={timeRange.from}
                         to={timeRange.to}
