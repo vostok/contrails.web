@@ -49,5 +49,10 @@ if (process.env.NODE_ENV === "development") {
         module.hot.accept("./containers/ContrailsApplication", () => render(ContrailsApplication));
     }
 } else {
-    ReactDOM.render(<ContrailsApplication />, rootEl);
+    ReactDOM.render(
+        <Provider store={store}>
+            <ContrailsApplication />
+        </Provider>,
+        rootEl
+    );
 }
