@@ -204,6 +204,14 @@ acorn@^5.0.0, acorn@^5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.1.2.tgz#911cb53e036807cf0fa778dc5d370fbd864246d7"
 
+add-asset-html-webpack-plugin@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/add-asset-html-webpack-plugin/-/add-asset-html-webpack-plugin-2.1.2.tgz#b3e60192602cdc53f03f2b19b7de36b5c4a6c7fe"
+  dependencies:
+    bluebird "^3.5.0"
+    globby "^6.1.0"
+    minimatch "^3.0.4"
+
 add-event-listener@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/add-event-listener/-/add-event-listener-0.0.1.tgz#a76229ebc64c8aefae204a16273a2f255abea2d0"
@@ -7206,7 +7214,7 @@ sugarss@^1.0.0:
   dependencies:
     postcss "^6.0.0"
 
-supports-color@4.4.0:
+supports-color@4.4.0, supports-color@^4.0.0, supports-color@^4.2.1, supports-color@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.4.0.tgz#883f7ddabc165142b2a61427f3352ded195d1a3e"
   dependencies:
@@ -7221,12 +7229,6 @@ supports-color@^3.2.3:
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.2.3.tgz#65ac0504b3954171d8a64946b2ae3cbb8a5f54f6"
   dependencies:
     has-flag "^1.0.0"
-
-supports-color@^4.0.0, supports-color@^4.2.1, supports-color@^4.4.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.5.0.tgz#be7a0de484dec5c5cddf8b3d59125044912f635b"
-  dependencies:
-    has-flag "^2.0.0"
 
 svg-tag-names@^1.1.0:
   version "1.1.1"
@@ -7814,7 +7816,7 @@ websocket-extensions@>=0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.2.tgz#0e18781de629a18308ce1481650f67ffa2693a5d"
 
-whatwg-fetch@>=0.10.0:
+whatwg-fetch@>=0.10.0, whatwg-fetch@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz#9c84ec2dcf68187ff00bc64e1274b442176e1c84"
 

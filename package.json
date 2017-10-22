@@ -8,6 +8,7 @@
   "dependencies": {
     "@skbkontur/react-ui": "^0.9.6",
     "@types/react": "^16.0.17",
+    "add-asset-html-webpack-plugin": "^2.1.2",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-lodash": "^3.2.11",
@@ -55,7 +56,8 @@
     "uglifyjs-webpack-plugin": "^1.0.0-beta.3",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.6.0",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "@storybook/react": "^3.2.8",
@@ -74,7 +76,9 @@
     "clean": "rimraf dist",
     "build": "cross-env NODE_ENV=production webpack --env.apiTarget=vostok",
     "logsearch:build": "cross-env NODE_ENV=production webpack --env.apiTarget=logsearch",
-    "logsearch:local-staging:build": "cross-env NODE_ENV=production webpack --env.apiTarget=logsearch --env.addIISWebConfig=true"
+    "logsearch:local-staging:build": "cross-env NODE_ENV=production webpack --env.apiTarget=logsearch --env.addIISWebConfig=true",
+    "vendor:clean": "rimraf prebuild",
+    "vendor:build": "rimraf prebuild & webpack --config webpack.vendor.dll.config.js"
   },
   "flow-coverage-report": {
     "includeGlob": [
