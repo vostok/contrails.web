@@ -1,4 +1,6 @@
 /* eslint-disable import/unambiguous */
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = function createRules(NODE_ENV) {
     const PROD = (NODE_ENV || "development") === "production";
     return [
@@ -19,18 +21,31 @@ module.exports = function createRules(NODE_ENV) {
             exclude: /node_modules/,
             rules: [
                 {
-                    use: [
-                        "classnames-loader",
-                        "style-loader",
-                        {
-                            loader: "css-loader",
-                            options: {
-                                modules: true,
-                                localIdentName: PROD ? "[hash:base64:6]" : "[name]-[local]--[hash:base64:3]",
-                            },
-                        },
-                        "less-loader",
-                    ],
+                    use: ["classnames-loader"],
+                },
+                {
+                    use: PROD
+                        ? ExtractTextPlugin.extract([
+                              {
+                                  loader: "css-loader",
+                                  options: {
+                                      modules: true,
+                                      localIdentName: "[hash:base64:6]",
+                                  },
+                              },
+                              "less-loader",
+                          ])
+                        : [
+                              "style-loader",
+                              {
+                                  loader: "css-loader",
+                                  options: {
+                                      modules: true,
+                                      localIdentName: "[name]-[local]--[hash:base64:3]",
+                                  },
+                              },
+                              "less-loader",
+                          ],
                 },
             ],
         },
@@ -48,15 +63,24 @@ module.exports = function createRules(NODE_ENV) {
             include: /react-ui/,
             rules: [
                 {
-                    use: [
-                        "style-loader",
-                        {
-                            loader: "css-loader",
-                            options: {
-                                localIdentName: PROD ? "[hash:base64:6]" : "[name]-[local]--[hash:base64:3]",
-                            },
-                        },
-                    ],
+                    use: PROD
+                        ? ExtractTextPlugin.extract([
+                              {
+                                  loader: "css-loader",
+                                  options: {
+                                      localIdentName: "[hash:base64:6]",
+                                  },
+                              },
+                          ])
+                        : [
+                              "style-loader",
+                              {
+                                  loader: "css-loader",
+                                  options: {
+                                      localIdentName: "[name]-[local]--[hash:base64:3]",
+                                  },
+                              },
+                          ],
                 },
             ],
         },

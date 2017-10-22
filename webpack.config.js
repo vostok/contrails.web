@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const createRules = require("./build/rules.js");
 const { extensions, createAliases } = require("./build/resolve.js");
@@ -88,7 +89,11 @@ module.exports = function createConfig(env) {
         // TODO отключить при конечном выпуске в продакшен
         result.devtool = "source-map";
         result.plugins.push(new UglifyJSPlugin(true, { comments: false }));
-
+        result.plugins.push(
+            new ExtractTextPlugin({
+                filename: "[name].[hash].css",
+            })
+        );
         if (options.addIISWebConfig) {
             result.plugins.push(
                 new CopyWebpackPlugin([
