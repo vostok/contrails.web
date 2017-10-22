@@ -10,19 +10,15 @@ import TraceViewerContainer from "./TraceViewerContainer";
 import ContrailsRootContainer from "./ContrailsRootContainer";
 
 let api;
-if (process.env.API === "fake") {
+if (process.env.API_MODE === "fake" && process.env.API_TARGET === "logsearch") {
     const ContrailsApiFake = require("../Domain/ContrailsApiFake");
     api = new ContrailsApiFake.ContrailsApiFake();
 }
-if (process.env.API === "vostok-dev") {
-    const ContrailsApi = require("../Domain/ContrailsVostokApi");
-    api = new ContrailsApi.ContrailsVostokApi("http://localhost:54266");
-}
-if (process.env.API === "vostok") {
+if (process.env.API_MODE === "production" && process.env.API_TARGET === "vostok") {
     const ContrailsApi = require("../Domain/ContrailsVostokApi");
     api = new ContrailsApi.ContrailsVostokApi("");
 }
-if (process.env.API === "logsearch") {
+if (process.env.API_MODE === "production" && process.env.API_TARGET === "logsearch") {
     const ContrailsApi = require("../Domain/ContrailsLogsearchApi");
     api = new ContrailsApi.ContrailsLogsearchApi("");
 }
@@ -38,8 +34,9 @@ export default function ContrailsApplication(): React.Node {
                     <Route
                         path="/:traceIdPrefix"
                         component={({ match }) =>
-                            typeof match.params.traceIdPrefix === "string" &&
-                            <TraceViewerContainer traceIdPrefix={match.params.traceIdPrefix} />}
+                            typeof match.params.traceIdPrefix === "string" && (
+                                <TraceViewerContainer traceIdPrefix={match.params.traceIdPrefix} />
+                            )}
                     />
                 </Switch>
             </BrowserRouter>

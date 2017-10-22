@@ -12,10 +12,26 @@ const { extensions, createAliases } = require("./build/resolve.js");
 
 const NODE_ENV = process.env.NODE_ENV;
 
+const apiTargets = ["vostok", "logsearch"];
+
+const defaultApiMode = "production";
+const apiModes = ["production", "local-testing", "fake"];
+
+const defaultPort = 3001;
+
 module.exports = function createConfig(env) {
     const options = env || {};
-    options.api = options.api || "logsearch";
-    options.target = options.target || "vostok";
+    options.apiMode = options.apiMode || defaultApiMode;
+    options.apiTarget = options.apiTarget;
+    options.port = options.port || defaultPort;
+    options.addIISWebConfig = Boolean(options.addIISWebConfig);
+
+    if (!apiModes.includes(options.apiMode)) {
+        throw new Error(`Please specify correct api mode --env.apiMode={${apiModes.join(",")}}`);
+    }
+    if (!apiTargets.includes(options.apiTarget)) {
+        throw new Error(`Please specify correct target --env.apiTarget={${apiTargets.join(",")}}`);
+    }
 
     const result = {
         entry: {
@@ -41,18 +57,14 @@ module.exports = function createConfig(env) {
             }),
             new webpack.DefinePlugin({
                 "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
-                "process.env.API": JSON.stringify(options.api),
+                "process.env.API_TARGET": JSON.stringify(options.apiTarget),
+                "process.env.API_MODE": JSON.stringify(options.apiMode),
             }),
         ],
         devServer: {
-            proxy: {
-                "/api": {
-                    target: "http://logsearchapi.dev.kontur:30002",
-                    pathRewrite: { "^/api": "" },
-                },
-            },
+            proxy: createApiProxy(options.apiTarget, options.apiMode),
             allowedHosts: ["localhost"],
-            port: 3001,
+            port: options.port,
             historyApiFallback: true,
         },
     };
@@ -60,7 +72,7 @@ module.exports = function createConfig(env) {
     if (NODE_ENV === "development") {
         result.devtool = "eval-source-map";
         result.entry.index = []
-            .concat(["react-hot-loader/patch", "webpack-dev-server/client?http://localhost:3001"])
+            .concat(["react-hot-loader/patch", `webpack-dev-server/client?http://localhost:${options.port}`])
             .concat(result.entry.index);
 
         result.plugins.push(
@@ -77,7 +89,7 @@ module.exports = function createConfig(env) {
         result.devtool = "source-map";
         result.plugins.push(new UglifyJSPlugin(true, { comments: false }));
 
-        if (options.target === "logsearch-test-iis") {
+        if (options.addIISWebConfig) {
             result.plugins.push(
                 new CopyWebpackPlugin([
                     {
@@ -95,3 +107,24 @@ module.exports = function createConfig(env) {
 
     return result;
 };
+
+function createApiProxy(apiTarget, apiMode) {
+    if (apiMode === "local-testing") {
+        if (apiTarget === "vostok") {
+            return {
+                "/api": {
+                    target: "http://localhost:54266",
+                    pathRewrite: { "^/api": "" },
+                },
+            };
+        } else if (apiTarget === "logsearch") {
+            return {
+                "/api": {
+                    target: "http://logsearchapi.dev.kontur:30002",
+                    pathRewrite: { "^/api": "" },
+                },
+            };
+        }
+    }
+    return {};
+}
