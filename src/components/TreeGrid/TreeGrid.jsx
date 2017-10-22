@@ -20,6 +20,7 @@ type ColumnDefintion<TItem> = {|
 
 type TreeGridProps<TItem> = {
     data: Array<TItem>,
+    filterNodes: TItem => boolean,
     columns: Array<ColumnDefintion<TItem>>,
     focusedItem?: ?TItem,
     onItemClick?: TItem => void,
@@ -45,6 +46,9 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
     state: TreeGridState<TItem> = {
         visibleRows: [],
     };
+    static defaultProps = {
+        filterNodes: () => true,
+    };
     focusedRow: ?HTMLTableRowElement;
     table: ?VirtualTable<VisibleRowInfo<TItem>>;
 
@@ -62,7 +66,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
             nextProps.focusedItem,
             nextProps.expandedItems
         );
-        if (expandedItems !== nextExpandedItems) {
+        if (expandedItems !== nextExpandedItems || this.props.filterNodes !== nextProps.filterNodes) {
             const rows = this.buildRows(nextProps.data, nextExpandedItems);
             this.setState({
                 visibleRows: rows,
@@ -76,27 +80,48 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
             .reduce(flatten, []);
     }
 
+    isNodeVisibleRecursive(node: TItem): boolean {
+        const { onGetChildren, filterNodes } = this.props;
+        const itemChildren = onGetChildren(node);
+        if (itemChildren == null || itemChildren.length === 0) {
+            return filterNodes(node);
+        }
+        return filterNodes(node) || itemChildren.some(x => this.isNodeVisibleRecursive(x));
+    }
+
     buildVisibleRows(
         key: string,
         item: TItem,
         parents: TItem[],
         expandedItems: Array<TItem>
     ): Array<VisibleRowInfo<TItem>> {
-        const { onGetChildren } = this.props;
+        const { onGetChildren, filterNodes } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = expandedItems.includes(item);
-
+        let visibleChildren = [];
+        if (itemChildren == null || itemChildren.length === 0) {
+            if (!filterNodes(item)) {
+                return [];
+            }
+        } else if (expanded) {
+            visibleChildren = (itemChildren || [])
+                .map((x, index) => this.buildVisibleRows(`${key}_${index}`, x, [...parents, item], expandedItems))
+                .reduce(flatten, []);
+            if (visibleChildren.length === 0) {
+                if (!filterNodes(item)) {
+                    return [];
+                }
+            }
+        } else if (!this.isNodeVisibleRecursive(item)) {
+            return [];
+        }
         return [
             {
                 item: item,
                 key: key,
                 parents: parents,
             },
-            ...(expanded
-                ? (itemChildren || [])
-                      .map((x, index) => this.buildVisibleRows(`${key}_${index}`, x, [...parents, item], expandedItems))
-                      .reduce(flatten, [])
-                : []),
+            ...visibleChildren,
         ];
     }
 

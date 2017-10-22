@@ -17,6 +17,7 @@ const TreeGridWithState = withExpandedItems(TreeGrid);
 const SpanNodeTimeLineOfViewPort = connect(state => ({ totalTimeRange: state.viewPort }))(SpanNodeTimeLine);
 
 type TraceTreeGridProps = {
+    filterNodes: SpanNode => boolean,
     totalTimeRange: ?TimeRange,
     traceTree: SpanNode,
     focusedItem?: ?SpanNode,
@@ -29,6 +30,9 @@ type TraceTreeGridState = {};
 export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, TraceTreeGridState> {
     props: TraceTreeGridProps;
     state: TraceTreeGridState;
+    static defaultProps = {
+        filterNodes: () => true,
+    };
     getSpanNodeSelfTimeCache: { [spanId: string]: number } = {};
 
     getSpanNodeTotalTimePrecentage(spanNode: SpanNode): number {
@@ -75,9 +79,10 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     render(): React.Node {
-        const { traceTree, onItemClick, onChangeFocusedItem, focusedItem } = this.props;
+        const { traceTree, onItemClick, onChangeFocusedItem, focusedItem, filterNodes } = this.props;
         return (
             <TreeGridWithState
+                filterNodes={filterNodes}
                 focusedItem={focusedItem}
                 columns={[
                     {

@@ -124,28 +124,17 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
         );
     };
 
-    filterTreeByViewPort(root: SpanNode): SpanNode {
-        const { viewPort } = this.state;
-        return reduceTree(
-            root,
-            filterNodesBy(
-                x =>
-                    (viewPort.from < x.from && x.from < viewPort.to) ||
-                    (viewPort.from < x.to && x.to < viewPort.to) ||
-                    (x.from < viewPort.from && viewPort.to < x.to),
-                (x, y) => ({ ...x, children: y })
-            ),
-            x => x.children
-        );
-    }
-
     renderCallStack = (): React.Node => {
-        const { traceTree, focusedSpanNode } = this.state;
+        const { viewPort, traceTree, focusedSpanNode } = this.state;
         return (
             <TraceTreeGrid
+                filterNodes={x =>
+                    (viewPort.from < x.from && x.from < viewPort.to) ||
+                    (viewPort.from < x.to && x.to < viewPort.to) ||
+                    (x.from < viewPort.from && viewPort.to < x.to)}
                 totalTimeRange={null}
                 focusedItem={focusedSpanNode}
-                traceTree={this.filterTreeByViewPort(traceTree)}
+                traceTree={traceTree}
                 onItemClick={this.handleTreeGridChangeFocusedItems}
                 onChangeFocusedItem={this.handleTreeGridChangeFocusedItems}
             />
