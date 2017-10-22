@@ -12,6 +12,10 @@ import "./styles/root.less";
 
 const rootEl = document.getElementById("root");
 
+if (rootEl == null) {
+    throw new Error("Cannot find #root element to render react content into/");
+}
+
 if (process.env.NODE_ENV === "development") {
     const { AppContainer } = require("react-hot-loader");
 

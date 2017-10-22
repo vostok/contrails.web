@@ -40,8 +40,8 @@ export default class ProfilerChartMinimap extends React.Component<
     props: ProfilerChartMinimapProps;
     state: ProfilerChartMinimapState = { width: null };
     canvas: ?HTMLCanvasElement;
-    container: ?React.Component<{}>;
-    scroller: ?React.Component<{}>;
+    container: ?HTMLDivElement;
+    scroller: ?HTMLDivElement;
 
     saveRef(to: HTMLElement => ?HTMLElement): HTMLElement => void {
         return (e: HTMLElement) => {
@@ -191,16 +191,14 @@ export default class ProfilerChartMinimap extends React.Component<
         const timeMarkers = this.generateTimeMarkers();
         return (
             <div className={cn("time-markers-container")}>
-                {timeMarkers.map(timeMarker =>
+                {timeMarkers.map(timeMarker => (
                     <div
                         className={cn("time-marker")}
                         key={timeMarker.value}
                         style={{ left: this.toAbsoluteX(timeMarker.value) }}>
-                        <div className={cn("time-marker-title")}>
-                            {timeMarker.title}
-                        </div>
+                        <div className={cn("time-marker-title")}>{timeMarker.title}</div>
                     </div>
-                )}
+                ))}
             </div>
         );
     }
@@ -223,21 +221,23 @@ export default class ProfilerChartMinimap extends React.Component<
         return (
             <div className={cn("container")} ref={x => (this.container = x)}>
                 {width != null && this.renderCanvas(width)}
-                {width != null &&
+                {width != null && (
                     <div
                         className={cn("left-shadow")}
                         style={{
                             width: this.toAbsoluteX(viewPort.from),
                         }}
-                    />}
-                {width != null &&
+                    />
+                )}
+                {width != null && (
                     <div
                         className={cn("right-shadow")}
                         style={{
                             width: this.toAbsoluteX(from + to - viewPort.to),
                         }}
-                    />}
-                {width != null &&
+                    />
+                )}
+                {width != null && (
                     <Draggable
                         axis="x"
                         onDrag={this.handleViewPortDrag}
@@ -253,8 +253,9 @@ export default class ProfilerChartMinimap extends React.Component<
                                 width: this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from),
                             }}
                         />
-                    </Draggable>}
-                {width != null &&
+                    </Draggable>
+                )}
+                {width != null && (
                     <Draggable
                         axis="x"
                         onDrag={this.handleDragLeftHandle}
@@ -266,8 +267,9 @@ export default class ProfilerChartMinimap extends React.Component<
                         <div className={cn("left-handler-container")}>
                             <div className={cn("left-handler")} />
                         </div>
-                    </Draggable>}
-                {width != null &&
+                    </Draggable>
+                )}
+                {width != null && (
                     <Draggable
                         axis="x"
                         onDrag={this.handleDragRightHandle}
@@ -279,7 +281,8 @@ export default class ProfilerChartMinimap extends React.Component<
                         <div className={cn("right-handler-container")}>
                             <div className={cn("right-handler")} />
                         </div>
-                    </Draggable>}
+                    </Draggable>
+                )}
             </div>
         );
     }

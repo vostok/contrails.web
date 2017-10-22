@@ -23,7 +23,7 @@ type ProfilerChartProps = {|
 
 export default class ProfilerChartContainer extends React.Component<ProfilerChartProps> {
     props: ProfilerChartProps;
-    container: ?React.Component<{}>;
+    container: ?HTMLDivElement;
 
     toAbsolute(itemX: number): number {
         const { viewPort, from } = this.props;

@@ -13,6 +13,7 @@
 .*/storypage/.*
 .*/flow-coverage-report/.*
 .*/immutable/.*
+.*/react-draggable/.*
 
 [include]
 
