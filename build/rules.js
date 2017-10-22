@@ -33,6 +33,7 @@ module.exports = function createRules(NODE_ENV) {
                                       localIdentName: "[hash:base64:6]",
                                   },
                               },
+                              "postcss-loader",
                               "less-loader",
                           ])
                         : [
@@ -44,6 +45,7 @@ module.exports = function createRules(NODE_ENV) {
                                       localIdentName: "[name]-[local]--[hash:base64:3]",
                                   },
                               },
+                              "postcss-loader",
                               "less-loader",
                           ],
                 },
