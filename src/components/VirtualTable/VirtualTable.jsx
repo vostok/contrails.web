@@ -147,9 +147,7 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
         return (
             <div className={cn("root")}>
                 <table className={cn("table", tableClassName)}>
-                    <thead>
-                        {renderHeader()}
-                    </thead>
+                    <thead>{renderHeader()}</thead>
                 </table>
                 <div
                     className={cn("scroll-container")}
@@ -158,9 +156,7 @@ export default class VirtualTable<T> extends React.Component<VirtualTableProps<T
                     ref={x => (this.scrollContainer = x)}>
                     <div ref={x => (this.topOffsetRow = x)} style={{ height: topOffset }} />
                     <table tabIndex="-1" className={cn("table", tableClassName)} onKeyDown={onKeyDown}>
-                        <tbody>
-                            {data.slice(renderRange.from, renderRange.to).map(renderRow)}
-                        </tbody>
+                        <tbody>{data.slice(renderRange.from, renderRange.to).map(renderRow)}</tbody>
                     </table>
                     <div ref={x => (this.bottomOffsetRow = x)} style={{ bottomOffset: bottomOffset }} />
                 </div>

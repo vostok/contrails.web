@@ -52,7 +52,9 @@ export default class Tabs extends React.Component<TabsProps, TabsState> {
                         </div>
                     ))}
                 </div>
-                <div className={cn("content")}>{activeTab != null && activeTab.renderContent()}</div>
+                <div key={activeTab ? activeTab.name : "NONE"} className={cn("content")}>
+                    {activeTab != null && activeTab.renderContent()}
+                </div>
             </div>
         );
     }

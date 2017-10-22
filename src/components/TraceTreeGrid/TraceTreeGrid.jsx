@@ -57,12 +57,8 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
                 }}
             />,
             <span key="Value" className={cn("cell-values", { focused: focused })}>
-                <span className={cn("value")}>
-                    {DateTimeUtils.millisecondsToString(time, "0")}
-                </span>
-                <span className={cn("percentage")}>
-                    {Math.round(percentage * 1000) / 10}%
-                </span>
+                <span className={cn("value")}>{DateTimeUtils.millisecondsToString(time, "0")}</span>
+                <span className={cn("percentage")}>{Math.round(percentage * 1000) / 10}%</span>
             </span>,
         ];
     }

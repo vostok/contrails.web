@@ -21,6 +21,7 @@ import {
 import ProfilerChartWithMinimap from "../ProfilerChartWithMinimap/ProfilerChartWithMinimap";
 import TraceTreeGrid from "../TraceTreeGrid/TraceTreeGrid";
 import SpanInfoView from "../SpanInfoView/SpanInfoView";
+import Tabs from "../Tabs/Tabs";
 
 import cn from "./TraceViewer.less";
 
@@ -37,6 +38,7 @@ type TraceViewerState = {
     traceTree: SpanNode,
     spanLines: ChartData,
     timeRange: TimeRange,
+    viewPort: TimeRange,
 };
 
 type TimeRange = { from: number, to: number };
@@ -69,6 +71,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
             spanNodesMap: treeBuilder.buildNodeMap(traceTree),
             spanLines: this.generateDataFromDiTraceResponse(traceTree),
             timeRange: this.getFromAndTo(props.traceInfo),
+            viewPort: this.getFromAndTo(props.traceInfo),
         };
     }
 
@@ -104,6 +107,32 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         return [];
     }
 
+    renderFullCallStack = (): React.Node => {
+        const { traceTree, focusedSpanNode, timeRange } = this.state;
+        return (
+            <TraceTreeGrid
+                totalTimeRange={timeRange}
+                focusedItem={focusedSpanNode}
+                traceTree={traceTree}
+                onItemClick={this.handleTreeGridChangeFocusedItems}
+                onChangeFocusedItem={this.handleTreeGridChangeFocusedItems}
+            />
+        );
+    };
+
+    renderCallStack = (): React.Node => {
+        const { traceTree, focusedSpanNode, viewPort } = this.state;
+        return (
+            <TraceTreeGrid
+                totalTimeRange={viewPort}
+                focusedItem={focusedSpanNode}
+                traceTree={traceTree}
+                onItemClick={this.handleTreeGridChangeFocusedItems}
+                onChangeFocusedItem={this.handleTreeGridChangeFocusedItems}
+            />
+        );
+    };
+
     render(): React.Node {
         const { traceTree, focusedSpanNode, spanLines, timeRange } = this.state;
         return (
@@ -116,17 +145,25 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                         from={timeRange.from}
                         to={timeRange.to}
                         data={spanLines}
+                        onChangeViewPort={value => this.setState({ viewPort: value })}
                     />
                 </ContrailPanelsTop>
                 <ContrailPanelsBottom>
                     <ContrailPanelsBottomLeft>
-                        <TraceTreeGrid
-                            totalTimeRange={timeRange}
-                            focusedItem={focusedSpanNode}
-                            traceTree={traceTree}
-                            onItemClick={this.handleTreeGridChangeFocusedItems}
-                            onChangeFocusedItem={this.handleTreeGridChangeFocusedItems}
-                        />{" "}
+                        <Tabs
+                            tabs={[
+                                {
+                                    name: "CallStack",
+                                    caption: "Call stack",
+                                    renderContent: this.renderCallStack,
+                                },
+                                {
+                                    name: "FullCallStack",
+                                    caption: "Full call stack",
+                                    renderContent: this.renderFullCallStack,
+                                },
+                            ]}
+                        />
                     </ContrailPanelsBottomLeft>
                     <ContrailPanelsBottomRight>
                         <div className={cn("span-info-view-container")}>

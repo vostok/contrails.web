@@ -231,8 +231,9 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                                 this.handleToggleItemExpand(item);
                             }}>
                             {itemChildren != null &&
-                                itemChildren.length > 0 &&
-                                <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />}
+                                itemChildren.length > 0 && (
+                                    <Icon name={expanded ? "ArrowTriangleDown" : "ArrowTriangleRight"} />
+                                )}
                         </button>
                         {column.renderValue(item, focusedItem === item)}
                     </span>
@@ -337,10 +338,7 @@ export default class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem
                 ref={x => (this.table = x)}
                 onKeyDown={this.handleTableKeyPress}
                 tableClassName={cn("table")}
-                renderHeader={() =>
-                    <tr className={cn("head-row")}>
-                        {columns.map(x => this.renderHeaderCell(x))}
-                    </tr>}
+                renderHeader={() => <tr className={cn("head-row")}>{columns.map(x => this.renderHeaderCell(x))}</tr>}
                 headerHeight={16}
                 rowHeight={20}
                 renderRow={x => this.renderVisibleRow(x)}

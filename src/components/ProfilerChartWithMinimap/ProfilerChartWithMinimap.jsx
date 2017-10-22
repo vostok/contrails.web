@@ -20,6 +20,7 @@ type ProfilerChartWithMinimapProps<TItem> = {
     selectedItems?: TItem[],
     onItemClick?: TItem => void,
     onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, options: ItemDrawContext) => void,
+    onChangeViewPort: (viewPort: { from: number, to: number }) => void,
 };
 
 type ProfilerChartWithMinimapState = {
@@ -73,17 +74,29 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     }
 
     setViewPortFrom(value: number) {
-        this.setState({
-            viewPortFrom: value,
-        });
+        this.setState(
+            {
+                viewPortFrom: value,
+            },
+            () => {
+                const { onChangeViewPort } = this.props;
+                onChangeViewPort(this.getViewPortRange());
+            }
+        );
     }
 
     setViewPortTo(value: number) {
         const { width, xScale } = this.state;
         if (width != null && xScale != null) {
-            this.setState({
-                viewPortFrom: value - width / xScale,
-            });
+            this.setState(
+                {
+                    viewPortFrom: value - width / xScale,
+                },
+                () => {
+                    const { onChangeViewPort } = this.props;
+                    onChangeViewPort(this.getViewPortRange());
+                }
+            );
         }
     }
 
@@ -175,10 +188,17 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         }
         const newXScale = width / (newTo - newFrom);
         const maxScale = width / (maxTo - maxFrom);
-        this.setState({
-            viewPortFrom: Math.max(maxFrom, newFrom),
-            xScale: Math.max(newXScale, maxScale),
-        });
+        this.setState(
+            {
+                viewPortFrom: Math.max(maxFrom, newFrom),
+                xScale: Math.max(newXScale, maxScale),
+            },
+            () => {
+                const { onChangeViewPort } = this.props;
+                onChangeViewPort(this.getViewPortRange());
+            }
+        );
+
         event.preventDefault();
     };
 
@@ -225,10 +245,16 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
         if (width == null) {
             return;
         }
-        this.setState({
-            viewPortFrom: viewPort.from,
-            xScale: width / (viewPort.to - viewPort.from),
-        });
+        this.setState(
+            {
+                viewPortFrom: viewPort.from,
+                xScale: width / (viewPort.to - viewPort.from),
+            },
+            () => {
+                const { onChangeViewPort } = this.props;
+                onChangeViewPort(this.getViewPortRange());
+            }
+        );
     };
 
     render(): React.Element<*> {
@@ -238,60 +264,68 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
             <div className={cn("container")} ref={x => (this.container = x)}>
                 {width != null &&
                     viewPortFrom != null &&
-                    xScale != null &&
-                    <div className={cn("minimap-container")}>
-                        <ProfilerChartMinimap
-                            data={{
-                                lines: data.lines.map(line => ({
-                                    items: line.items.map(item => ({ from: item.from, to: item.to, color: null })),
-                                })),
-                            }}
-                            from={from}
-                            to={to}
-                            viewPort={{
-                                from: viewPortFrom,
-                                to: viewPortFrom + width / xScale,
-                            }}
-                            onChangeViewPort={this.handleChangeViewPort}
-                        />
-                    </div>}
-                {width != null &&
-                    viewPortFrom != null &&
-                    xScale != null &&
-                    <div
-                        className={cn("chart-container")}
-                        onWheel={this.handleWheel}
-                        ref={x => (this.chartContainer = x)}>
-                        <div />
-                        <div onMouseDown={this.handleMouseDown}>
-                            <ProfilerChartContainer
+                    xScale != null && (
+                        <div className={cn("minimap-container")}>
+                            <ProfilerChartMinimap
+                                data={{
+                                    lines: data.lines.map(line => ({
+                                        items: line.items.map(item => ({ from: item.from, to: item.to, color: null })),
+                                    })),
+                                }}
                                 from={from}
                                 to={to}
-                                onChangeViewPort={x =>
-                                    this.setState({
-                                        viewPortFrom: Math.min(Math.max(from, x.from), to - width / xScale),
-                                        xScale: x.scale,
-                                    })}
                                 viewPort={{
                                     from: viewPortFrom,
-                                    scale: xScale,
-                                }}>
-                                <ProfilerChart
+                                    to: viewPortFrom + width / xScale,
+                                }}
+                                onChangeViewPort={this.handleChangeViewPort}
+                            />
+                        </div>
+                    )}
+                {width != null &&
+                    viewPortFrom != null &&
+                    xScale != null && (
+                        <div
+                            className={cn("chart-container")}
+                            onWheel={this.handleWheel}
+                            ref={x => (this.chartContainer = x)}>
+                            <div />
+                            <div onMouseDown={this.handleMouseDown}>
+                                <ProfilerChartContainer
                                     from={from}
                                     to={to}
+                                    onChangeViewPort={x =>
+                                        this.setState(
+                                            {
+                                                viewPortFrom: Math.min(Math.max(from, x.from), to - width / xScale),
+                                                xScale: x.scale,
+                                            },
+                                            () => {
+                                                const { onChangeViewPort } = this.props;
+                                                onChangeViewPort(this.getViewPortRange());
+                                            }
+                                        )}
                                     viewPort={{
                                         from: viewPortFrom,
-                                        to: viewPortFrom + width / xScale,
-                                    }}
-                                    xScale={xScale}
-                                    data={data}
-                                    onItemClick={onItemClick}
-                                    selectedItems={selectedItems}
-                                    onCustomDrawItem={this.props.onCustomDrawItem}
-                                />
-                            </ProfilerChartContainer>
+                                        scale: xScale,
+                                    }}>
+                                    <ProfilerChart
+                                        from={from}
+                                        to={to}
+                                        viewPort={{
+                                            from: viewPortFrom,
+                                            to: viewPortFrom + width / xScale,
+                                        }}
+                                        xScale={xScale}
+                                        data={data}
+                                        onItemClick={onItemClick}
+                                        selectedItems={selectedItems}
+                                        onCustomDrawItem={this.props.onCustomDrawItem}
+                                    />
+                                </ProfilerChartContainer>
+                            </div>
                         </div>
-                    </div>}
+                    )}
             </div>
         );
     }
