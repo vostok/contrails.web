@@ -35,12 +35,10 @@ export default class SpanNodeTimeLine extends React.Component<SpanNodeTimeLinePr
         const timeRangeDuration = totalTimeRange.to - totalTimeRange.from;
         const nodeDuration = node.to - node.from;
 
-        const left = Math.round(
-            (node.from / timeRangeDuration - totalTimeRange.from / timeRangeDuration) * containerWidth
-        );
+        const left = Math.round((node.from - totalTimeRange.from) / timeRangeDuration * containerWidth);
         const width = Math.max(4, Math.round(nodeDuration / timeRangeDuration) * containerWidth);
         return {
-            width: Math.min(containerWidth - left, width),
+            width: width,
             left: left,
         };
     }
@@ -52,12 +50,12 @@ export default class SpanNodeTimeLine extends React.Component<SpanNodeTimeLinePr
             return;
         }
         const actualWidth = container.getBoundingClientRect().width;
-        if (this.lastWidth == null || actualWidth !== this.lastWidth) {
-            this.lastWidth = actualWidth;
-            const { width, left } = this.getSpanPosition(actualWidth);
-            span.style.width = `${width}px`;
-            span.style.left = `${left}px`;
-        }
+        //if (this.lastWidth == null || actualWidth !== this.lastWidth) {
+        this.lastWidth = actualWidth;
+        const { width, left } = this.getSpanPosition(actualWidth);
+        span.style.width = `${width}px`;
+        span.style.left = `${left}px`;
+        //}
     }
 
     render(): React.Node {

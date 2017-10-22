@@ -1,10 +1,12 @@
 // @flow
 import * as React from "react";
+import { connect } from "react-redux";
 
 import type { TraceInfo } from "../../Domain/TraceInfo";
 import { TraceInfoUtils } from "../../Domain/TraceInfo";
 import type { SpanInfo } from "../../Domain/SpanInfo";
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import { reduceTree, filterNodesBy } from "../../Domain/Utils/TreeTraverseUtils";
 import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines, SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../../Domain/ItemDrawer";
@@ -25,12 +27,15 @@ import Tabs from "../Tabs/Tabs";
 
 import cn from "./TraceViewer.less";
 
+type TimeRange = { from: number, to: number };
+
 type ChartData = {
     lines: SpanLines,
 };
 
 type TraceViewerProps = {
     traceInfo: TraceInfo,
+    onChangeViewPort: TimeRange => void,
 };
 
 type TraceViewerState = {
@@ -40,8 +45,6 @@ type TraceViewerState = {
     timeRange: TimeRange,
     viewPort: TimeRange,
 };
-
-type TimeRange = { from: number, to: number };
 
 function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
     return (spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
@@ -55,7 +58,7 @@ function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
     });
 }
 
-export default class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
+class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     props: TraceViewerProps;
     state: TraceViewerState;
 
@@ -73,6 +76,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
             timeRange: this.getFromAndTo(props.traceInfo),
             viewPort: this.getFromAndTo(props.traceInfo),
         };
+        props.onChangeViewPort(this.getFromAndTo(props.traceInfo));
     }
 
     generateDataFromDiTraceResponse(traceTree: SpanNode): ChartData {
@@ -120,13 +124,28 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         );
     };
 
+    filterTreeByViewPort(root: SpanNode): SpanNode {
+        const { viewPort } = this.state;
+        return reduceTree(
+            root,
+            filterNodesBy(
+                x =>
+                    (viewPort.from < x.from && x.from < viewPort.to) ||
+                    (viewPort.from < x.to && x.to < viewPort.to) ||
+                    (x.from < viewPort.from && viewPort.to < x.to),
+                (x, y) => ({ ...x, children: y })
+            ),
+            x => x.children
+        );
+    }
+
     renderCallStack = (): React.Node => {
-        const { traceTree, focusedSpanNode, viewPort } = this.state;
+        const { traceTree, focusedSpanNode } = this.state;
         return (
             <TraceTreeGrid
-                totalTimeRange={viewPort}
+                totalTimeRange={null}
                 focusedItem={focusedSpanNode}
-                traceTree={traceTree}
+                traceTree={this.filterTreeByViewPort(traceTree)}
                 onItemClick={this.handleTreeGridChangeFocusedItems}
                 onChangeFocusedItem={this.handleTreeGridChangeFocusedItems}
             />
@@ -134,6 +153,7 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
     };
 
     render(): React.Node {
+        const { onChangeViewPort } = this.props;
         const { traceTree, focusedSpanNode, spanLines, timeRange } = this.state;
         return (
             <ContrailPanelsContainer>
@@ -145,7 +165,10 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                         from={timeRange.from}
                         to={timeRange.to}
                         data={spanLines}
-                        onChangeViewPort={value => this.setState({ viewPort: value })}
+                        onChangeViewPort={viewPort => {
+                            this.setState({ viewPort: viewPort });
+                            onChangeViewPort(viewPort);
+                        }}
                     />
                 </ContrailPanelsTop>
                 <ContrailPanelsBottom>
@@ -153,14 +176,14 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
                         <Tabs
                             tabs={[
                                 {
-                                    name: "CallStack",
-                                    caption: "Call stack",
-                                    renderContent: this.renderCallStack,
-                                },
-                                {
                                     name: "FullCallStack",
                                     caption: "Full call stack",
                                     renderContent: this.renderFullCallStack,
+                                },
+                                {
+                                    name: "CallStack",
+                                    caption: "Call stack",
+                                    renderContent: this.renderCallStack,
                                 },
                             ]}
                         />
@@ -175,3 +198,10 @@ export default class TraceViewer extends React.Component<TraceViewerProps, Trace
         );
     }
 }
+
+export default connect(
+    () => ({}),
+    dispatch => ({
+        onChangeViewPort: viewPort => dispatch({ type: "ChangeViewPort", viewPort: viewPort }),
+    })
+)(TraceViewer);

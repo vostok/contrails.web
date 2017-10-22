@@ -3,6 +3,8 @@
 /* eslint-disable no-inner-declarations */
 import * as React from "react";
 import ReactDOM from "react-dom";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
 
 import ContrailsApplication from "./containers/ContrailsApplication";
 
@@ -10,7 +12,18 @@ import "./styles/reset.less";
 import "./styles/typography.less";
 import "./styles/root.less";
 
+function contrailsApplicationReducer(state = {}, action) {
+    if (action.type === "ChangeViewPort") {
+        return {
+            ...state,
+            viewPort: action.viewPort,
+        };
+    }
+    return state;
+}
+
 const rootEl = document.getElementById("root");
+const store = createStore(contrailsApplicationReducer);
 
 if (rootEl == null) {
     throw new Error("Cannot find #root element to render react content into/");
@@ -22,7 +35,9 @@ if (process.env.NODE_ENV === "development") {
     function render(Component: React.ComponentType<{||}>) {
         ReactDOM.render(
             <AppContainer>
-                <Component />
+                <Provider store={store}>
+                    <Component />
+                </Provider>
             </AppContainer>,
             rootEl
         );

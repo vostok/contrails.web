@@ -1,5 +1,6 @@
 // @flow
 import * as React from "react";
+import { connect } from "react-redux";
 
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import TraceTreeUtils from "../../Domain/TraceTree/TraceTreeUtils";
@@ -13,8 +14,10 @@ import cn from "./TraceTreeGrid.less";
 
 const TreeGridWithState = withExpandedItems(TreeGrid);
 
+const SpanNodeTimeLineOfViewPort = connect(state => ({ totalTimeRange: state.viewPort }))(SpanNodeTimeLine);
+
 type TraceTreeGridProps = {
-    totalTimeRange: TimeRange,
+    totalTimeRange: ?TimeRange,
     traceTree: SpanNode,
     focusedItem?: ?SpanNode,
     onChangeFocusedItem: (spanNode: SpanNode) => void,
@@ -65,6 +68,9 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
 
     renderTimeLine(node: SpanNode): React.Node {
         const { totalTimeRange } = this.props;
+        if (totalTimeRange == null) {
+            return <SpanNodeTimeLineOfViewPort node={node} />;
+        }
         return <SpanNodeTimeLine node={node} totalTimeRange={totalTimeRange} />;
     }
 
