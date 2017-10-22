@@ -4,7 +4,6 @@ import PromiseUtils from "commons/PromiseUtils";
 
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
-import responses from "./Responses";
 
 if (process.env.NODE_ENV === "production") {
     console.warn("This file should not appears in production");
@@ -12,11 +11,18 @@ if (process.env.NODE_ENV === "production") {
 
 export class ContrailsApiFake implements IContrailsApi {
     async getTrace(id: string): Promise<TraceInfo> {
-        await PromiseUtils.delay(2000);
-        const result = Object.keys(responses).find(x => x.replace(/^\.\//, "").startsWith(id));
-        if (result != null) {
-            return responses[result][0];
+        await PromiseUtils.delay(600);
+        const response = await fetch(`/src/Domain/Responses/${id}.json`);
+        if (response.status !== 200) {
+            if (response.status === 404) {
+                throw new Error("404");
+            }
+            throw new Error("500");
         }
-        throw new Error("NotFound");
+        const resp = await response.json();
+        if (resp.length === 0) {
+            throw new Error("404");
+        }
+        return resp[0];
     }
 }
