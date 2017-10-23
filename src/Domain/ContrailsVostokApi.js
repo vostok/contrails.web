@@ -5,13 +5,22 @@ import type { IContrailsApi } from "./IContrailsApi";
 
 export class ContrailsVostokApi implements IContrailsApi {
     urlPrefix: string;
+    static additionalHeaders = {
+        "Cache-Control": "no-cache, no-store",
+        Pragma: "no-cache",
+        Expires: "0",
+        credentials: "same-origin",
+    };
 
     constructor(urlPrefix: string) {
         this.urlPrefix = urlPrefix;
     }
 
     async getTrace(id: string): Promise<TraceInfo> {
-        const response = await fetch(`${this.urlPrefix}/api/findTrace?traceId=${id}&out=vostok`);
+        const response = await fetch(
+            `${this.urlPrefix}/api/findTrace?traceId=${id}&out=vostok`,
+            ContrailsVostokApi.additionalHeaders
+        );
         if (response.status !== 200) {
             throw new Error("500");
         }
