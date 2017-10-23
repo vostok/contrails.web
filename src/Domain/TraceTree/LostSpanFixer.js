@@ -2,8 +2,6 @@
 import moment from "moment";
 import _ from "lodash";
 
-import { reduceTree, isChildReducer } from "../Utils/TreeTraverseUtils";
-
 type SpanBase = {
     SpanId: string,
     ParentSpanId?: ?string,
@@ -29,9 +27,7 @@ export default class LostSpanFixer {
                 continue;
             }
             const parentSpanId = lostSpan.ParentSpanId;
-            console.log("start find");
             const mostSuitableParent = this.findMostSuitableParent(result, lostSpan);
-            console.log("end find");
             if (mostSuitableParent == null) {
                 continue;
             }

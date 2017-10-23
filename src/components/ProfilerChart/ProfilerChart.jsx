@@ -111,6 +111,12 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
         const { data } = this.props;
         for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
+            if (
+                mouseY <= lineIndex * (lineHeight + lineGap) ||
+                mouseY >= (lineIndex + 1) * (lineHeight + lineGap) - lineGap
+            ) {
+                continue;
+            }
             for (const item of data.lines[lineIndex].items) {
                 if (this.isItemHovered(item, lineIndex, mouseX, mouseY)) {
                     return { item: item, lineIndex: lineIndex };
@@ -240,16 +246,14 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
 
         return (
             <div className={cn("time-markers-container")}>
-                {timeMarkers.map(timeMarker =>
+                {timeMarkers.map(timeMarker => (
                     <div
                         className={cn("time-marker")}
                         key={timeMarker.value}
                         style={{ left: this.toAbsoluteX(timeMarker.value) }}>
-                        <div className={cn("time-marker-title")}>
-                            {timeMarker.title}
-                        </div>
+                        <div className={cn("time-marker-title")}>{timeMarker.title}</div>
                     </div>
-                )}
+                ))}
             </div>
         );
     }

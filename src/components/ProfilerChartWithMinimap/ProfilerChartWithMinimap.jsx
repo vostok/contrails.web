@@ -35,17 +35,32 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     ProfilerChartWithMinimapState
 > {
     props: ProfilerChartWithMinimapProps<TItem>;
-    state: ProfilerChartWithMinimapState = {
-        width: null,
-        viewPortFrom: null,
-        xScale: null,
-    };
+    state: ProfilerChartWithMinimapState;
     container: ?React.ElementRef<*>;
     chartContainer: ?React.ElementRef<*>;
     initialScrollTop: number;
     curYPos: number;
     mouseMoveListener: ?IListenerHandler = null;
     mouseUpListener: ?IListenerHandler = null;
+
+    constructor(props: ProfilerChartWithMinimapProps<TItem>) {
+        super(props);
+        const { data, onGetMinimapColor } = props;
+        this.state = {
+            width: null,
+            viewPortFrom: null,
+            xScale: null,
+            minimapData: {
+                lines: data.lines.map(line => ({
+                    items: line.items.map(item => ({
+                        from: item.from,
+                        to: item.to,
+                        color: onGetMinimapColor != null ? onGetMinimapColor(item) : null,
+                    })),
+                })),
+            },
+        };
+    }
 
     getViewPortRange(): { from: number, to: number } {
         const { viewPortFrom, width, xScale } = this.state;
@@ -259,8 +274,8 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     };
 
     render(): React.Element<*> {
-        const { data, from, to, onItemClick, selectedItems, onGetMinimapColor } = this.props;
-        const { width, xScale, viewPortFrom } = this.state;
+        const { data, from, to, onItemClick, selectedItems } = this.props;
+        const { width, xScale, viewPortFrom, minimapData } = this.state;
         return (
             <div className={cn("container")} ref={x => (this.container = x)}>
                 {width != null &&
@@ -268,15 +283,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                     xScale != null && (
                         <div className={cn("minimap-container")}>
                             <ProfilerChartMinimap
-                                data={{
-                                    lines: data.lines.map(line => ({
-                                        items: line.items.map(item => ({
-                                            from: item.from,
-                                            to: item.to,
-                                            color: onGetMinimapColor != null ? onGetMinimapColor(item) : null,
-                                        })),
-                                    })),
-                                }}
+                                data={minimapData}
                                 from={from}
                                 to={to}
                                 viewPort={{
