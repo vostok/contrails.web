@@ -29,7 +29,9 @@ export default class LostSpanFixer {
                 continue;
             }
             const parentSpanId = lostSpan.ParentSpanId;
+            console.log("start find");
             const mostSuitableParent = this.findMostSuitableParent(result, lostSpan);
+            console.log("end find");
             if (mostSuitableParent == null) {
                 continue;
             }
@@ -64,32 +66,29 @@ export default class LostSpanFixer {
     }
 
     findMostSuitableParent<T: SpanBase>(spans: Array<T>, target: T): ?T {
-        const potentialParents = spans.filter(x => this.isSpanCanBeParent(spans, x, target));
+        const targetChildren = this.getAllChildren(spans, target);
+        const potentialParents = _.difference(spans, targetChildren);
         const intersectedParents = potentialParents.filter(x => this.isIntersectsByRange(x, target));
         if (intersectedParents.length === 0) {
-            const nearestPotentialParents = _.sortBy(spans.filter(x => this.isSpanCanBeParent(spans, x, target)), x =>
-                this.getDistanceTo(x, target)
-            );
-            if (nearestPotentialParents.length === 0) {
+            const nearestPotentialParent = _.minBy(potentialParents, x => this.getDistanceTo(x, target));
+            if (nearestPotentialParent.length === 0) {
                 return null;
             }
-            return nearestPotentialParents[0];
+            return nearestPotentialParent;
         }
-        const sorted = _.sortBy(intersectedParents, [
-            x => this.getSpanIntersectionLength(x, target),
-            x => this.getSpanLength(x),
-        ]);
-        if (sorted.length === 0) {
+        const result = _.minBy(
+            intersectedParents,
+            x => this.getSpanIntersectionLength(x, target) * 100000 + this.getSpanLength(x)
+        );
+        if (result == null) {
             return null;
         }
-        return sorted[0];
+        return result;
     }
 
-    isSpanCanBeParent<T: SpanBase>(spans: Array<T>, span: T, target: T): boolean {
-        if (target === span) {
-            return false;
-        }
-        return !reduceTree(target, isChildReducer(span), node => spans.filter(x => x.ParentSpanId === node.SpanId));
+    getAllChildren<T: SpanBase>(spans: Array<T>, target: T): Array<T> {
+        const children = spans.filter(x => x.ParentSpanId === target.SpanId);
+        return [target, ..._.flatten(children.map(x => this.getAllChildren(spans, x)))];
     }
 
     isIntersectsByRange<T: SpanBase>(span: T, target: T): boolean {
@@ -150,9 +149,19 @@ export default class LostSpanFixer {
 
     getDifferenceBetween<T: SpanBase>(span: T, target: T): number {
         const parentDuration =
-            moment(span.EndTimestamp).toDate().getTime() - moment(span.BeginTimestamp).toDate().getTime();
+            moment(span.EndTimestamp)
+                .toDate()
+                .getTime() -
+            moment(span.BeginTimestamp)
+                .toDate()
+                .getTime();
         const targetDuration =
-            moment(target.EndTimestamp).toDate().getTime() - moment(target.BeginTimestamp).toDate().getTime();
+            moment(target.EndTimestamp)
+                .toDate()
+                .getTime() -
+            moment(target.BeginTimestamp)
+                .toDate()
+                .getTime();
         return parentDuration - targetDuration;
     }
 }

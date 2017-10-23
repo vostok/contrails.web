@@ -19,9 +19,7 @@ export default class TraceTreeBuilder {
                 colorConfig: 5,
                 source: span,
                 children: spans
-                    .filter(x => x !== span)
-                    .filter(x => x.ParentSpanId != null)
-                    .filter(x => x.ParentSpanId === span.SpanId)
+                    .filter(x => x !== span && x.ParentSpanId != null && x.ParentSpanId === span.SpanId)
                     .map(x => this.spanInfoToSpanNode(x, spans)),
             };
         }
@@ -34,9 +32,7 @@ export default class TraceTreeBuilder {
             colorConfig: this.getColorConfig(span),
             source: span,
             children: spans
-                .filter(x => x !== span)
-                .filter(x => x.ParentSpanId != null)
-                .filter(x => x.ParentSpanId === span.SpanId)
+                .filter(x => x !== span && x.ParentSpanId != null && x.ParentSpanId === span.SpanId)
                 .map(x => this.spanInfoToSpanNode(x, spans)),
         };
     }
