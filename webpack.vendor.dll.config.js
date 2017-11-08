@@ -32,7 +32,7 @@ function createConfigForEnvironment(environment) {
         },
         output: {
             path: path.join(__dirname, "prebuild", environment),
-            publicPath: "/",
+            publicPath: "",
             filename: PROD ? "[name].[hash].js" : "[name].js",
             library: "vendor",
         },

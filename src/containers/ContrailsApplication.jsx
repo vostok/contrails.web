@@ -26,7 +26,7 @@ if (process.env.API_MODE === "production" && process.env.API_TARGET === "logsear
 export default function ContrailsApplication(): React.Node {
     return (
         <ApiProvider contrailsApi={api}>
-            <BrowserRouter>
+            <BrowserRouter basename={process.env.BASE_URL}>
                 <Switch>
                     <Route exact path="/">
                         <ContrailsRootContainer />

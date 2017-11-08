@@ -29,6 +29,7 @@ module.exports = function createConfig(env) {
     options.apiTarget = options.apiTarget;
     options.port = options.port || defaultPort;
     options.addIISWebConfig = Boolean(options.addIISWebConfig);
+    options.baseUrl = options.baseUrl || "";
 
     if (!apiModes.includes(options.apiMode)) {
         throw new Error(`Please specify correct api mode --env.apiMode={${apiModes.join(",")}}`);
@@ -43,7 +44,7 @@ module.exports = function createConfig(env) {
         },
         output: {
             path: path.resolve(__dirname, "dist"),
-            publicPath: "/",
+            publicPath: `${options.baseUrl}/`,
             filename: "[name].js",
         },
         module: {
@@ -76,6 +77,7 @@ module.exports = function createConfig(env) {
                 "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
                 "process.env.API_TARGET": JSON.stringify(options.apiTarget),
                 "process.env.API_MODE": JSON.stringify(options.apiMode),
+                "process.env.BASE_URL": JSON.stringify(options.baseUrl),
             }),
             new CopyWebpackPlugin(
                 [
@@ -93,7 +95,11 @@ module.exports = function createConfig(env) {
             proxy: createApiProxy(options.apiTarget, options.apiMode),
             allowedHosts: ["localhost"],
             port: options.port,
-            historyApiFallback: true,
+            historyApiFallback: {
+                rewrites: [
+                    { from: new RegExp(`^${escapeRegExp(options.baseUrl)}/`), to: `${options.baseUrl}/index.html` },
+                ],
+            },
         },
     };
 
@@ -157,4 +163,8 @@ function createApiProxy(apiTarget, apiMode) {
         }
     }
     return {};
+}
+
+function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
