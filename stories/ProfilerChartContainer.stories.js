@@ -82,7 +82,7 @@ class ProfilerChartDemo extends React.Component<ProfilerChartDemoProps, Profiler
     }
 }
 
-storiesOf("ProfilerChartContainer", module).add("Default", () =>
+storiesOf("ProfilerChartContainer", module).add("Default", () => (
     <Border>
         <ProfilerChartDemo
             data={{
@@ -100,4 +100,4 @@ storiesOf("ProfilerChartContainer", module).add("Default", () =>
             }}
         />
     </Border>
-);
+));

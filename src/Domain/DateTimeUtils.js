@@ -18,8 +18,13 @@ export default class DateTimeUtils {
     static formatDatePreciseUtc(dateTimeString: string): string {
         const ticks = new Decimal(timestampToTicks(dateTimeString) || "0");
         return (
-            moment(dateTimeString).utc().format("DD.MM.YYYY HH:mm:ss.SSS") +
-            ticks.mod(10000).toString().padStart(4, "0")
+            moment(dateTimeString)
+                .utc()
+                .format("DD.MM.YYYY HH:mm:ss.SSS") +
+            ticks
+                .mod(10000)
+                .toString()
+                .padStart(4, "0")
         );
     }
 
@@ -31,7 +36,14 @@ export default class DateTimeUtils {
         }
         return (
             (val.isNegative() ? "-" : "") +
-            this.millisecondsToString(val.absoluteValue().div(10000).round().toNumber(), "0ms")
+            this.millisecondsToString(
+                val
+                    .absoluteValue()
+                    .div(10000)
+                    .round()
+                    .toNumber(),
+                "0ms"
+            )
         );
     }
 
@@ -52,8 +64,8 @@ export default class DateTimeUtils {
     static millisecondsToString(totalMilliSeconds: number, zeroValue: string): string {
         // TODO добавить минуты, часы, дни, недели, месяцы, года(?)
         const numMinutes = Math.floor(totalMilliSeconds / 1000 / 60);
-        const numSeconds = Math.floor(totalMilliSeconds / 1000 % 60);
-        const milliSeconds = Math.round(totalMilliSeconds % 1000 * 10) / 10;
+        const numSeconds = Math.floor((totalMilliSeconds / 1000) % 60);
+        const milliSeconds = Math.round((totalMilliSeconds % 1000) * 10) / 10;
         let result = "";
         if (numMinutes !== 0) {
             result += result === "" ? "" : " ";
@@ -86,17 +98,26 @@ function timestampToTicks(timeStr: ?string | ?Date): ?string {
         // @flow-coverage-ignore-next-line
         if (timeFractionalPartMatch) {
             // @flow-coverage-ignore-next-line
-            end = Number(`0.${timeFractionalPartMatch[1]}`) * 1000 % 1 * 10000;
+            end = ((Number(`0.${timeFractionalPartMatch[1]}`) * 1000) % 1) * 10000;
         }
     } else {
         commonTime = new Decimal(timeStr.getTime());
     }
-    return commonTime.mul(10000).plus(offset).plus(end).toString();
+    return commonTime
+        .mul(10000)
+        .plus(offset)
+        .plus(end)
+        .toString();
 }
 
 export function ticksToTimestamp(timeStr: ?string | ?Date): ?Date {
     if (!timeStr) return null;
     const offset = new Decimal("621355968000000000");
     const commonTime = new Decimal(timeStr);
-    return new Date(commonTime.minus(offset).div(10000).toNumber());
+    return new Date(
+        commonTime
+            .minus(offset)
+            .div(10000)
+            .toNumber()
+    );
 }

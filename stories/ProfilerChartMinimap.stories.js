@@ -86,7 +86,7 @@ class ProfilerChartMinimapDemo extends React.Component<*, *> {
 }
 
 storiesOf("ProfilerChartMinimap", module)
-    .add("Default", () =>
+    .add("Default", () => (
         <Border>
             <ProfilerChartMinimapDemo
                 from={0}
@@ -115,8 +115,8 @@ storiesOf("ProfilerChartMinimap", module)
                 }}
             />
         </Border>
-    )
-    .add("NonZeroFrom", () =>
+    ))
+    .add("NonZeroFrom", () => (
         <Border>
             <ProfilerChartMinimapDemo
                 from={10}
@@ -130,4 +130,4 @@ storiesOf("ProfilerChartMinimap", module)
                 }}
             />
         </Border>
-    );
+    ));

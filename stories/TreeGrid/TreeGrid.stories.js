@@ -26,7 +26,7 @@ const item1 = {
 };
 
 storiesOf("TreeGrid/Default", module)
-    .add("Default", () =>
+    .add("Default", () => (
         <TreeGrid2
             onGetChildren={x => x.children}
             columns={[
@@ -75,8 +75,8 @@ storiesOf("TreeGrid/Default", module)
                 },
             ]}
         />
-    )
-    .add("Many children", () =>
+    ))
+    .add("Many children", () => (
         <TreeGrid2
             onChangeFocusedItem={action("onChangeFocusedItem")}
             onGetChildren={x => x.children}
@@ -119,4 +119,4 @@ storiesOf("TreeGrid/Default", module)
                 },
             ]}
         />
-    );
+    ));

@@ -11,7 +11,7 @@ import {
 } from "../src/components/ContrailPanels/ContrailPanels";
 import "../src/styles/root.less"; // eslint-disable-line import/no-unassigned-import
 
-storiesOf("ContrailPanels", module).add("Default", () =>
+storiesOf("ContrailPanels", module).add("Default", () => (
     <ContrailPanelsContainer>
         <ContrailPanelsTop>Top</ContrailPanelsTop>
         <ContrailPanelsBottom>
@@ -19,4 +19,4 @@ storiesOf("ContrailPanels", module).add("Default", () =>
             <ContrailPanelsBottomRight>Right</ContrailPanelsBottomRight>
         </ContrailPanelsBottom>
     </ContrailPanelsContainer>
-);
+));

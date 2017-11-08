@@ -1,6 +1,6 @@
 // @flow
 export interface IListenerHandler {
-    remove(): void,
+    remove(): void;
 }
 
 class MouseListenerHandler implements IListenerHandler {

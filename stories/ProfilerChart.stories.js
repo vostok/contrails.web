@@ -8,7 +8,7 @@ import ProfilerChart from "../src/components/ProfilerChart/ProfilerChart";
 const item2 = { from: 2, to: 4, name: "Item 2" };
 
 storiesOf("ProfilerChart", module)
-    .add("OneLineSpaces", () =>
+    .add("OneLineSpaces", () => (
         <ProfilerChart
             onItemClick={action("onItemClick")}
             selectedItems={[item2]}
@@ -24,8 +24,8 @@ storiesOf("ProfilerChart", module)
                 ],
             }}
         />
-    )
-    .add("Default", () =>
+    ))
+    .add("Default", () => (
         <ProfilerChart
             from={0}
             to={5}
@@ -45,8 +45,8 @@ storiesOf("ProfilerChart", module)
                 ],
             }}
         />
-    )
-    .add("NonZeroFrom", () =>
+    ))
+    .add("NonZeroFrom", () => (
         <ProfilerChart
             onItemClick={action("onItemClick")}
             selectedItems={[item2]}
@@ -62,4 +62,4 @@ storiesOf("ProfilerChart", module)
                 ],
             }}
         />
-    );
+    ));

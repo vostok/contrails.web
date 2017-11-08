@@ -39,8 +39,16 @@ function max(x: number, y: number): number {
 function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
     const spans = response[0].Spans;
     const result = {
-        from: spans.map(x => x.BeginTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(min),
-        to: spans.map(x => x.EndTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(max),
+        from: spans
+            .map(x => x.BeginTimestamp)
+            .map(x => moment(x))
+            .map(x => x.valueOf())
+            .reduce(min),
+        to: spans
+            .map(x => x.EndTimestamp)
+            .map(x => moment(x))
+            .map(x => x.valueOf())
+            .reduce(max),
     };
     return result;
 }
@@ -52,7 +60,7 @@ function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: SpanLi
 }
 
 storiesOf("ProfilerChartWithMinimap", module)
-    .add("Default", () =>
+    .add("Default", () => (
         <Border>
             <ProfilerChartWithMinimap
                 from={0}
@@ -78,8 +86,8 @@ storiesOf("ProfilerChartWithMinimap", module)
                 }}
             />
         </Border>
-    )
-    .add("FullScreen", () =>
+    ))
+    .add("FullScreen", () => (
         <ProfilerChartWithMinimap
             from={0}
             to={10}
@@ -106,8 +114,8 @@ storiesOf("ProfilerChartWithMinimap", module)
                 ],
             }}
         />
-    )
-    .add("FullScreen-LargeData", () =>
+    ))
+    .add("FullScreen-LargeData", () => (
         <ProfilerChartWithMinimap
             from={0}
             to={1000}
@@ -115,8 +123,8 @@ storiesOf("ProfilerChartWithMinimap", module)
                 lines: generateProfilerData(0, 1000, 0, 7),
             }}
         />
-    )
-    .add("FullScreen-ValuesForRealTime", () =>
+    ))
+    .add("FullScreen-ValuesForRealTime", () => (
         <ProfilerChartWithMinimap
             from={1503233308736}
             to={1503233309325}
@@ -128,18 +136,18 @@ storiesOf("ProfilerChartWithMinimap", module)
                 ],
             }}
         />
-    )
-    .add("FullScreen-DataFromTrace-62f8278dab21471c8370fa47d4f52f72", () =>
+    ))
+    .add("FullScreen-DataFromTrace-62f8278dab21471c8370fa47d4f52f72", () => (
         <ProfilerChartWithMinimap
             onCustomDrawItem={handleCustomDrawItem}
             {...getFromAndTo(Response62f8278dab21471c8370fa47d4f52f72)}
             data={generateDataFromDiTraceResponse(Response62f8278dab21471c8370fa47d4f52f72)}
         />
-    )
-    .add("FullScreen-DataFromTrace-37fa1a7edcc34ca28204fc50e6681e70", () =>
+    ))
+    .add("FullScreen-DataFromTrace-37fa1a7edcc34ca28204fc50e6681e70", () => (
         <ProfilerChartWithMinimap
             onCustomDrawItem={handleCustomDrawItem}
             {...getFromAndTo(Response37fa1a7edcc34ca28204fc50e6681e70)}
             data={generateDataFromDiTraceResponse(Response37fa1a7edcc34ca28204fc50e6681e70)}
         />
-    );
+    ));

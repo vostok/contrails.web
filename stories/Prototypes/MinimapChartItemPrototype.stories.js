@@ -49,7 +49,7 @@ function Item({
     );
 }
 
-storiesOf("Prototypes/MinimapChartItemPrototype", module).add("Default", () =>
+storiesOf("Prototypes/MinimapChartItemPrototype", module).add("Default", () => (
     <div
         style={{
             padding: 20,
@@ -76,4 +76,4 @@ storiesOf("Prototypes/MinimapChartItemPrototype", module).add("Default", () =>
             <Item width={100} colorIndex={4} style={{ marginLeft: -300 }} />
         </Line>
     </div>
-);
+));

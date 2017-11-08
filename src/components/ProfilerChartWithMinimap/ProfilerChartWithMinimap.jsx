@@ -316,7 +316,8 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                                 const { onChangeViewPort } = this.props;
                                                 onChangeViewPort(this.getViewPortRange());
                                             }
-                                        )}
+                                        )
+                                    }
                                     viewPort={{
                                         from: viewPortFrom,
                                         scale: xScale,

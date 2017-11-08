@@ -23,16 +23,6 @@ export function findNodeToReducer<TItem>(target: TItem): (Array<Array<TItem>>, T
     };
 }
 
-export function filterNodesBy<TItem>(condition: TItem => boolean, setChildren): (Array<?TItem>, TItem) => ?TItem {
-    return function reducer(childResults: Array<?TItem>, node: TItem): ?TItem {
-        const notEmptyChildren = childResults.filter(x => x != null);
-        if (notEmptyChildren.length === 0) {
-            return condition(node) ? node : null;
-        }
-        return setChildren(node, notEmptyChildren);
-    };
-}
-
 export function isChildReducer<TItem>(target: TItem): (Array<boolean>, TItem) => boolean {
     return function reducer(childResults: Array<boolean>, node: TItem): boolean {
         if (node === target) {

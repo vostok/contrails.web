@@ -145,8 +145,10 @@ class TreeGridFocusMangement extends React.Component<{}, *> {
     }
 }
 
-storiesOf("TreeGrid/FocusMangement", module).add("Default", () => <TreeGridFocusMangement />).add("Default2", () =>
-    <div style={{ position: "relative", height: 100 }}>
-        <TreeGridFocusMangement />
-    </div>
-);
+storiesOf("TreeGrid/FocusMangement", module)
+    .add("Default", () => <TreeGridFocusMangement />)
+    .add("Default2", () => (
+        <div style={{ position: "relative", height: 100 }}>
+            <TreeGridFocusMangement />
+        </div>
+    ));

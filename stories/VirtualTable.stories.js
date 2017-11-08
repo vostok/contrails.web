@@ -62,16 +62,16 @@ class VirtualTableContainer extends React.Component<{}, *> {
                         rowHeight={20}
                         headerHeight={20}
                         data={items}
-                        renderHeader={() =>
+                        renderHeader={() => (
                             <tr>
                                 <th>Value</th>
-                            </tr>}
-                        renderRow={x =>
+                            </tr>
+                        )}
+                        renderRow={x => (
                             <tr key={x.value}>
-                                <td style={{ height: 20 }}>
-                                    {x.value}
-                                </td>
-                            </tr>}
+                                <td style={{ height: 20 }}>{x.value}</td>
+                            </tr>
+                        )}
                     />
                 </div>
             </div>

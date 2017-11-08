@@ -13,34 +13,34 @@ const data1 = new TraceTreeBuilder().buildTraceTree(Response53ee602db8d444d9a7a6
 const data2 = new TraceTreeBuilder().buildTraceTree(Responseaae265d9c1fa4c2c9d504c798ee9854a[0].Spans);
 
 storiesOf("TraceTreeGrid", module)
-    .add("Default", () =>
+    .add("Default", () => (
         <TraceTreeGrid
             totalTimeRange={TraceInfoUtils.getTraceTimeRange(Response53ee602db8d444d9a7a674471be6b709[0])}
             traceTree={data1}
             onChangeFocusedItem={action("onChangeFocusedItem")}
         />
-    )
-    .add("WithFocusedItem", () =>
+    ))
+    .add("WithFocusedItem", () => (
         <TraceTreeGrid
             totalTimeRange={TraceInfoUtils.getTraceTimeRange(Response53ee602db8d444d9a7a674471be6b709[0])}
             focusedItem={data1.children[0]}
             traceTree={data1}
             onChangeFocusedItem={action("onChangeFocusedItem")}
         />
-    )
-    .add("WithFocusedItem #1", () =>
+    ))
+    .add("WithFocusedItem #1", () => (
         <TraceTreeGrid
             totalTimeRange={TraceInfoUtils.getTraceTimeRange(Response53ee602db8d444d9a7a674471be6b709[0])}
             focusedItem={data1.children[0].children[1]}
             traceTree={data1}
             onChangeFocusedItem={action("onChangeFocusedItem")}
         />
-    )
-    .add("WithFocusedItem #2", () =>
+    ))
+    .add("WithFocusedItem #2", () => (
         <TraceTreeGrid
             totalTimeRange={TraceInfoUtils.getTraceTimeRange(Responseaae265d9c1fa4c2c9d504c798ee9854a[0])}
             focusedItem={data2.children[0].children[1]}
             traceTree={data2}
             onChangeFocusedItem={action("onChangeFocusedItem")}
         />
-    );
+    ));

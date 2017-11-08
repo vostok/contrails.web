@@ -6,7 +6,7 @@ import TraceViewer from "../src/components/TraceViewer/TraceViewer";
 import Response53ee602db8d444d9a7a674471be6b709 from "../src/Domain/Responses/53ee602db8d444d9a7a674471be6b709.json";
 
 storiesOf("TraceViewer", module)
-    .add("SingleSpan", () =>
+    .add("SingleSpan", () => (
         <TraceViewer
             traceInfo={{
                 TraceId: "1",
@@ -26,8 +26,8 @@ storiesOf("TraceViewer", module)
                 ],
             }}
         />
-    )
-    .add("LostSpan #1", () =>
+    ))
+    .add("LostSpan #1", () => (
         <TraceViewer
             traceInfo={{
                 TraceId: "1",
@@ -59,8 +59,8 @@ storiesOf("TraceViewer", module)
                 ],
             }}
         />
-    )
-    .add("LostSpan #2", () =>
+    ))
+    .add("LostSpan #2", () => (
         <TraceViewer
             traceInfo={{
                 TraceId: "1",
@@ -104,8 +104,8 @@ storiesOf("TraceViewer", module)
                 ],
             }}
         />
-    )
-    .add("LostSpan #3", () =>
+    ))
+    .add("LostSpan #3", () => (
         <TraceViewer
             traceInfo={{
                 TraceId: "1",
@@ -149,5 +149,5 @@ storiesOf("TraceViewer", module)
                 ],
             }}
         />
-    )
+    ))
     .add("Default", () => <TraceViewer traceInfo={Response53ee602db8d444d9a7a674471be6b709[0]} />);

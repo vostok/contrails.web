@@ -86,7 +86,7 @@ function Item({ children, width, colorIndex, focused, style }: ItemProps): React
     );
 }
 
-storiesOf("Prototypes/ChartItemPrototype", module).add("Default", () =>
+storiesOf("Prototypes/ChartItemPrototype", module).add("Default", () => (
     <div
         style={{
             padding: 20,
@@ -186,4 +186,4 @@ storiesOf("Prototypes/ChartItemPrototype", module).add("Default", () =>
             </Item>
         </Line>
     </div>
-);
+));

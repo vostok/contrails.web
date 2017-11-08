@@ -14,8 +14,16 @@ export class TraceInfoUtils {
     static getTraceTimeRange(traceInfo: TraceInfo): TimeRange {
         const spans = traceInfo.Spans;
         const result = {
-            from: spans.map(x => x.BeginTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(min),
-            to: spans.map(x => x.EndTimestamp).map(x => moment(x)).map(x => x.valueOf()).reduce(max),
+            from: spans
+                .map(x => x.BeginTimestamp)
+                .map(x => moment(x))
+                .map(x => x.valueOf())
+                .reduce(min),
+            to: spans
+                .map(x => x.EndTimestamp)
+                .map(x => moment(x))
+                .map(x => x.valueOf())
+                .reduce(max),
         };
         return result;
     }
