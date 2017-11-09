@@ -69,6 +69,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --env.apiTarget=logsearch --env.apiMode=fake",
+    "start:prod-build": "cross-env NODE_ENV=production webpack-dev-server --env.apiTarget=logsearch --env.apiMode=fake",
     "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
     "flow": "flow",
     "flow.check": "flow check",
