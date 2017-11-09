@@ -79,7 +79,7 @@
     "test": "cross-env NODE_ENV=mocha mocha-webpack --opts test/mocha.opts test/**/*.test.js",
     "clean": "rimraf dist",
     "build": "cross-env NODE_ENV=production webpack --env.apiTarget=vostok",
-    "logsearch:build": "cross-env NODE_ENV=production webpack --env.apiTarget=logsearch",
+    "logsearch:build": "cross-env NODE_ENV=production webpack --env.apiTarget=logsearch \"--env.baseUrl=/contrails\"",
     "logsearch:local-staging:build": "cross-env NODE_ENV=production webpack --env.apiTarget=logsearch --env.addIISWebConfig=true \"--env.baseUrl=/contrails\"",
     "vendor:clean": "rimraf prebuild",
     "vendor:build": "rimraf prebuild & webpack --config webpack.vendor.dll.config.js"
