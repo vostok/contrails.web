@@ -30,7 +30,6 @@ export default class DateTimeUtils {
 
     static formatDurationTicks(value: DurationTicks): string {
         const val = new Decimal(value);
-        //const isNegative = val.isNegative();
         if (val.absoluteValue().lessThan(10000)) {
             return `${val.div(10000).toString()}ms`;
         }
@@ -93,11 +92,8 @@ function timestampToTicks(timeStr: ?string | ?Date): ?string {
     let commonTime;
     if (typeof timeStr === "string") {
         commonTime = new Decimal(new Date(timeStr).getTime());
-        // @flow-coverage-ignore-next-line
         const timeFractionalPartMatch = /\.(\d+)[^\d]/.exec(timeStr);
-        // @flow-coverage-ignore-next-line
         if (timeFractionalPartMatch) {
-            // @flow-coverage-ignore-next-line
             end = ((Number(`0.${timeFractionalPartMatch[1]}`) * 1000) % 1) * 10000;
         }
     } else {
