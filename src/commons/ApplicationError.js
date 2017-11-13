@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
-function buildExtendableError(name: string) {
-    function ExtendableError(message: string) {
+function buildExtendableError(name) {
+    function ExtendableError(message) {
         if (!Error.captureStackTrace) {
             this.stack = new Error().stack;
         } else {

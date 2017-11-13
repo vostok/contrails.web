@@ -28,10 +28,7 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
                         </span>
                         <span className={cn("logo-text")}>Contrails</span>
                     </Link>
-                    {header &&
-                        <div className={cn("header-content")}>
-                            {header}
-                        </div>}
+                    {header && <div className={cn("header-content")}>{header}</div>}
                 </div>
                 <div className={cn("content")}>
                     <Helmet defaultTitle="Contrails | SKB Kontur" titleTemplate="%s | Contrails | SKB Kontur" />
