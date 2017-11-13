@@ -79,4 +79,21 @@ storiesOf("ProfilerChart", module)
                 ],
             }}
         />
+    ))
+    .add("Intersections", () => (
+        <ProfilerChart
+            onItemClick={action("onItemClick")}
+            selectedItems={[item2]}
+            from={5}
+            to={20}
+            viewPort={{ from: 5, to: 20 }}
+            xScale={100}
+            data={{
+                lines: [
+                    {
+                        items: [{ from: 8, to: 15, name: "Item 1" }, { from: 11, to: 19, name: "Item 2" }],
+                    },
+                ],
+            }}
+        />
     ));

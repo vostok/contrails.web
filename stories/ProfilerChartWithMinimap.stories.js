@@ -11,7 +11,7 @@ import Response37fa1a7edcc34ca28204fc50e6681e70 from "../src/Domain/Responses/37
 import TraceTreeBuilder from "../src/Domain/TraceTree/TraceTreeBuilder";
 import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines } from "../src/Domain/SpanLines/SpansToLinesArranger";
-import handleCustomDrawItem from "../src/Domain/ItemDrawer";
+import CustomItemDrawer from "../src/Domain/CustomItemDrawer/CustomItemDrawer";
 import { LogsearchDataExtractor } from "../src/Domain/IDataExtractor";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
@@ -86,6 +86,8 @@ function createSpan(id: string, parentId: ?string, from: number, to: number, isC
         },
     };
 }
+
+const wideValue = generateProfilerData(0, 1000, 0, 1);
 
 storiesOf("ProfilerChartWithMinimap", module)
     .add("Default", () => (
@@ -183,6 +185,15 @@ storiesOf("ProfilerChartWithMinimap", module)
             }}
         />
     ))
+    .add("FullScreen-Wide", () => (
+        <ProfilerChartWithMinimap
+            from={0}
+            to={1000}
+            data={{
+                lines: wideValue,
+            }}
+        />
+    ))
     .add("FullScreen-ValuesForRealTime", () => (
         <ProfilerChartWithMinimap
             from={1503233308736}
@@ -198,14 +209,14 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen-DataFromTrace-62f8278dab21471c8370fa47d4f52f72", () => (
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
+            itemDrawer={new CustomItemDrawer()}
             {...getFromAndTo(Response62f8278dab21471c8370fa47d4f52f72)}
             data={generateDataFromDiTraceResponse(Response62f8278dab21471c8370fa47d4f52f72)}
         />
     ))
     .add("FullScreen-DataFromTrace-37fa1a7edcc34ca28204fc50e6681e70", () => (
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
+            itemDrawer={new CustomItemDrawer()}
             {...getFromAndTo(Response37fa1a7edcc34ca28204fc50e6681e70)}
             data={generateDataFromDiTraceResponse(Response37fa1a7edcc34ca28204fc50e6681e70)}
         />

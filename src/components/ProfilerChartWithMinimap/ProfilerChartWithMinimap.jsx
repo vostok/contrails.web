@@ -6,7 +6,8 @@ import ReactDom from "react-dom";
 import DocumentUtils from "../DocumentUtils";
 import type { IListenerHandler } from "../DocumentUtils";
 import ProfilerChart from "../ProfilerChart/ProfilerChart";
-import type { ProfilerData, ProfilerItem, ItemDrawContext } from "../ProfilerChart/ProfilerChart";
+import type { ProfilerData, ProfilerItem } from "../ProfilerChart/ProfilerChart";
+import type { ICustomItemDrawer } from "../ProfilerChart/ICustomItemDrawer";
 import ProfilerChartContainer from "../ProfilerChartContainer/ProfilerChartContainer";
 import ProfilerChartMinimap, { type ChartMinimapItem } from "../ProfilerChartMinimap/ProfilerChartMinimap";
 import normalizeWheel from "../../Domain/NormalizeWheel";
@@ -20,8 +21,8 @@ type ProfilerChartWithMinimapProps<TItem> = {
     selectedItems?: TItem[],
     onItemClick?: TItem => void,
     onGetMinimapColor?: TItem => ?string,
-    onCustomDrawItem?: (context: CanvasRenderingContext2D, item: TItem, options: ItemDrawContext) => void,
     onChangeViewPort: (viewPort: { from: number, to: number }) => void,
+    itemDrawer: ICustomItemDrawer<TItem>,
 };
 
 type ProfilerChartWithMinimapState = {
@@ -278,7 +279,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
     };
 
     render(): React.Element<*> {
-        const { data, from, to, onItemClick, selectedItems } = this.props;
+        const { itemDrawer, data, from, to, onItemClick, selectedItems } = this.props;
         const { width, xScale, viewPortFrom, minimapData } = this.state;
         return (
             <div className={cn("container")} ref={x => (this.container = x)}>
@@ -337,7 +338,7 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
                                         data={data}
                                         onItemClick={onItemClick}
                                         selectedItems={selectedItems}
-                                        onCustomDrawItem={this.props.onCustomDrawItem}
+                                        itemDrawer={itemDrawer}
                                     />
                                 </ProfilerChartContainer>
                             </div>

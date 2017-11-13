@@ -42,10 +42,6 @@ class ProfilerChartDemo extends React.Component<ProfilerChartDemoProps, Profiler
         xScale: 100,
     };
 
-    handleCustomDrawItem = (context: CanvasRenderingContext2D, item: ProfilerItem) => {
-        context.strokeText(item.name, 5, 10);
-    };
-
     render(): React.Node {
         const { data } = this.props;
         const { xScale, viewPortFrom } = this.state;
@@ -69,7 +65,6 @@ class ProfilerChartDemo extends React.Component<ProfilerChartDemoProps, Profiler
                             viewPort={{ from: 0, to: 6 }}
                             xScale={xScale}
                             data={data}
-                            onCustomDrawItem={this.handleCustomDrawItem}
                         />
                     </ProfilerChartContainer>
                 </div>

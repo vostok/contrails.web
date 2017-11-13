@@ -31,8 +31,8 @@ export default function generateProfilerData(
     result[level] = result[level] || { items: [] };
 
     const newBars = _.range(0, count).map(index => ({
-        from: from + (to - from) / count * index + (to - from) * random(0.001, 0.05),
-        to: from + (to - from) / count * (index + 1) - (to - from) * random(0.001, 0.05),
+        from: Math.round(from + (to - from) / count * index + (to - from) * random(0.001, 0.05)),
+        to: Math.round(from + (to - from) / count * (index + 1) - (to - from) * random(0.001, 0.05)),
     }));
 
     result[level].items = [...result[level].items, ...newBars];

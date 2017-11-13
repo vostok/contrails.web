@@ -8,7 +8,7 @@ import type { SpanInfo } from "../../Domain/SpanInfo";
 import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines, SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
-import handleCustomDrawItem from "../../Domain/ItemDrawer";
+import CustomItemDrawer from "../../Domain/CustomItemDrawer/CustomItemDrawer";
 import itemColors from "../../Domain/Colors";
 import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
 import LostSpanFixer from "../../Domain/TraceTree/LostSpanFixer";
@@ -157,7 +157,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
                         selectedItems={this.getSelectedSpanLineItem()}
                         onItemClick={this.handleChartItemClick}
                         onGetMinimapColor={this.handleGetMinimapItemColor}
-                        onCustomDrawItem={handleCustomDrawItem}
+                        itemDrawer={new CustomItemDrawer()}
                         from={timeRange.from}
                         to={timeRange.to}
                         data={spanLines}

@@ -124,6 +124,7 @@ class TreeGridFocusMangement extends React.Component<{}, *> {
                         onChangeFocusedItem={x => this.setState({ focusedItem: x })}
                         onItemClick={x => this.setState({ focusedItem: x })}
                         onGetChildren={x => x.children}
+                        filterNodes={() => true}
                         columns={[
                             {
                                 width: 100,

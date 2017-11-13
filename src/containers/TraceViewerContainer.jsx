@@ -46,6 +46,7 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
     };
 
     componentWillReceiveProps(nextProps: ContrailsApplicationProps) {
+        console.log(this.props.traceIdPrefix, nextProps.traceIdPrefix)
         if (this.props.traceIdPrefix !== nextProps.traceIdPrefix) {
             this.updateTrace(nextProps.traceIdPrefix);
         }

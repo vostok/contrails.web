@@ -43,7 +43,7 @@ class InterruptibleContext implements IInterruptibleContext {
     }
 
     async check(): Promise<void> {
-        if (new Date().getTime() - this.timer > 30) {
+        if (new Date().getTime() - this.timer > 15) {
             await delay(0);
             if (this.nextDrawResolve != null) {
                 throw new InterruptedError();
