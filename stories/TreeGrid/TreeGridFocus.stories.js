@@ -119,6 +119,7 @@ class TreeGridFocusMangement extends React.Component<{}, *> {
                 </div>
                 <div style={{ position: "relative", height: "90%" }}>
                     <TreeGrid2
+                        filterNodes={() => true}
                         focusedItem={focusedItem}
                         onChangeFocusedItem={x => this.setState({ focusedItem: x })}
                         onItemClick={x => this.setState({ focusedItem: x })}

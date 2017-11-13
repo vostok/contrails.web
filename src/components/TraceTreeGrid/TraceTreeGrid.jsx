@@ -9,12 +9,16 @@ import DateTimeUtils from "../../Domain/DateTimeUtils";
 import TreeGrid, { withExpandedItems } from "../TreeGrid/TreeGrid";
 import type { TimeRange } from "../../Domain/TimeRange";
 import SpanNodeTimeLine from "../SpanNodeTimeLine/SpanNodeTimeLine";
+import type { ApplicationState } from "../../reducer/contrailsApplicationReducer";
 
 import cn from "./TraceTreeGrid.less";
 
 const TreeGridWithState = withExpandedItems(TreeGrid);
 
-const SpanNodeTimeLineOfViewPort = connect(state => ({ totalTimeRange: state.viewPort }))(SpanNodeTimeLine);
+const SpanNodeTimeLineOfViewPort = connect(
+    (state: ApplicationState) => ({ totalTimeRange: state.viewPort }),
+    () => ({})
+)(SpanNodeTimeLine);
 
 type TraceTreeGridProps = {
     filterNodes: SpanNode => boolean,

@@ -20,7 +20,7 @@ if (process.env.API_MODE === "production" && process.env.API_TARGET === "vostok"
 }
 if (process.env.API_MODE === "production" && process.env.API_TARGET === "logsearch") {
     const ContrailsApi = require("../Domain/ContrailsLogsearchApi");
-    api = new ContrailsApi.ContrailsLogsearchApi(process.env.BASE_URL);
+    api = new ContrailsApi.ContrailsLogsearchApi(process.env.BASE_URL || "");
 }
 
 export default function ContrailsApplication(): React.Node {
@@ -36,7 +36,8 @@ export default function ContrailsApplication(): React.Node {
                         component={({ match }) =>
                             typeof match.params.traceIdPrefix === "string" && (
                                 <TraceViewerContainer traceIdPrefix={match.params.traceIdPrefix} />
-                            )}
+                            )
+                        }
                     />
                 </Switch>
             </BrowserRouter>

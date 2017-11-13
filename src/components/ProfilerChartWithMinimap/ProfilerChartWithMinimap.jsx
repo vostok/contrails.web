@@ -8,7 +8,7 @@ import type { IListenerHandler } from "../DocumentUtils";
 import ProfilerChart from "../ProfilerChart/ProfilerChart";
 import type { ProfilerData, ProfilerItem, ItemDrawContext } from "../ProfilerChart/ProfilerChart";
 import ProfilerChartContainer from "../ProfilerChartContainer/ProfilerChartContainer";
-import ProfilerChartMinimap from "../ProfilerChartMinimap/ProfilerChartMinimap";
+import ProfilerChartMinimap, { type ChartMinimapItem } from "../ProfilerChartMinimap/ProfilerChartMinimap";
 import normalizeWheel from "../../Domain/NormalizeWheel";
 
 import cn from "./ProfilerChartWithMinimap.less";
@@ -28,6 +28,7 @@ type ProfilerChartWithMinimapState = {
     width: ?number,
     viewPortFrom: ?number,
     xScale: ?number,
+    minimapData: { lines: Array<{ items: Array<ChartMinimapItem> }> },
 };
 
 export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React.Component<
@@ -36,6 +37,9 @@ export default class ProfilerChartWithMinimap<TItem: ProfilerItem> extends React
 > {
     props: ProfilerChartWithMinimapProps<TItem>;
     state: ProfilerChartWithMinimapState;
+    static defaultProps = {
+        onChangeViewPort: () => {},
+    };
     container: ?React.ElementRef<*>;
     chartContainer: ?React.ElementRef<*>;
     initialScrollTop: number;

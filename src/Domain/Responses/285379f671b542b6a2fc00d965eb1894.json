@@ -1,0 +1,130 @@
+[
+    {
+        "Spans": [
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "b42103d1000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:03.8030000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1329634+03:00",
+                "Annotations": { "OriginHost": "vm-livechat1", "OriginId": "LiveChat.Service", "IsClientSpan": false }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "d4061a4d000000000000000000000000",
+                "ParentSpanId": "b42103d1000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.0920000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1328909+03:00",
+                "Annotations": {
+                    "OriginHost": "vm-livechat1",
+                    "OriginId": "LiveChat.Service",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": "POST",
+                    "ClientTargetHost": "vm-livechat3",
+                    "ClientRequestBodySize": 90,
+                    "ClientRequestUrlHash": -1942501628,
+                    "ClientResponseCode": 200,
+                    "ClientTargetPort": 31414,
+                    "ClientResponseBodySize": 78
+                }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "d4061a4d000000000000000000000000",
+                "ParentSpanId": "b42103d1000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.1030000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1430732+03:00",
+                "Annotations": { "OriginHost": "vm-livechat3", "OriginId": "LiveChat.Service", "IsClientSpan": false }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "33e2e751000000000000000000000000",
+                "ParentSpanId": "d4061a4d000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.1040000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1416856+03:00",
+                "Annotations": {
+                    "OriginHost": "vm-livechat3",
+                    "OriginId": "LiveChat.Service",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": "GET",
+                    "ClientTargetHost": "vm-sessions4",
+                    "ClientRequestBodySize": 0,
+                    "ClientRequestUrlHash": 1858897305,
+                    "ClientResponseCode": 200,
+                    "ClientTargetPort": 48325,
+                    "ClientResponseBodySize": 365
+                }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "33e2e751000000000000000000000000",
+                "ParentSpanId": "d4061a4d000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.1430000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1444242+03:00",
+                "Annotations": {
+                    "OriginHost": "vm-sessions4",
+                    "OriginId": "AuthService.Service",
+                    "IsClientSpan": false
+                }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "4eba2671000000000000000000000000",
+                "ParentSpanId": "33e2e751000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.1430000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1441055+03:00",
+                "Annotations": {
+                    "OriginHost": "vm-sessions4",
+                    "OriginId": "AuthService.Service",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": null,
+                    "ClientTargetHost": null,
+                    "ClientRequestBodySize": null,
+                    "ClientRequestUrlHash": null,
+                    "ClientResponseCode": null,
+                    "ClientTargetPort": null,
+                    "ClientResponseBodySize": null
+                }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "e03cb85d000000000000000000000000",
+                "ParentSpanId": "4eba2671000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.1430000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1439805+03:00",
+                "Annotations": {
+                    "OriginHost": "vm-sessions4",
+                    "OriginId": "AuthService.Service",
+                    "IsClientSpan": true,
+                    "ClientRequestMethod": "POST",
+                    "ClientTargetHost": "192.168.147.97",
+                    "ClientRequestBodySize": 129,
+                    "ClientRequestUrlHash": 194100624,
+                    "ClientResponseCode": 200,
+                    "ClientTargetPort": 23671,
+                    "ClientResponseBodySize": 425
+                }
+            },
+            {
+                "TraceId": "285379f671b542b6a2fc00d965eb1894",
+                "SpanId": "e03cb85d000000000000000000000000",
+                "ParentSpanId": "4eba2671000000000000000000000000",
+                "OperationName": "HTTP",
+                "BeginTimestamp": "2017-11-13T10:08:05.1610000+03:00",
+                "EndTimestamp": "2017-11-13T10:08:05.1614126+03:00",
+                "Annotations": {
+                    "OriginHost": "k0ch97",
+                    "OriginId": "Zebra.TabletServer.Nonpaged",
+                    "IsClientSpan": false
+                }
+            }
+        ],
+        "TraceId": "285379f671b542b6a2fc00d965eb1894"
+    }
+]

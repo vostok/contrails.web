@@ -9,7 +9,7 @@ import type { TimeMarker } from "../../Domain/TimeMarkers";
 
 import cn from "./ProfilerChartMinimap.less";
 
-type ChartMinimapItem = {
+export type ChartMinimapItem = {
     from: number,
     to: number,
     color: ?string,

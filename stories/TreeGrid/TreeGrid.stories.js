@@ -28,6 +28,7 @@ const item1 = {
 storiesOf("TreeGrid/Default", module)
     .add("Default", () => (
         <TreeGrid2
+            filterNodes={() => true}
             onGetChildren={x => x.children}
             columns={[
                 {
@@ -78,6 +79,7 @@ storiesOf("TreeGrid/Default", module)
     ))
     .add("Many children", () => (
         <TreeGrid2
+            filterNodes={() => true}
             onChangeFocusedItem={action("onChangeFocusedItem")}
             onGetChildren={x => x.children}
             columns={[
