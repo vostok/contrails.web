@@ -2278,6 +2278,13 @@ css-tokenize@^1.0.1:
     inherits "^2.0.1"
     readable-stream "^1.0.33"
 
+css-tree@1.0.0-alpha.26:
+  version "1.0.0-alpha.26"
+  resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-1.0.0-alpha.26.tgz#690bee3458fb5b6b7000553983c8c30876da0b3e"
+  dependencies:
+    mdn-data "^1.0.0"
+    source-map "^0.5.3"
+
 css-what@2.1:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/css-what/-/css-what-2.1.0.tgz#9467d032c38cfaefb9f2d79501253062f87fa1bd"
@@ -4704,6 +4711,10 @@ md5.js@^1.3.4:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+mdn-data@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-1.0.0.tgz#a69d9da76847b4d5834c1465ea25c0653a1fbf66"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -7154,6 +7165,13 @@ stylehacks@^2.3.0, stylehacks@^2.3.2:
     text-table "^0.2.0"
     write-file-stdout "0.0.2"
 
+stylelint-csstree-validator@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/stylelint-csstree-validator/-/stylelint-csstree-validator-1.2.1.tgz#0c718a1539e566f0223d29f880d7b5b675d281a9"
+  dependencies:
+    css-tree "1.0.0-alpha.26"
+    stylelint "^7.0.0"
+
 stylelint-declaration-strict-value@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/stylelint-declaration-strict-value/-/stylelint-declaration-strict-value-1.0.4.tgz#8b20790cd71af7e4f65b28ec269981c6417b7179"
@@ -7276,7 +7294,7 @@ stylelint@^6.8.0:
     svg-tags "^1.0.0"
     table "^3.7.8"
 
-stylelint@^7.6.0:
+stylelint@^7.0.0, stylelint@^7.6.0:
   version "7.13.0"
   resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-7.13.0.tgz#111f97b6da72e775c80800d6bb6f5f869997785d"
   dependencies:

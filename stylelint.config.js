@@ -3,8 +3,8 @@ module.exports = {
     plugins: [
         'stylelint-declaration-strict-value',
         'stylelint-order',
-        'stylelint-no-browser-hacks/lib/index.js',
         'stylelint-no-unsupported-browser-features',
+        'stylelint-csstree-validator',
     ],
     rules: {
         // =================
@@ -14,14 +14,17 @@ module.exports = {
         // Order related linting rules for stylelint.
         // https://github.com/hudochenkov/stylelint-order
         'order/order': [
+            "custom-properties",
             "declarations",
-			"rules",
+            "rules",
 		],
 
-        // Checks the use variable on declaration
-        // https://github.com/sh-waqar/stylelint-declaration-use-variable#usage
+        // 'plugin/no-unsupported-browser-features': [true, { browsers: 'last 2 versions, ie >= 10', ignore: ['flexbox', 'outline'] }],
 
-        // TODO включить!
+        "csstree/validator": true,
+
+        // // Checks the use variable on declaration
+        // // https://github.com/sh-waqar/stylelint-declaration-use-variable#usage
         // 'scale-unlimited/declaration-strict-value': [
         //     ['color', 'background-color'],
         //     {
@@ -328,10 +331,6 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/function-parentheses-space-inside
         'function-parentheses-space-inside': 'never',
 
-        // Require or disallow data URIs for urls.
-        // http://stylelint.io/user-guide/rules/function-url-data-uris
-        'function-url-scheme-blacklist': /^.*$/,
-
         // Disallow scheme-relative urls.
         // http://stylelint.io/user-guide/rules/function-url-no-scheme-relative
         'function-url-no-scheme-relative': true,
@@ -343,6 +342,11 @@ module.exports = {
         // Specify a whitelist of allowed url schemes.
         // http://stylelint.io/user-guide/rules/function-url-scheme-whitelist
         // DISABLED 'function-url-scheme-whitelist': string|[],
+
+        // Specify a blacklist of allowed url schemes.
+        // http://stylelint.io/user-guide/rules/function-url-scheme-whitelist
+        'function-url-scheme-blacklist': "never",
+
 
         // Specify a whitelist of allowed functions
         // http://stylelint.io/user-guide/rules/function-whitelist
@@ -379,7 +383,8 @@ module.exports = {
 
         // Disallow browser hacks that are irrelevant to the browsers you are targeting.
         // http://stylelint.io/user-guide/rules/no-browser-hacks
-        'plugin/no-browser-hacks': true,
+        // TODO Добавить stylelint-no-browser-hacks. Сейчас надо абсолютный путь прописывать до пакета https://github.com/ben-eb/stylehacks/issues/37
+        //no-browser-hacks': true,
 
         // Disallow selectors of lower specificity from coming after overriding selectors of higher specificity.
         // http://stylelint.io/user-guide/rules/no-descending-specificity
@@ -416,11 +421,6 @@ module.exports = {
         // Disallow animation names that do not correspond to a @keyframes declaration.
         // http://stylelint.io/user-guide/rules/no-unknown-animations
         'no-unknown-animations': true,
-
-        // Disallow features that are unsupported by the browsers that you are targeting.
-        // http://stylelint.io/user-guide/rules/no-unsupported-browser-features
-        'plugin/no-unsupported-browser-features': [true, { browsers: 'last 2 versions, ie >= 10', ignore: ['flexbox', 'outline'] }],
-
 
         // =======================
         // ==== MEDIA FEATURE ====
@@ -610,6 +610,11 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/selector-max-empty-lines/
         'selector-max-empty-lines': 0,
 
+        'selector-max-attribute': 0,
+
+        'selector-max-combinators': 5,
+
+
         // Limit the number of compound selectors in a selector.
         // http://stylelint.io/user-guide/rules/selector-max-compound-selectors
         // DISABLED 'selector-max-compound-selectors': int,
@@ -644,7 +649,7 @@ module.exports = {
 
         // Disallow the universal selector.
         // http://stylelint.io/user-guide/rules/selector-no-universal
-        'selector-no-universal': true,
+        'selector-max-universal': 0,
 
         // Disallow vendor prefixes for selectors.
         // http://stylelint.io/user-guide/rules/selector-no-vendor-prefix/

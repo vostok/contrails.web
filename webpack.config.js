@@ -55,6 +55,7 @@ module.exports = function createConfig(env) {
             alias: createAliases(),
         },
         plugins: [
+            require("autoprefixer"),
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require(`./prebuild/${NODE_ENV}/vendor-manifest.json`),

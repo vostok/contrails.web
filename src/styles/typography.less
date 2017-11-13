@@ -2,7 +2,8 @@
 @import './variables.less';
 
 :global {
-    body, html {
+    body,
+    html {
         font-family: @base-font-family;
         font-size: @base-font-size;
         line-height: @base-line-height;
@@ -35,7 +36,8 @@
         color: @link-color;
         text-decoration: none;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             text-decoration: none;
         }
     }
@@ -43,8 +45,8 @@
     b {
         font-weight: bold;
     }
-    // @font-face тут для мака 
-    // stylelint-disable no-unsupported-browser-features 
+    // @font-face тут для мака
+    // stylelint-disable no-unsupported-browser-features
     @font-face {
         font-family: 'Segoe UI';
         font-weight: 200;
