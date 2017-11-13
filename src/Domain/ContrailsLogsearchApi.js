@@ -1,9 +1,37 @@
 // @flow
 /* eslint-disable import/prefer-default-export */
 import moment from "moment";
+import _ from "lodash";
 
 import type { TraceInfo } from "./TraceInfo";
+import type { SpanInfo } from "./SpanInfo";
 import type { IContrailsApi } from "./IContrailsApi";
+
+function booleanXOR(left: boolean, right: boolean): boolean {
+    return left ? !right : right;
+}
+
+export function fixLogsearchClientServerSpan(spans: Array<SpanInfo>): Array<SpanInfo> {
+    const spansById = _.groupBy(spans, x => x.SpanId);
+    for (const spanId of Object.keys(spansById)) {
+        if (
+            spansById[spanId].length === 2 &&
+            spansById[spanId][0].Annotations &&
+            typeof spansById[spanId][0].Annotations.IsClientSpan === "boolean" &&
+            typeof spansById[spanId][1].Annotations.IsClientSpan === "boolean"
+        ) {
+            if (
+                booleanXOR(spansById[spanId][0].Annotations.IsClientSpan, spansById[spanId][1].Annotations.IsClientSpan)
+            ) {
+                const clientSpan = spansById[spanId].find(x => x.Annotations.IsClientSpan);
+                const serverSpan = spansById[spanId].find(x => !x.Annotations.IsClientSpan);
+                clientSpan.SpanId += "1";
+                serverSpan.ParentSpanId = clientSpan.SpanId;
+            }
+        }
+    }
+    return spans;
+}
 
 export class ContrailsLogsearchApi implements IContrailsApi {
     urlPrefix: string;
@@ -30,6 +58,7 @@ export class ContrailsLogsearchApi implements IContrailsApi {
         if (resp.length === 0) {
             throw new Error("404");
         }
+        resp[0].Spans = fixLogsearchClientServerSpan(resp[0].Spans);
         const firstItem = resp[0].Spans[0];
         for (const item of resp[0].Spans) {
             const diffMs = moment(firstItem.BeginTimestamp).valueOf() - moment(item.BeginTimestamp).valueOf();

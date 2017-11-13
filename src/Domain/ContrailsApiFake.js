@@ -2,6 +2,7 @@
 /* eslint-disable import/prefer-default-export */
 import PromiseUtils from "commons/PromiseUtils";
 
+import { fixLogsearchClientServerSpan } from "./ContrailsLogsearchApi";
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
@@ -23,6 +24,7 @@ export class ContrailsApiFake implements IContrailsApi {
         if (resp.length === 0) {
             throw new Error("404");
         }
+        resp[0].Spans = fixLogsearchClientServerSpan(resp[0].Spans);
         return resp[0];
     }
 }

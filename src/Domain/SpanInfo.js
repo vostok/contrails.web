@@ -7,5 +7,5 @@ export type SpanInfo = {
     OperationName: string,
     BeginTimestamp: string,
     EndTimestamp: string,
-    Annotations: ?{ [key: string]: string },
+    Annotations: ?{ [key: string]: mixed },
 };
