@@ -69,7 +69,8 @@ export class ContrailsLogsearchApi implements IContrailsApi {
                 item.EndTimestamp = moment(
                     moment(item.EndTimestamp).valueOf() + Math.sign(diffMs) * 1000 * 60 * 60 * 2
                 ).format("YYYY-MM-DDTHH:mm:ss.SSSSSZ");
-                item.TimeFixed = true;
+                item.Annotations = item.Annotations || {};
+                item.Annotations.TimeFixed = true;
             }
         }
         return resp[0];
