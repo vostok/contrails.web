@@ -13,6 +13,7 @@ import itemColors from "../../Domain/Colors";
 import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
 import LostSpanFixer from "../../Domain/TraceTree/LostSpanFixer";
 import type { SpanFactory } from "../../Domain/TraceTree/LostSpanFixer";
+import type { IDataExtractor } from "../../Domain/IDataExtractor";
 import {
     ContrailPanelsContainer,
     ContrailPanelsTop,
@@ -35,6 +36,7 @@ type ChartData = {
 
 type TraceViewerProps = {
     traceInfo: TraceInfo,
+    dataExtractor: IDataExtractor,
     onChangeViewPort: TimeRange => void,
 };
 
@@ -64,7 +66,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
 
     constructor(props: TraceViewerProps) {
         super(props);
-        const treeBuilder = new TraceTreeBuilder();
+        const treeBuilder = new TraceTreeBuilder(props.dataExtractor);
         const lostSpanFixer = new LostSpanFixer();
         const recoveredSpan = lostSpanFixer.fix(props.traceInfo.Spans, fakeSpanFactory(props.traceInfo.TraceId));
         const traceTree = treeBuilder.buildTraceTree(recoveredSpan);

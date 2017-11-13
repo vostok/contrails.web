@@ -4,10 +4,17 @@ import { NotImplementedError } from "commons/Errors";
 
 import type { SpanInfo } from "../SpanInfo";
 import { reduceTree } from "../Utils/TreeTraverseUtils";
+import type { IDataExtractor } from "../IDataExtractor";
 
 import type { SpanNode } from "./SpanNode";
 
 export default class TraceTreeBuilder {
+    dataExtractor: IDataExtractor;
+
+    constructor(dataExtractor: IDataExtractor) {
+        this.dataExtractor = dataExtractor;
+    }
+
     spanInfoToSpanNode(span: SpanInfo, spans: Array<SpanInfo>): SpanNode {
         if (span.OperationName === "FakeSpan") {
             return {
@@ -27,8 +34,8 @@ export default class TraceTreeBuilder {
             type: "SingleSpan",
             from: moment(span.BeginTimestamp).valueOf(),
             to: moment(span.EndTimestamp).valueOf(),
-            serviceName: (span.Annotations && span.Annotations.OriginId) || "Unknown Service",
-            spanTitle: "",
+            serviceName: this.dataExtractor.getServiceName(span),
+            spanTitle: this.dataExtractor.getSpanTitle(span),
             colorConfig: this.getColorConfig(span),
             source: span,
             children: spans
@@ -38,19 +45,7 @@ export default class TraceTreeBuilder {
     }
 
     getColorConfig(span: SpanInfo): number {
-        if (span.Annotations == null) {
-            return 0;
-        }
-        if (
-            (typeof span.Annotations.OriginId === "string" && span.Annotations.OriginId.startsWith("Billy")) ||
-            span.Annotations.OriginId.startsWith("Billing")
-        ) {
-            return 3;
-        }
-        if (typeof span.Annotations.OriginId === "string" && span.Annotations.OriginId.startsWith("Web.UI")) {
-            return 2;
-        }
-        return 0;
+        return this.dataExtractor.getColorConfig(span);
     }
 
     buildTraceTree(spans: Array<SpanInfo>): SpanNode {

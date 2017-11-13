@@ -7,20 +7,11 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 
 import ContrailsApplication from "./containers/ContrailsApplication";
+import contrailsApplicationReducer from "./reducer/contrailsApplicationReducer";
 
 import "./styles/reset.less";
 import "./styles/typography.less";
 import "./styles/root.less";
-
-function contrailsApplicationReducer(state = {}, action) {
-    if (action.type === "ChangeViewPort") {
-        return {
-            ...state,
-            viewPort: action.viewPort,
-        };
-    }
-    return state;
-}
 
 const rootEl = document.getElementById("root");
 const store = createStore(contrailsApplicationReducer);

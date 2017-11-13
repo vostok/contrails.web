@@ -1,13 +1,21 @@
 // @flow
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
 
+import { LogsearchDataExtractor, VostokDataExtractor } from "../src/Domain/IDataExtractor";
 import TraceViewer from "../src/components/TraceViewer/TraceViewer";
 import Response53ee602db8d444d9a7a674471be6b709 from "../src/Domain/Responses/53ee602db8d444d9a7a674471be6b709.json";
+import contrailsApplicationReducer from "../src/reducer/contrailsApplicationReducer";
+
+const store = createStore(contrailsApplicationReducer);
 
 storiesOf("TraceViewer", module)
+    .addDecorator(story => <Provider store={store}>{story()}</Provider>)
     .add("SingleSpan", () => (
         <TraceViewer
+            dataExtractor={new LogsearchDataExtractor()}
             traceInfo={{
                 TraceId: "1",
                 Spans: [
@@ -29,6 +37,7 @@ storiesOf("TraceViewer", module)
     ))
     .add("LostSpan #1", () => (
         <TraceViewer
+            dataExtractor={new LogsearchDataExtractor()}
             traceInfo={{
                 TraceId: "1",
                 Spans: [
@@ -62,6 +71,7 @@ storiesOf("TraceViewer", module)
     ))
     .add("LostSpan #2", () => (
         <TraceViewer
+            dataExtractor={new LogsearchDataExtractor()}
             traceInfo={{
                 TraceId: "1",
                 Spans: [
@@ -107,6 +117,7 @@ storiesOf("TraceViewer", module)
     ))
     .add("LostSpan #3", () => (
         <TraceViewer
+            dataExtractor={new LogsearchDataExtractor()}
             traceInfo={{
                 TraceId: "1",
                 Spans: [
@@ -150,4 +161,36 @@ storiesOf("TraceViewer", module)
             }}
         />
     ))
-    .add("Default", () => <TraceViewer traceInfo={Response53ee602db8d444d9a7a674471be6b709[0]} />);
+    .add("Vostok LostSpan", () => (
+        <TraceViewer
+            dataExtractor={new VostokDataExtractor()}
+            traceInfo={{
+                TraceId: "1",
+                Spans: [
+                    {
+                        BeginTimestamp: "2017-10-28T14:30:21.25+00:00",
+                        EndTimestamp: "2017-10-28T14:30:21.26+00:00",
+                        ParentSpanId: null,
+                        SpanId: "9ffa6d1c4b2342a99c511236d8b22019",
+                        TraceId: "da9fdf340cba42f280837dea88780786",
+                        Annotations: {
+                            operation: "Generate Trace",
+                            kind: "loadtest",
+                            service: "event-generator",
+                            host: "localhost",
+                            "http.url": "send",
+                            "http.requestContentLength": "1024",
+                            "http.responseContentLength": "2048",
+                            "http.code": "200",
+                        },
+                    },
+                ],
+            }}
+        />
+    ))
+    .add("Default", () => (
+        <TraceViewer
+            dataExtractor={new LogsearchDataExtractor()}
+            traceInfo={Response53ee602db8d444d9a7a674471be6b709[0]}
+        />
+    ));

@@ -11,6 +11,7 @@ import TraceTreeBuilder from "../src/Domain/TraceTree/TraceTreeBuilder";
 import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines } from "../src/Domain/SpanLines/SpansToLinesArranger";
 import handleCustomDrawItem from "../src/Domain/ItemDrawer";
+import { LogsearchDataExtractor } from "../src/Domain/IDataExtractor";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
 
@@ -56,7 +57,7 @@ function getFromAndTo(response: TraceInfo[]): { from: number, to: number } {
 function generateDataFromDiTraceResponse(response: TraceInfo[]): { lines: SpanLines } {
     const arranger = new SpansToLinesArranger();
     const spans = response[0].Spans;
-    return { lines: arranger.arrange(new TraceTreeBuilder().buildTraceTree(spans)) };
+    return { lines: arranger.arrange(new TraceTreeBuilder(new LogsearchDataExtractor()).buildTraceTree(spans)) };
 }
 
 storiesOf("ProfilerChartWithMinimap", module)

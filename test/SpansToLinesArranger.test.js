@@ -4,6 +4,7 @@ import { expect } from "chai";
 
 import TraceTreeBuilder from "../src/Domain/TraceTree/TraceTreeBuilder";
 import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
+import { LogsearchDataExtractor } from "../src/Domain/IDataExtractor";
 
 describe("SpansToLinesArranger.arrange", () => {
     it("должен располагать элементы друг под другом", () => {
@@ -27,7 +28,7 @@ describe("SpansToLinesArranger.arrange", () => {
                 Annotations: null,
             },
         ];
-        const spansByLines = arranger.arrange(new TraceTreeBuilder().buildTraceTree(spans));
+        const spansByLines = arranger.arrange(new TraceTreeBuilder(new LogsearchDataExtractor()).buildTraceTree(spans));
         expect(spansByLines[0].items[0].source.source.SpanId).to.eql(spans[0].SpanId);
         expect(spansByLines[1].items[0].source.source.SpanId).to.eql(spans[1].SpanId);
     });

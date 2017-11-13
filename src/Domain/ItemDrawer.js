@@ -90,7 +90,7 @@ export default function handleCustomDrawItem(
             context.fillText(
                 fittingString(
                     context,
-                    (item.source.source.Annotations && item.source.source.Annotations.OriginId) || "",
+                    item.source.serviceName,
                     width - (options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight)
                 ),
                 options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight,
@@ -100,11 +100,7 @@ export default function handleCustomDrawItem(
             context.fillStyle = itemColors[colorIndex].text;
             context.font = `${options.smallFontSize}px Segoe UI`;
             context.fillText(
-                fittingString(
-                    context,
-                    (item.source.source.Annotations && item.source.source.Annotations.OriginHost) || "",
-                    width - options.paddingLeft - options.paddingRight
-                ),
+                fittingString(context, item.source.spanTitle || "", width - options.paddingLeft - options.paddingRight),
                 options.paddingLeft + 2,
                 options.paddingTop + options.lineHeight + options.smallLineHeight
             );

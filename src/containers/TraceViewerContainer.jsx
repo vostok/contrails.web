@@ -12,8 +12,12 @@ import type { TraceInfo } from "../Domain/TraceInfo";
 import { withContrailsApi } from "../Domain/ContrailsApiInjection";
 import type { IContrailsApi } from "../Domain/IContrailsApi";
 import TraceViewer from "../components/TraceViewer/TraceViewer";
+import { type IDataExtractor, LogsearchDataExtractor, VostokDataExtractor } from "../Domain/IDataExtractor";
 
 import cn from "./TraceViewerContainer.less";
+
+const dataExtractor: IDataExtractor =
+    process.env.API_TARGET === "logsearch" ? new LogsearchDataExtractor() : new VostokDataExtractor();
 
 type ContrailsApplicationProps = {
     traceIdPrefix: string,
@@ -122,12 +126,8 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         return (
             <div className={cn("error-container")}>
                 <div>
-                    <h1>
-                        {errorTitle}
-                    </h1>
-                    <div className={cn("message")}>
-                        {errorMessage}
-                    </div>
+                    <h1>{errorTitle}</h1>
+                    <div className={cn("message")}>{errorMessage}</div>
                 </div>
             </div>
         );
@@ -149,13 +149,11 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
         return (
             <ContrailsLayout header={this.renderHeaderContent()}>
                 <Helmet>
-                    <title>
-                        {`Trace ${traceIdPrefix}`}
-                    </title>
+                    <title>{`Trace ${traceIdPrefix}`}</title>
                 </Helmet>
                 {loading && this.renderLoader()}
                 {error && this.renderErrorMessage()}
-                {traceInfo != null && <TraceViewer traceInfo={traceInfo} />}
+                {traceInfo != null && <TraceViewer dataExtractor={dataExtractor} traceInfo={traceInfo} />}
             </ContrailsLayout>
         );
     }
