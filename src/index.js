@@ -1,6 +1,5 @@
 // @flow
-/* eslint-disable global-require */
-/* eslint-disable no-inner-declarations */
+/* eslint-disable global-require, no-inner-declarations, import/no-unassigned-import */
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { createStore } from "redux";

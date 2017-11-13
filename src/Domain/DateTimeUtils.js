@@ -7,7 +7,7 @@ export type DurationTicks = string;
 export type DurationMs = number;
 
 export default class DateTimeUtils {
-    static duractionRegex = /^[\-\+]?\d+$/i;
+    static duractionRegex = /^[-+]?\d+$/i;
 
     static checkValidDuration(value: DurationTicks) {
         if (this.duractionRegex.test(value)) {

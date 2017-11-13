@@ -1,4 +1,4 @@
-// @noflow
+/* eslint-disable import/prefer-default-export */
 
 function buildExtendableError(name: string) {
     function ExtendableError(message: string) {
@@ -9,10 +9,8 @@ function buildExtendableError(name: string) {
         }
         this.message = message;
     }
-    // @flow-disable-next-line
     ExtendableError.prototype = new Error();
     ExtendableError.prototype.name = name;
-    // @flow-disable-next-line
     ExtendableError.prototype.constructor = ExtendableError;
     return ExtendableError;
 }

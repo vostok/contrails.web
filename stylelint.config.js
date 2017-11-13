@@ -3,6 +3,8 @@ module.exports = {
     plugins: [
         'stylelint-declaration-strict-value',
         'stylelint-order',
+        'stylelint-no-browser-hacks/lib/index.js',
+        'stylelint-no-unsupported-browser-features',
     ],
     rules: {
         // =================
@@ -328,7 +330,7 @@ module.exports = {
 
         // Require or disallow data URIs for urls.
         // http://stylelint.io/user-guide/rules/function-url-data-uris
-        'function-url-data-uris': 'never',
+        'function-url-scheme-blacklist': /^.*$/,
 
         // Disallow scheme-relative urls.
         // http://stylelint.io/user-guide/rules/function-url-no-scheme-relative
@@ -377,7 +379,7 @@ module.exports = {
 
         // Disallow browser hacks that are irrelevant to the browsers you are targeting.
         // http://stylelint.io/user-guide/rules/no-browser-hacks
-        'no-browser-hacks': true,
+        'plugin/no-browser-hacks': true,
 
         // Disallow selectors of lower specificity from coming after overriding selectors of higher specificity.
         // http://stylelint.io/user-guide/rules/no-descending-specificity
@@ -417,7 +419,7 @@ module.exports = {
 
         // Disallow features that are unsupported by the browsers that you are targeting.
         // http://stylelint.io/user-guide/rules/no-unsupported-browser-features
-        'no-unsupported-browser-features': [true, { browsers: 'last 2 versions, ie >= 10', ignore: ['flexbox', 'outline'] }],
+        'plugin/no-unsupported-browser-features': [true, { browsers: 'last 2 versions, ie >= 10', ignore: ['flexbox', 'outline'] }],
 
 
         // =======================
@@ -627,10 +629,6 @@ module.exports = {
         // Disallow combinators in selectors.
         // http://stylelint.io/user-guide/rules/selector-no-combinator
         // DISABLED 'selector-no-combinator': true,
-
-        // Disallow empty selectors.
-        // http://stylelint.io/user-guide/rules/selector-no-empty/
-        'selector-no-empty': true,
 
         // Disallow id selectors.
         // http://stylelint.io/user-guide/rules/selector-no-id

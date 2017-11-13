@@ -3,10 +3,10 @@ const LINE_HEIGHT = 40;
 const PAGE_HEIGHT = 800;
 
 export default function normalizeWheel(event) {
-    let sX = 0,
-        sY = 0,
-        pX = 0,
-        pY = 0;
+    let sX = 0;
+    let sY = 0;
+    let pX = 0;
+    let pY = 0;
 
     // Legacy
     if ("detail" in event) {
