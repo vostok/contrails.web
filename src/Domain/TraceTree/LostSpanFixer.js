@@ -72,9 +72,9 @@ export default class LostSpanFixer {
             }
             return nearestPotentialParent;
         }
-        const result = _.minBy(
+        const result = _.maxBy(
             intersectedParents,
-            x => this.getSpanIntersectionLength(x, target) * 100000 + this.getSpanLength(x)
+            x => this.getSpanIntersectionLength(x, target) * 100000 - this.getSpanLength(x)
         );
         if (result == null) {
             return null;
