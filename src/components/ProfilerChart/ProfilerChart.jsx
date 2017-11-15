@@ -32,6 +32,7 @@ export type ItemDrawContext = {
     lineHeight: number,
     options: ItemDrawOptions,
     itemPositionToAbsolute: number => number,
+    adjustRect: ({ from: number, to: number }) => { width: number, left: number },
 };
 
 type ProfilerChartProps<TItem: ProfilerItem> = {|
@@ -139,6 +140,16 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
             lineHeight: lineHeight,
             options: options,
             itemPositionToAbsolute: value => this.toAbsoluteX(value) - this.toAbsoluteX(viewPort.from),
+            adjustRect: rect => ({
+                width:
+                    Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(rect.to)) -
+                    Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
+                left: Math.max(
+                    0,
+                    this.toAbsoluteX(rect.from) -
+                        Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from))
+                ),
+            }),
         };
         onCustomDrawItem(context, item, itemDrawContext);
     }

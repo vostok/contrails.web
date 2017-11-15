@@ -54,13 +54,87 @@ export default class TraceTreeBuilder {
             // TODO построить фековай item
             throw new NotImplementedError();
         }
-        return this.spanInfoToSpanNode(root, spans);
+        const resultRoot = this.spanInfoToSpanNode(root, spans);
+        //return resultRoot;
+        return this.findAndCollapseRemoteCalls(resultRoot);
+    }
+
+    findAndCollapseRemoteCalls(root: SpanNode): SpanNode {
+        return reduceTree(
+            root,
+            (childResults: Array<SpanNode>, node: SpanNode): SpanNode => {
+                if (
+                    node.type === "SingleSpan" &&
+                    node.source.Annotations != null &&
+                    node.source.Annotations.IsClientSpan === true &&
+                    childResults.length === 1 &&
+                    childResults[0].type === "SingleSpan" &&
+                    childResults[0].source.Annotations != null &&
+                    childResults[0].source.Annotations.IsClientSpan === false
+                ) {
+                    return {
+                        type: "RemoteCallSpan",
+                        from: node.from,
+                        to: node.to,
+                        serviceName: node.serviceName,
+                        spanTitle: node.spanTitle,
+                        colorConfig: node.colorConfig,
+                        ...this.getAdjustedServerRange(node, childResults[0]),
+                        clientSource: node.source,
+                        serverSource: childResults[0].source,
+                        children: childResults[0].children,
+                    };
+                }
+                return {
+                    ...node,
+                    children: childResults,
+                };
+            },
+            x => x.children
+        );
+    }
+
+    getAdjustedServerRange(
+        clientNode: SpanNode,
+        serverNode: SpanNode
+    ): { serverTimeShift: number, serverRange: { from: number, to: number } } {
+        let serverFrom = null;
+        let serverTo = null;
+        let timeShift = null;
+        if (serverNode.to > clientNode.to) {
+            timeShift = -(serverNode.to - clientNode.to);
+            serverTo = serverNode.to + timeShift;
+            serverFrom = serverNode.from + timeShift;
+            if (serverFrom < clientNode.from) {
+                serverFrom = clientNode.from;
+            }
+        } else if (serverNode.from < clientNode.from) {
+            timeShift = clientNode.from - serverNode.from;
+            serverTo = serverNode.to + timeShift;
+            serverFrom = serverNode.from + timeShift;
+            if (serverTo > clientNode.to) {
+                serverTo = clientNode.to;
+            }
+        } else {
+            serverFrom = serverNode.from;
+            serverTo = serverNode.to;
+            timeShift = 0;
+        }
+        return {
+            serverTimeShift: timeShift,
+            serverRange: {
+                from: serverFrom,
+                to: serverTo,
+            },
+        };
     }
 
     buildNodeMap(tree: SpanNode): { [key: string]: SpanNode } {
+        const getid = (node: SpanNode) =>
+            node.type === "RemoteCallSpan" ? node.clientSource.SpanId : node.source.SpanId;
         return reduceTree(
             tree,
-            (childResults, node) => childResults.reduce(merge, { [node.source.SpanId]: node }),
+            (childResults, node) => childResults.reduce(merge, { [getid(node)]: node }),
             x => x.children
         );
     }

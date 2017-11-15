@@ -52,10 +52,11 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     getSpanNodeSelfTime(spanNode: SpanNode): number {
-        if (this.getSpanNodeSelfTimeCache[spanNode.source.SpanId] == null) {
-            this.getSpanNodeSelfTimeCache[spanNode.source.SpanId] = TraceTreeUtils.getSpanNodeSelfTime(spanNode);
+        const spanId = spanNode.type === "RemoteCallSpan" ? spanNode.clientSource.SpanId : spanNode.source.SpanId;
+        if (this.getSpanNodeSelfTimeCache[spanId] == null) {
+            this.getSpanNodeSelfTimeCache[spanId] = TraceTreeUtils.getSpanNodeSelfTime(spanNode);
         }
-        return this.getSpanNodeSelfTimeCache[spanNode.source.SpanId];
+        return this.getSpanNodeSelfTimeCache[spanId];
     }
 
     renderPercentageAndTime(time: number, percentage: number, focused: boolean): React.Node {

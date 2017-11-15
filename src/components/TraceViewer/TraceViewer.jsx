@@ -95,6 +95,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     };
 
     handleChartItemClick = (spanLineItem: SpanLineItem) => {
+        console.log(spanLineItem.source);
         this.setState({ focusedSpanNode: spanLineItem.source });
     };
 
@@ -133,7 +134,8 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
                 filterNodes={x =>
                     (viewPort.from < x.from && x.from < viewPort.to) ||
                     (viewPort.from < x.to && x.to < viewPort.to) ||
-                    (x.from < viewPort.from && viewPort.to < x.to)}
+                    (x.from < viewPort.from && viewPort.to < x.to)
+                }
                 totalTimeRange={null}
                 focusedItem={focusedSpanNode}
                 traceTree={traceTree}
@@ -143,9 +145,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
         );
     };
 
-    handleGetMinimapItemColor = (item: SpanLineItem): ?string => {
-        return itemColors[item.source.colorConfig].background;
-    };
+    handleGetMinimapItemColor = (item: SpanLineItem): ?string => itemColors[item.source.colorConfig].background;
 
     render(): React.Node {
         const { onChangeViewPort } = this.props;

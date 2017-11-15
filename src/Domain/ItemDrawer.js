@@ -2,6 +2,7 @@
 import DatabaseIcon from "../components/Icons/db.png";
 
 import type { SpanLineItem } from "./SpanLines/SpansToLinesArranger";
+import type { ItemDrawContext } from "../components/ProfilerChart/ProfilerChart";
 import itemColors from "./Colors";
 
 const DatabaseImage = new Image(14, 14);
@@ -10,12 +11,6 @@ DatabaseImage.src = DatabaseIcon;
 type ItemDrawOptions = {
     hovered: boolean,
     selected: boolean,
-};
-
-export type ItemDrawContext = {
-    width: number,
-    lineHeight: number,
-    options: ItemDrawOptions,
 };
 
 function fittingString(context: CanvasRenderingContext2D, str: string, maxWidth: number): string {
@@ -54,32 +49,46 @@ export default function handleCustomDrawItem(
     context.save();
     try {
         const colorIndex = item.source.colorConfig;
-        const { width, lineHeight } = itemContext;
+        let left = 0;
+        let width = null;
+        const fullWidth = itemContext.width;
+        const { lineHeight } = itemContext;
         const { selected, hovered } = itemContext.options;
+
+        if (item.source.type === "RemoteCallSpan") {
+            ({ left, width } = itemContext.adjustRect(item.source.serverRange));
+
+            context.fillStyle = hovered ? "rgba(164, 164, 164, 0.5)" : "rgba(164, 164, 164, 0.8)";
+            context.fillRect(1, 0, left - 1, lineHeight - 1);
+            context.fillRect(left + width, 0, fullWidth - (left + width) - 2, lineHeight - 1);
+        } else {
+            left = 0;
+            width = itemContext.width;
+        }
         if (hovered) {
             context.fillStyle = itemColors[colorIndex].hoverBackground;
-            context.fillRect(0, 0, width, lineHeight);
+            context.fillRect(left, 0, width, lineHeight);
         } else {
             context.fillStyle = itemColors[colorIndex].background;
-            context.fillRect(0, 0, width, lineHeight);
+            context.fillRect(left, 0, width, lineHeight);
         }
         if (selected) {
             context.lineWidth = 3;
             context.strokeStyle = itemColors[colorIndex].border;
-            context.strokeRect(1.5, 1.5, width - 3, lineHeight - 3);
+            context.strokeRect(1.5, 1.5, fullWidth - 3, lineHeight - 3);
         } else {
             context.strokeStyle = itemColors[colorIndex].border;
-            context.strokeRect(0.5, 0.5, width - 1, lineHeight - 1);
+            context.strokeRect(0.5, 0.5, fullWidth - 1, lineHeight - 1);
         }
 
-        if (itemContext.width > 50) {
+        if (width > 50) {
             context.drawImage(
                 DatabaseImage,
                 0,
                 0,
                 DatabaseImage.width,
                 DatabaseImage.height,
-                options.paddingTop + 2,
+                left + options.paddingTop + 2,
                 options.paddingTop + 2,
                 options.iconSize,
                 options.iconSize
@@ -93,7 +102,7 @@ export default function handleCustomDrawItem(
                     item.source.serviceName,
                     width - (options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight)
                 ),
-                options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight,
+                left + options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight,
                 options.fontSize + options.paddingTop
             );
 
@@ -101,7 +110,7 @@ export default function handleCustomDrawItem(
             context.font = `${options.smallFontSize}px Segoe UI`;
             context.fillText(
                 fittingString(context, item.source.spanTitle || "", width - options.paddingLeft - options.paddingRight),
-                options.paddingLeft + 2,
+                left + options.paddingLeft + 2,
                 options.paddingTop + options.lineHeight + options.smallLineHeight
             );
         }

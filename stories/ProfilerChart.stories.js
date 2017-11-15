@@ -25,6 +25,23 @@ storiesOf("ProfilerChart", module)
             }}
         />
     ))
+    .add("OneLineSpacesWithServer", () => (
+        <ProfilerChart
+            onItemClick={action("onItemClick")}
+            selectedItems={[item2]}
+            from={0}
+            to={5}
+            viewPort={{ from: 0, to: 5 }}
+            xScale={100}
+            data={{
+                lines: [
+                    {
+                        items: [{ from: 0, to: 4, name: "Item 1", serverRange: { from: 1, to: 3 } }],
+                    },
+                ],
+            }}
+        />
+    ))
     .add("Default", () => (
         <ProfilerChart
             from={0}

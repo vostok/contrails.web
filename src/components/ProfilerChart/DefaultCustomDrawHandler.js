@@ -8,8 +8,24 @@ export default function defaultCustomDrawHandler<TItem: ProfilerItem>(
 ) {
     const { width, lineHeight, options: { hovered, selected } } = itemDrawContext;
 
-    context.fillStyle = hovered ? "rgba(120, 255, 120, 0.5)" : "rgba(255, 120, 120, 0.5)";
-    context.fillRect(1, 0, width - 2, lineHeight - 1);
+    if (item.serverRange != null) {
+        const serverRect = itemDrawContext.adjustRect(item.serverRange);
+
+        context.fillStyle = hovered ? "rgba(164, 164, 164, 0.5)" : "rgba(164, 164, 164, 0.8)";
+        context.fillRect(1, 0, serverRect.left, lineHeight - 1);
+        context.fillRect(
+            serverRect.left + serverRect.width,
+            0,
+            width - (serverRect.left + serverRect.width) - 2,
+            lineHeight - 1
+        );
+
+        context.fillStyle = hovered ? "rgba(120, 255, 120, 0.5)" : "rgba(255, 120, 120, 0.5)";
+        context.fillRect(serverRect.left, 0, serverRect.width, lineHeight - 1);
+    } else {
+        context.fillStyle = hovered ? "rgba(120, 255, 120, 0.5)" : "rgba(255, 120, 120, 0.5)";
+        context.fillRect(1, 0, width - 2, lineHeight - 1);
+    }
     if (selected) {
         context.save();
         context.strokeStyle = "#44f";
