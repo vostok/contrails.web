@@ -3,6 +3,8 @@
 import moment from "moment";
 import _ from "lodash";
 
+import Examples from "../Domain/Responses/Examples";
+
 import type { TraceInfo } from "./TraceInfo";
 import type { SpanInfo } from "./SpanInfo";
 import type { IContrailsApi } from "./IContrailsApi";
@@ -47,6 +49,9 @@ export class ContrailsLogsearchApi implements IContrailsApi {
     }
 
     async getTrace(id: string): Promise<TraceInfo> {
+        if (Object.keys(Examples).includes(id)) {
+            return Examples[id];
+        }
         const response = await fetch(
             `${this.urlPrefix}/api/findTrace?traceId=${id}&out=vostok`,
             ContrailsLogsearchApi.additionalHeaders

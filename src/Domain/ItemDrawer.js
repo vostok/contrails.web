@@ -1,5 +1,7 @@
 // @flow
 import DatabaseIcon from "../components/Icons/db.png";
+import HTTPIcon from "../components/Icons/http.png";
+import ServiceIcon from "../components/Icons/service.png";
 
 import type { SpanLineItem } from "./SpanLines/SpansToLinesArranger";
 import type { ItemDrawContext } from "../components/ProfilerChart/ProfilerChart";
@@ -7,6 +9,12 @@ import itemColors from "./Colors";
 
 const DatabaseImage = new Image(14, 14);
 DatabaseImage.src = DatabaseIcon;
+
+const HTTPImage = new Image(14, 14);
+HTTPImage.src = HTTPIcon;
+
+const ServiceImage = new Image(14, 14);
+ServiceImage.src = ServiceIcon;
 
 type ItemDrawOptions = {
     hovered: boolean,
@@ -40,6 +48,21 @@ const options = {
     paddingRight: 4,
     iconLeftMargin: 2,
 };
+
+function getImage(item: SpanLineItem): mixed {
+    const name = item.source.serviceName;
+    const OriginId = name;
+    if (typeof OriginId === "string" && (OriginId.startsWith("Billy") || OriginId.startsWith("Billing"))) {
+        return ServiceImage;
+    }
+    if (typeof OriginId === "string" && OriginId.startsWith("Web.UI")) {
+        return HTTPImage;
+    }
+    if (typeof OriginId === "string" && OriginId.includes("Zebra")) {
+        return DatabaseImage;
+    }
+    return ServiceImage;
+}
 
 export default function handleCustomDrawItem(
     context: CanvasRenderingContext2D,
@@ -80,14 +103,14 @@ export default function handleCustomDrawItem(
             context.strokeStyle = itemColors[colorIndex].border;
             context.strokeRect(0.5, 0.5, fullWidth - 1, lineHeight - 1);
         }
-
+        const image = getImage(item);
         if (width > 50) {
             context.drawImage(
-                DatabaseImage,
+                image,
                 0,
                 0,
-                DatabaseImage.width,
-                DatabaseImage.height,
+                image.width,
+                image.height,
                 left + options.paddingTop + 2,
                 options.paddingTop + 2,
                 options.iconSize,

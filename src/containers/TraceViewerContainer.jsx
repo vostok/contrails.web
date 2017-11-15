@@ -93,6 +93,7 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
             }
             this.setState({ traceInfo: traceInfo });
         } catch (e) {
+            console.error(e);
             if (e instanceof Error) {
                 if (e.message === "500") {
                     this.setServerError();

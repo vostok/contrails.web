@@ -2,6 +2,8 @@
 /* eslint-disable import/prefer-default-export */
 import PromiseUtils from "commons/PromiseUtils";
 
+import Examples from "../Domain/Responses/Examples";
+
 import { fixLogsearchClientServerSpan } from "./ContrailsLogsearchApi";
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
@@ -13,6 +15,9 @@ if (process.env.NODE_ENV === "production") {
 export class ContrailsApiFake implements IContrailsApi {
     async getTrace(id: string): Promise<TraceInfo> {
         await PromiseUtils.delay(600);
+        if (Object.keys(Examples).includes(id)) {
+            return Examples[id];
+        }
         const response = await fetch(`/src/Domain/Responses/${id}.json`);
         if (response.status !== 200) {
             if (response.status === 404) {
