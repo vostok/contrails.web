@@ -76,79 +76,79 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
     }
 }
 
-const options = {
-    fontSize: 12,
-    lineHeight: 15,
-    smallFontSize: 10,
-    smallLineHeight: 12,
-    paddingTop: 2,
-    iconSize: 12,
-    paddingLeft: 4,
-    paddingRight: 4,
-    iconLeftMargin: 2,
-};
+// const options = {
+//     fontSize: 12,
+//     lineHeight: 15,
+//     smallFontSize: 10,
+//     smallLineHeight: 12,
+//     paddingTop: 2,
+//     iconSize: 12,
+//     paddingLeft: 4,
+//     paddingRight: 4,
+//     iconLeftMargin: 2,
+// };
 
-function handleCustomDrawItem(context: CanvasRenderingContext2D, item: SpanLineItem, itemContext: ItemDrawContext) {
-    context.save();
-    try {
-        const colorIndex = item.source.colorConfig;
-        const { width } = itemContext;
-        //const { width, lineHeight } = itemContext;
-        // const { selected, hovered } = itemContext.options;
-        // if (hovered) {
-        //     context.fillStyle = itemColors[colorIndex].hoverBackground;
-        //     context.fillRect(0, 0, width, lineHeight);
-        // } else {
-        //     context.fillStyle = itemColors[colorIndex].background;
-        //     context.fillRect(0, 0, width, lineHeight);
-        // }
-        // if (selected) {
-        //     context.lineWidth = 3;
-        //     context.strokeStyle = itemColors[colorIndex].border;
-        //     context.strokeRect(1.5, 1.5, width - 3, lineHeight - 3);
-        // } else {
-        //     context.strokeStyle = itemColors[colorIndex].border;
-        //     context.strokeRect(0.5, 0.5, width - 1, lineHeight - 1);
-        // }
+// function handleCustomDrawItem(context: CanvasRenderingContext2D, item: SpanLineItem, itemContext: ItemDrawContext) {
+//     context.save();
+//     try {
+//         const colorIndex = item.source.colorConfig;
+//         const { width } = itemContext;
+//         //const { width, lineHeight } = itemContext;
+//         // const { selected, hovered } = itemContext.options;
+//         // if (hovered) {
+//         //     context.fillStyle = itemColors[colorIndex].hoverBackground;
+//         //     context.fillRect(0, 0, width, lineHeight);
+//         // } else {
+//         //     context.fillStyle = itemColors[colorIndex].background;
+//         //     context.fillRect(0, 0, width, lineHeight);
+//         // }
+//         // if (selected) {
+//         //     context.lineWidth = 3;
+//         //     context.strokeStyle = itemColors[colorIndex].border;
+//         //     context.strokeRect(1.5, 1.5, width - 3, lineHeight - 3);
+//         // } else {
+//         //     context.strokeStyle = itemColors[colorIndex].border;
+//         //     context.strokeRect(0.5, 0.5, width - 1, lineHeight - 1);
+//         // }
 
-        if (itemContext.width > 50) {
-            context.drawImage(
-                DatabaseImage,
-                0,
-                0,
-                DatabaseImage.width,
-                DatabaseImage.height,
-                options.paddingTop + 2,
-                options.paddingTop + 2,
-                options.iconSize,
-                options.iconSize
-            );
+//         if (itemContext.width > 50) {
+//             context.drawImage(
+//                 DatabaseImage,
+//                 0,
+//                 0,
+//                 DatabaseImage.width,
+//                 DatabaseImage.height,
+//                 options.paddingTop + 2,
+//                 options.paddingTop + 2,
+//                 options.iconSize,
+//                 options.iconSize
+//             );
 
-            context.fillStyle = itemColors[colorIndex].text;
-            context.font = `${options.fontSize}px Segoe UI`;
-            context.fillText(
-                fittingString(
-                    context,
-                    (item.source.source.Annotations && item.source.source.Annotations.OriginId) || "",
-                    width - (options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight)
-                ),
-                options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight,
-                options.fontSize + options.paddingTop
-            );
+//             context.fillStyle = itemColors[colorIndex].text;
+//             context.font = `${options.fontSize}px Segoe UI`;
+//             context.fillText(
+//                 fittingString(
+//                     context,
+//                     (item.source.source.Annotations && item.source.source.Annotations.OriginId) || "",
+//                     width - (options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight)
+//                 ),
+//                 options.iconSize + options.iconLeftMargin + options.paddingLeft + options.paddingRight,
+//                 options.fontSize + options.paddingTop
+//             );
 
-            context.fillStyle = itemColors[colorIndex].text;
-            context.font = `${options.smallFontSize}px Segoe UI`;
-            context.fillText(
-                fittingString(
-                    context,
-                    (item.source.source.Annotations && item.source.source.Annotations.OriginHost) || "",
-                    width - options.paddingLeft - options.paddingRight
-                ),
-                options.paddingLeft + 2,
-                options.paddingTop + options.lineHeight + options.smallLineHeight
-            );
-        }
-    } finally {
-        context.restore();
-    }
-}
+//             context.fillStyle = itemColors[colorIndex].text;
+//             context.font = `${options.smallFontSize}px Segoe UI`;
+//             context.fillText(
+//                 fittingString(
+//                     context,
+//                     (item.source.source.Annotations && item.source.source.Annotations.OriginHost) || "",
+//                     width - options.paddingLeft - options.paddingRight
+//                 ),
+//                 options.paddingLeft + 2,
+//                 options.paddingTop + options.lineHeight + options.smallLineHeight
+//             );
+//         }
+//     } finally {
+//         context.restore();
+//     }
+// }

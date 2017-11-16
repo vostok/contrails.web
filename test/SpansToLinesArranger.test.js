@@ -29,7 +29,12 @@ describe("SpansToLinesArranger.arrange", () => {
             },
         ];
         const spansByLines = arranger.arrange(new TraceTreeBuilder(new LogsearchDataExtractor()).buildTraceTree(spans));
-        expect(spansByLines[0].items[0].source.source.SpanId).to.eql(spans[0].SpanId);
-        expect(spansByLines[1].items[0].source.source.SpanId).to.eql(spans[1].SpanId);
+        expect(spansByLines[0].items[0].source.type).to.eql("SingleSpan");
+        if (spansByLines[0].items[0].source.type === "SingleSpan")
+            expect(spansByLines[0].items[0].source.source.SpanId).to.eql(spans[0].SpanId);
+
+        expect(spansByLines[1].items[0].source.type).to.eql("SingleSpan");
+        if (spansByLines[1].items[0].source.type === "SingleSpan")
+            expect(spansByLines[1].items[0].source.source.SpanId).to.eql(spans[1].SpanId);
     });
 });

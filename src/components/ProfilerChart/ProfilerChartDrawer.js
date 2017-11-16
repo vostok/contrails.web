@@ -88,31 +88,74 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
         return (itemX - viewPort.from) * xScale;
     }
 
+    createItemDrawContextForPixi(item: T, lineIndex: number): ItemDrawContext {
+        const { viewPort } = this;
+
+        const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
+        const itemWidth =
+            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
+            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
+        return {
+            itemHeight: lineHeight,
+            itemWidth: itemWidth,
+            itemTop: lineIndex * (lineGap + lineHeight),
+            itemLeft: left,
+            adjustRect: rect => ({
+                height: lineHeight,
+                top: lineIndex * (lineGap + lineHeight),
+                width:
+                    Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(rect.to)) -
+                    Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
+                left: Math.max(
+                    0,
+                    this.toAbsoluteX(rect.from) -
+                        Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from))
+                ),
+            }),
+        };
+    }
+
+    createItemDrawContext(item: T, lineIndex: number): ItemDrawContext {
+        const { viewPort } = this;
+        const itemWidth =
+            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
+            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
+        const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
+        return {
+            itemLeft: left,
+            itemTop: lineIndex * (lineHeight + lineGap),
+            itemWidth: itemWidth,
+            itemHeight: lineHeight,
+            adjustRect: rect => ({
+                height: lineHeight,
+                top: lineIndex * (lineGap + lineHeight),
+                width:
+                    Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(rect.to)) -
+                    Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
+                left: Math.max(
+                    0,
+                    this.toAbsoluteX(rect.from) -
+                        Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from))
+                ),
+            }),
+        };
+    }
+
     drawBackground() {
-        const { data, pixiGraphics, viewPort } = this;
+        const { data, pixiGraphics } = this;
 
         pixiGraphics.moveTo(0, 0);
         for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
             const line = data.lines[lineIndex];
             for (let itemIndex = 0; itemIndex < line.items.length; itemIndex++) {
                 const item = line.items[itemIndex];
-                const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-                const itemWidth =
-                    Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-                    Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-                this.itemDrawer.drawBackground(pixiGraphics, item, {
-                    itemHeight: lineHeight,
-                    itemWidth: itemWidth,
-                    itemTop: lineIndex * (lineGap + lineHeight),
-                    itemLeft: left,
-                });
+                this.itemDrawer.drawBackground(pixiGraphics, item, this.createItemDrawContextForPixi(item, lineIndex));
             }
         }
         this.pixiApp.stage.addChild(pixiGraphics);
     }
 
     updateInteractiveElements() {
-        const { viewPort } = this;
         const { selectedItem, selectedItemDiv, hoveredItem, hoveredItemDiv } = this;
 
         if (selectedItem != null) {
@@ -121,16 +164,7 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
                 throw new InvalidProgramStateError();
             }
             const node = selectedItemDiv;
-            const itemWidth =
-                Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-                Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-            const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-            this.itemDrawer.updateSelectedItem(node, item, {
-                itemLeft: left,
-                itemTop: lineIndex * (lineHeight + lineGap),
-                itemWidth: itemWidth,
-                itemHeight: lineHeight,
-            });
+            this.itemDrawer.updateSelectedItem(node, item, this.createItemDrawContext(item, lineIndex));
         }
         if (hoveredItem != null) {
             const { item, lineIndex } = hoveredItem;
@@ -138,21 +172,12 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
                 throw new InvalidProgramStateError();
             }
             const node = hoveredItemDiv;
-            const itemWidth =
-                Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-                Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-            const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-            this.itemDrawer.updateHoveredItem(node, item, {
-                itemLeft: left,
-                itemTop: lineIndex * (lineHeight + lineGap),
-                itemWidth: itemWidth,
-                itemHeight: lineHeight,
-            });
+            this.itemDrawer.updateHoveredItem(node, item, this.createItemDrawContext(item, lineIndex));
         }
     }
 
     setHoveredItem(nextHoveredItem: ?ItemWithLine<T>) {
-        const { viewPort, hoveredLayer } = this;
+        const { hoveredLayer } = this;
         const { hoveredItem, hoveredItemDiv } = this;
 
         if (nextHoveredItem == null && hoveredItem != null) {
@@ -170,23 +195,14 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
         const { item, lineIndex } = nextHoveredItem;
 
         const node = hoveredItemDiv != null ? hoveredItemDiv : this.acquireDivElement();
-        const itemWidth =
-            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-        const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-        this.itemDrawer.prepareHoveredItem(node, nextHoveredItem.item, {
-            itemLeft: left,
-            itemTop: lineIndex * (lineHeight + lineGap),
-            itemWidth: itemWidth,
-            itemHeight: lineHeight,
-        });
+        this.itemDrawer.prepareHoveredItem(node, item, this.createItemDrawContext(item, lineIndex));
         hoveredLayer.appendChild(node);
         this.hoveredItem = nextHoveredItem;
         this.hoveredItemDiv = node;
     }
 
     setSelectedItem(nextSelectedItem: ?{ item: T, lineIndex: number }) {
-        const { viewPort, selectedLayer } = this;
+        const { selectedLayer } = this;
         const { selectedItem, selectedItemDiv } = this;
 
         if (nextSelectedItem == null && selectedItem != null) {
@@ -208,16 +224,7 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
         const { item, lineIndex } = nextSelectedItem;
 
         const node = selectedItemDiv != null ? selectedItemDiv : this.acquireDivElement();
-        const itemWidth =
-            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-        const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-        this.itemDrawer.prepareSelectedItem(node, nextSelectedItem.item, {
-            itemLeft: left,
-            itemTop: lineIndex * (lineHeight + lineGap),
-            itemWidth: itemWidth,
-            itemHeight: lineHeight,
-        });
+        this.itemDrawer.prepareSelectedItem(node, nextSelectedItem.item, this.createItemDrawContext(item, lineIndex));
         selectedLayer.appendChild(node);
         this.selectedItem = nextSelectedItem;
         this.selectedItemDiv = node;
@@ -279,23 +286,12 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
                     }
                     continue;
                 }
-                const left = Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
                 if (textElements[lineIndex][itemIndex] != null) {
                     const node = textElements[lineIndex][itemIndex];
-                    this.itemDrawer.updateTextElement(node, item, {
-                        itemTop: lineIndex * (lineHeight + lineGap),
-                        itemLeft: left,
-                        itemWidth: itemWidth,
-                        itemHeight: lineHeight,
-                    });
+                    this.itemDrawer.updateTextElement(node, item, this.createItemDrawContext(item, lineIndex));
                 } else {
                     const node = this.acquireDivElement();
-                    this.itemDrawer.prepareTextElement(node, item, {
-                        itemTop: lineIndex * (lineHeight + lineGap),
-                        itemLeft: left,
-                        itemWidth: itemWidth,
-                        itemHeight: lineHeight,
-                    });
+                    this.itemDrawer.prepareTextElement(node, item, this.createItemDrawContext(item, lineIndex));
                     newElementsFragment.appendChild(node);
                     textElements[lineIndex][itemIndex] = node;
                 }

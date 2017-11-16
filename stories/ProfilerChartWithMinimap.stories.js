@@ -13,8 +13,12 @@ import SpansToLinesArranger from "../src/Domain/SpanLines/SpansToLinesArranger";
 import type { SpanLines } from "../src/Domain/SpanLines/SpansToLinesArranger";
 import CustomItemDrawer from "../src/Domain/CustomItemDrawer/CustomItemDrawer";
 import { LogsearchDataExtractor } from "../src/Domain/IDataExtractor";
+import DefaultCustomDrawHandler from "../src/components/ProfilerChart/DefaultCustomDrawHandler";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
+
+const defaultItemDrawer = new DefaultCustomDrawHandler();
+const itemDrawer = new CustomItemDrawer();
 
 function Border({ children }: { children: React.Node }): React.Node {
     return (
@@ -93,6 +97,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     .add("Default", () => (
         <Border>
             <ProfilerChartWithMinimap
+                itemDrawer={defaultItemDrawer}
                 from={0}
                 to={10}
                 data={{
@@ -119,6 +124,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen", () => (
         <ProfilerChartWithMinimap
+            itemDrawer={defaultItemDrawer}
             from={0}
             to={10}
             data={{
@@ -147,6 +153,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreenWithServer", () => (
         <ProfilerChartWithMinimap
+            itemDrawer={defaultItemDrawer}
             from={0}
             to={10}
             data={{
@@ -178,6 +185,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen-LargeData", () => (
         <ProfilerChartWithMinimap
+            itemDrawer={defaultItemDrawer}
             from={0}
             to={1000}
             data={{
@@ -187,6 +195,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen-Wide", () => (
         <ProfilerChartWithMinimap
+            itemDrawer={defaultItemDrawer}
             from={0}
             to={1000}
             data={{
@@ -196,6 +205,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen-ValuesForRealTime", () => (
         <ProfilerChartWithMinimap
+            itemDrawer={defaultItemDrawer}
             from={1503233308736}
             to={1503233309325}
             data={{
@@ -209,21 +219,21 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen-DataFromTrace-62f8278dab21471c8370fa47d4f52f72", () => (
         <ProfilerChartWithMinimap
-            itemDrawer={new CustomItemDrawer()}
+            itemDrawer={itemDrawer}
             {...getFromAndTo(Response62f8278dab21471c8370fa47d4f52f72)}
             data={generateDataFromDiTraceResponse(Response62f8278dab21471c8370fa47d4f52f72)}
         />
     ))
     .add("FullScreen-DataFromTrace-37fa1a7edcc34ca28204fc50e6681e70", () => (
         <ProfilerChartWithMinimap
-            itemDrawer={new CustomItemDrawer()}
+            itemDrawer={itemDrawer}
             {...getFromAndTo(Response37fa1a7edcc34ca28204fc50e6681e70)}
             data={generateDataFromDiTraceResponse(Response37fa1a7edcc34ca28204fc50e6681e70)}
         />
     ))
     .add("FullScreen-ServerData", () => (
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
+            itemDrawer={itemDrawer}
             from={timestampAsNumber(1)}
             to={timestampAsNumber(4)}
             data={generateDataFromDiTraceResponse([
@@ -236,7 +246,7 @@ storiesOf("ProfilerChartWithMinimap", module)
     ))
     .add("FullScreen-ServerData-WithTimeShift", () => (
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
+            itemDrawer={itemDrawer}
             from={timestampAsNumber(1)}
             to={timestampAsNumber(4)}
             data={generateDataFromDiTraceResponse([
@@ -250,7 +260,7 @@ storiesOf("ProfilerChartWithMinimap", module)
 
     .add("FullScreen-ServerData-StrangeCase", () => (
         <ProfilerChartWithMinimap
-            onCustomDrawItem={handleCustomDrawItem}
+            itemDrawer={itemDrawer}
             from={moment("2017-10-23T10:33:19.0280000Z").valueOf()}
             to={moment("2017-10-23T10:33:28.6311722Z").valueOf()}
             data={generateDataFromDiTraceResponse([

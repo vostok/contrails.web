@@ -67,28 +67,42 @@ export default class TraceTreeBuilder {
                     node.type === "SingleSpan" &&
                     node.source.Annotations != null &&
                     node.source.Annotations.IsClientSpan === true &&
-                    childResults.length === 1 &&
-                    childResults[0].type === "SingleSpan" &&
-                    childResults[0].source.Annotations != null &&
-                    childResults[0].source.Annotations.IsClientSpan === false
+                    childResults.length === 1
                 ) {
+                    const singleChild = childResults[0];
+                    if (
+                        singleChild.type === "SingleSpan" &&
+                        singleChild.source.Annotations != null &&
+                        singleChild.source.Annotations.IsClientSpan === false
+                    ) {
+                        return {
+                            type: "RemoteCallSpan",
+                            from: node.from,
+                            to: node.to,
+                            serviceName: node.serviceName,
+                            spanTitle: node.spanTitle,
+                            colorConfig: node.colorConfig,
+                            ...this.getAdjustedServerRange(node, singleChild),
+                            clientSource: node.source,
+                            serverSource: singleChild.source,
+                            children: singleChild.children,
+                        };
+                    }
+                }
+                // Очень странно
+                if (node.type === "SingleSpan" || node.type === "FakeSpan") {
                     return {
-                        type: "RemoteCallSpan",
-                        from: node.from,
-                        to: node.to,
-                        serviceName: node.serviceName,
-                        spanTitle: node.spanTitle,
-                        colorConfig: node.colorConfig,
-                        ...this.getAdjustedServerRange(node, childResults[0]),
-                        clientSource: node.source,
-                        serverSource: childResults[0].source,
-                        children: childResults[0].children,
+                        ...node,
+                        children: childResults,
                     };
                 }
-                return {
-                    ...node,
-                    children: childResults,
-                };
+                if (node.type === "RemoteCallSpan") {
+                    return {
+                        ...node,
+                        children: childResults,
+                    };
+                }
+                throw new Error("InvalidProgramState");
             },
             x => x.children
         );

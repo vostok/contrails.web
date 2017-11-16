@@ -1,11 +1,19 @@
 // @flow
 import pixi from "commons/pixi";
 
+export type Rect = {
+    top: number,
+    left: number,
+    width: number,
+    height: number,
+};
+
 export type ItemDrawContext = {
     itemHeight: number,
     itemWidth: number,
     itemLeft: number,
     itemTop: number,
+    adjustRect: ({ from: number, to: number }) => Rect,
 };
 
 export interface ICustomItemDrawer<T> {

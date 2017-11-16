@@ -1,6 +1,5 @@
 // @flow
 import * as React from "react";
-import pixi from "commons/pixi";
 import rbush from "rbush";
 
 import generateTimeMarkers from "../../Domain/TimeMarkers";
@@ -9,10 +8,7 @@ import type { TimeMarker } from "../../Domain/TimeMarkers";
 import DefaultCustomItemDrawer from "./DefaultCustomDrawHandler";
 import ProfilerChartDrawer from "./ProfilerChartDrawer";
 import cn from "./ProfilerChart.less";
-
-interface ItemDrawer<T: ProfilerItem> {
-    drawBackground(gixi: pixi.Graphics, item: T): void;
-}
+import type { ICustomItemDrawer } from "./ICustomItemDrawer";
 
 export type ProfilerItem = {
     from: number,
@@ -32,14 +28,6 @@ type ItemDrawOptions = {
     selected: boolean,
 };
 
-export type ItemDrawContext = {
-    width: number,
-    lineHeight: number,
-    options: ItemDrawOptions,
-    itemPositionToAbsolute: number => number,
-    adjustRect: ({ from: number, to: number }) => { width: number, left: number },
-};
-
 type ProfilerChartProps<TItem: ProfilerItem> = {|
     data: ProfilerData<TItem>,
     from: number,
@@ -51,7 +39,7 @@ type ProfilerChartProps<TItem: ProfilerItem> = {|
     },
     onItemClick?: (item: TItem, lineIndex: number) => void,
     selectedItems?: TItem[],
-    itemDrawer?: ItemDrawer<TItem>,
+    itemDrawer?: ICustomItemDrawer<TItem>,
 |};
 
 const lineHeight = 35;
@@ -65,8 +53,6 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         lineIndex: number,
     };
     itemsRTree = rbush();
-    app: pixi.Application;
-    graphics: pixi.Graphics;
     container: ?HTMLDivElement;
     textContainer: ?HTMLDivElement;
     hoveredContainer: ?HTMLDivElement;
@@ -142,8 +128,8 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
             for (const item of line.items) {
                 if (item === targetItem) {
                     return { item: item, lineIndex: lineIndex };
-    }
-        }
+                }
+            }
         }
         return null;
     }
@@ -178,23 +164,6 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
             return { item: result[0].source, lineIndex: result[0].lineIndex };
         }
         return null;
-    }
-
-    drawItem(context: CanvasRenderingContext2D, item: TItem, options: ItemDrawOptions) {
-        const { viewPort, onCustomDrawItem } = this.props;
-
-        const width =
-            Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(item.to)) -
-            Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from));
-
-        context.clearRect(0, 0, width, lineHeight);
-        const itemDrawContext = {
-            width: width,
-            lineHeight: lineHeight,
-            options: options,
-            itemPositionToAbsolute: value => this.toAbsoluteX(value) - this.toAbsoluteX(viewPort.from),
-        };
-        onCustomDrawItem(context, item, itemDrawContext);
     }
 
     handleMouseClick = (event: SyntheticMouseEvent<HTMLCanvasElement>) => {
@@ -269,14 +238,3 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
     }
 }
 
-
-// adjustRect: rect => ({
-//                 width:
-//                     Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(rect.to)) -
-//                     Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
-//                 left: Math.max(
-//                     0,
-//                     this.toAbsoluteX(rect.from) -
-//                         Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from))
-//                 ),
-//             }),
