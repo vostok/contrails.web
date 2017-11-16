@@ -1,6 +1,5 @@
 // @flow
 import * as React from "react";
-import { Icon } from "ui";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
@@ -23,9 +22,7 @@ export default class ContrailsLayout extends React.Component<ContrailsLayoutProp
             <div className={cn("container")}>
                 <div className={cn("header")}>
                     <Link to="/" className={cn("logo")}>
-                        <span className={cn("logo-icon")}>
-                            <Icon name="OwnershipBoat" />
-                        </span>
+                        <span className={cn("logo-icon")} />
                         <span className={cn("logo-text")}>Contrails</span>
                     </Link>
                     {header && <div className={cn("header-content")}>{header}</div>}
