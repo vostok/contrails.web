@@ -23,11 +23,6 @@ export type ProfilerData<TItem: ProfilerItem> = {
     lines: Array<ProfilerLine<TItem>>,
 };
 
-type ItemDrawOptions = {
-    hovered: boolean,
-    selected: boolean,
-};
-
 type ProfilerChartProps<TItem: ProfilerItem> = {|
     data: ProfilerData<TItem>,
     from: number,
@@ -237,4 +232,3 @@ export default class ProfilerChart<TItem: ProfilerItem> extends React.Component<
         );
     }
 }
-

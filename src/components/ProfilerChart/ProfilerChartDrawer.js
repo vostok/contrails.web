@@ -106,11 +106,7 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
                 width:
                     Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(rect.to)) -
                     Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
-                left: Math.max(
-                    0,
-                    this.toAbsoluteX(rect.from) -
-                        Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from))
-                ),
+                left: Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
             }),
         };
     }
@@ -132,19 +128,21 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
                 width:
                     Math.min(this.toAbsoluteX(viewPort.to) + 1, this.toAbsoluteX(rect.to)) -
                     Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
-                left: Math.max(
-                    0,
-                    this.toAbsoluteX(rect.from) -
-                        Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(item.from))
-                ),
+                left: Math.max(this.toAbsoluteX(viewPort.from) - 1, this.toAbsoluteX(rect.from)),
             }),
         };
     }
 
     drawBackground() {
         const { data, pixiGraphics } = this;
+        const { from, to } = this.range;
 
         pixiGraphics.moveTo(0, 0);
+
+        pixiGraphics.beginFill(0x000000, 0);
+        pixiGraphics.drawRect(this.toAbsoluteX(from), 0, this.toAbsoluteX(to), 1);
+        pixiGraphics.endFill();
+
         for (let lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
             const line = data.lines[lineIndex];
             for (let itemIndex = 0; itemIndex < line.items.length; itemIndex++) {
@@ -153,6 +151,9 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
             }
         }
         this.pixiApp.stage.addChild(pixiGraphics);
+
+        this.pixiGraphics.x = this.toAbsoluteX(from);
+        this.pixiGraphics.width = this.toAbsoluteX(to) - this.toAbsoluteX(from);
     }
 
     updateInteractiveElements() {

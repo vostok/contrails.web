@@ -33,7 +33,7 @@ export default class DefaultCustomItemDrawer<T: ProfilerItem> implements ICustom
             graphics.drawRect(
                 itemDrawContext.itemLeft,
                 itemDrawContext.itemTop,
-                serverAbsoluteRange.left,
+                serverAbsoluteRange.left - itemDrawContext.itemLeft,
                 itemDrawContext.itemHeight
             );
             graphics.drawRect(

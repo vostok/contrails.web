@@ -42,6 +42,23 @@ storiesOf("ProfilerChart", module)
             }}
         />
     ))
+    .add("WideData", () => (
+        <ProfilerChart
+            onItemClick={action("onItemClick")}
+            selectedItems={[item2]}
+            from={0}
+            to={1000}
+            viewPort={{ from: 0, to: 1000 }}
+            xScale={0.8}
+            data={{
+                lines: [
+                    {
+                        items: [{ from: 245, to: 965, name: "Item 1", serverRange: { from: 245, to: 765 } }],
+                    },
+                ],
+            }}
+        />
+    ))
     .add("Default", () => (
         <ProfilerChart
             from={0}
