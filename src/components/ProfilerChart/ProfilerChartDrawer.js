@@ -239,6 +239,8 @@ export default class ProfilerChartDrawer<T: ProfilerItem> {
     }
 
     releaseDivElement(element: HTMLDivElement) {
+        element.innerHTML = "";
+        element.removeAttribute("style");
         this.textElementsPool.push(element);
     }
 
