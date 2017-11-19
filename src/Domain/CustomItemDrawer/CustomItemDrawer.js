@@ -37,6 +37,8 @@ export default class CustomItemDrawer implements ICustomItemDrawer<EnrichedSpanI
 
     prepareTextElement(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.className = cn("item");
+        // TODO Fix
+        // @flow-disable-next-line
         node.innerText = item.serviceName || "";
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;

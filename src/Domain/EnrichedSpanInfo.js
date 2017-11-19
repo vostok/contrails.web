@@ -10,6 +10,7 @@ export type EnrichedSpanInfo = {
 
     // serviceName: string,
     // serviceTitle: string,
+    type: "SingleSpan" | "FakeSpan" | "RemoteCallSpan",
     from: number,
     to: number,
     colorConfig: number,

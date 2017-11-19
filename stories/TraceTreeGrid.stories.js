@@ -5,11 +5,11 @@ import { action } from "@storybook/addon-actions";
 
 import TraceTreeGrid from "../src/components/TraceTreeGrid/TraceTreeGrid";
 import { TraceInfoUtils } from "../src/Domain/TraceInfo";
+// import type { EnrichedSpanInfo } from "../src/Domain/EnrichedSpanInfo";
 import Response53ee602db8d444d9a7a674471be6b709 from "../src/Domain/Responses/53ee602db8d444d9a7a674471be6b709.json";
 // import Responseaae265d9c1fa4c2c9d504c798ee9854a from "../src/Domain/Responses/aae265d9c1fa4c2c9d504c798ee9854a.json";
-import type { SpanInfo } from "../src/Domain/SpanInfo";
-import { buildTree, transformTree } from "../src/Domain/TreeTransformation";
-import { AddSimplifiedBoundsToNodeTrasformer, AddColorConfigNodeTrasformer } from "../src/Domain/SpanInfoTransformers";
+// import type { SpanInfo } from "../src/Domain/SpanInfo";
+import { buildTree } from "../src/Domain/SpanInfoEnricher";
 import Span from "../test/Utils/Span";
 
 // const data1 = new TraceTreeBuilder(new LogsearchDataExtractor()).buildTraceTree(
@@ -19,19 +19,10 @@ import Span from "../test/Utils/Span";
 //     Responseaae265d9c1fa4c2c9d504c798ee9854a[0].Spans
 // );
 
-function buildTreeGridData(spans: SpanInfo[]): * {
-    const tree = buildTree(spans)[0];
-    const transformedTree = transformTree(tree, [
-        new AddSimplifiedBoundsToNodeTrasformer(),
-        new AddColorConfigNodeTrasformer(),
-    ]);
-    return transformedTree;
-}
-
 storiesOf("TraceTreeGrid", module).add("Default", () => (
     <TraceTreeGrid
         totalTimeRange={TraceInfoUtils.getTraceTimeRange(Response53ee602db8d444d9a7a674471be6b709[0])}
-        traceTree={buildTreeGridData(Span.create({ from: 0, to: 10 }).build())}
+        traceTree={buildTree(Span.create({ from: 0, to: 10 }).build())}
         onChangeFocusedItem={action("onChangeFocusedItem")}
     />
 ));

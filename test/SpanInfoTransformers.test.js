@@ -3,7 +3,7 @@ import { expect } from "chai";
 import moment from "moment";
 
 import type { SpanInfo } from "../src/Domain/SpanInfo";
-import type { EnrichedSpanInfo } from "../src/Domain/EnrichedSpanInfo";
+// import type { EnrichedSpanInfo } from "../src/Domain/EnrichedSpanInfo";
 import { buildTree, TreeTransformerChain, type TNode } from "../src/Domain/TreeTransformation";
 import {
     AddSimplifiedBoundsToNodeTrasformer,
@@ -23,7 +23,7 @@ describe("SpanInfoTransformers", () => {
     it("должна строить EnrichedSpanInfo", () => {
         const spans = Span.create({ from: 0, to: 10 }).build();
         const tree: TNode<SpanInfo>[] = buildTree(spans);
-        const treeTransformer: TreeTransformerChain<TNode<SpanInfo>, EnrichedSpanInfo> = new TreeTransformerChain([
+        const treeTransformer = new TreeTransformerChain([
             new AddSimplifiedBoundsToNodeTrasformer(),
             new AddColorConfigNodeTrasformer(),
             new AddReferenceToParentNodeTrasformer(),

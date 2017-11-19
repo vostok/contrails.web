@@ -23,10 +23,10 @@ export class AddColorConfigNodeTrasformer<T: SpanInfo> extends AddPropertiesToNo
     }
 }
 
-type TWithParent<T> = { parent: ?TWithParent<T> } & T;
+export type TWithParent<T> = { parent: ?TWithParent<T> } & T;
 
 export class AddReferenceToParentNodeTrasformer<T: SpanInfo> extends AddPropertiesToNodeTrasformer<T, TWithParent<T>> {
-    modifyNode(item: { parent: T } & T, nodesPath: Array<TNode<TWithParent<T>>>) {
+    modifyNode(item: TWithParent<T>, nodesPath: Array<TNode<TWithParent<T>>>) {
         if (nodesPath.length != null) {
             item.parent = nodesPath[nodesPath.length - 1];
         }

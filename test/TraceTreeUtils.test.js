@@ -1,11 +1,18 @@
 // @flow
 import { expect } from "chai";
 
-import type { SpanNode } from "../src/Domain/TraceTree/SpanNode";
+import type { EnrichedSpanInfo } from "../src/Domain/EnrichedSpanInfo";
 import TraceTreeUtils from "../src/Domain/TraceTree/TraceTreeUtils";
 
-function createSpan(from: number, to: number, children?: SpanNode[]): SpanNode {
+function createSpan(from: number, to: number, children?: EnrichedSpanInfo[]): EnrichedSpanInfo {
     return {
+        TraceId: "",
+        SpanId: "",
+        ParentSpanId: "",
+        OperationName: "",
+        BeginTimestamp: "",
+        EndTimestamp: "",
+        Annotations: {},
         type: "SingleSpan",
         from: from,
         to: to,
@@ -21,6 +28,7 @@ function createSpan(from: number, to: number, children?: SpanNode[]): SpanNode {
             EndTimestamp: "Value",
             Annotations: null,
         },
+        parent: null,
         children: children || [],
     };
 }

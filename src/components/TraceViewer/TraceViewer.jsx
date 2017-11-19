@@ -4,12 +4,10 @@ import { connect } from "react-redux";
 
 import type { TraceInfo } from "../../Domain/TraceInfo";
 import { TraceInfoUtils } from "../../Domain/TraceInfo";
-import type { SpanInfo } from "../../Domain/SpanInfo";
 import type { EnrichedSpanInfo } from "../../Domain/EnrichedSpanInfo";
 import CustomItemDrawer from "../../Domain/CustomItemDrawer/CustomItemDrawer";
 import itemColors from "../../Domain/Colors";
 import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
-import type { SpanFactory } from "../../Domain/TraceTree/LostSpanFixer";
 import type { IDataExtractor } from "../../Domain/IDataExtractor";
 import {
     ContrailPanelsContainer,
@@ -22,9 +20,7 @@ import ProfilerChartWithMinimap from "../ProfilerChartWithMinimap/ProfilerChartW
 import TraceTreeGrid from "../TraceTreeGrid/TraceTreeGrid";
 import SpanInfoView from "../SpanInfoView/SpanInfoView";
 import Tabs from "../Tabs/Tabs";
-import SpansToLinesArranger2 from "../../Domain/SpanLines/SpansToLinesArranger2";
-import { buildTree, transformTree } from "../../Domain/TreeTransformation";
-import { AddSimplifiedBoundsToNodeTrasformer, AddColorConfigNodeTrasformer } from "../../Domain/SpanInfoTransformers";
+import { buildTreeAndArrangeSpanInfos } from "../../Domain/SpanInfoEnricher";
 
 import cn from "./TraceViewer.less";
 
@@ -50,17 +46,17 @@ type TraceViewerState = {
     viewPort: TimeRange,
 };
 
-function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
-    return (spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
-        TraceId: traceId,
-        SpanId: spanId,
-        ParentSpanId: parentSpanId,
-        OperationName: "FakeSpan",
-        BeginTimestamp: beginTimestamp,
-        EndTimestamp: endTimestamp,
-        Annotations: {},
-    });
-}
+// function fakeSpanFactory(traceId: string): SpanFactory<SpanInfo> {
+//     return (spanId: string, parentSpanId: ?string, beginTimestamp: string, endTimestamp: string): SpanInfo => ({
+//         TraceId: traceId,
+//         SpanId: spanId,
+//         ParentSpanId: parentSpanId,
+//         OperationName: "FakeSpan",
+//         BeginTimestamp: beginTimestamp,
+//         EndTimestamp: endTimestamp,
+//         Annotations: {},
+//     });
+// }
 
 class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     props: TraceViewerProps;
@@ -69,17 +65,11 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     constructor(props: TraceViewerProps) {
         super(props);
         const spans = props.traceInfo.Spans;
-        const tree = buildTree(spans)[0];
-        const arranger = new SpansToLinesArranger2();
-        const transformedTree = transformTree(tree, [
-            new AddSimplifiedBoundsToNodeTrasformer(),
-            new AddColorConfigNodeTrasformer(),
-        ]);
-        const lines = arranger.arrange(transformedTree);
+        const { tree, lines } = buildTreeAndArrangeSpanInfos(spans);
         this.state = {
             focusedSpanNode: null,
-            traceTree: transformedTree,
-            spanNodesMap: TraceTreeBuilder.buildNodeMap(transformedTree),
+            traceTree: tree,
+            spanNodesMap: TraceTreeBuilder.buildNodeMap(tree),
             spanLines: { lines: lines },
             timeRange: this.getFromAndTo(props.traceInfo),
             viewPort: this.getFromAndTo(props.traceInfo),
@@ -91,22 +81,22 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
         return TraceInfoUtils.getTraceTimeRange(traceInfo);
     }
 
-    handleTreeGridChangeFocusedItems = (spanNode: SpanNode) => {
+    handleTreeGridChangeFocusedItems = (spanNode: EnrichedSpanInfo) => {
         this.setState({ focusedSpanNode: spanNode });
     };
 
-    handleChartItemClick = (spanLineItem: SpanLineItem) => {
-        this.setState({ focusedSpanNode: spanLineItem.source });
+    handleChartItemClick = (spanLineItem: EnrichedSpanInfo) => {
+        this.setState({ focusedSpanNode: spanLineItem });
     };
 
-    getSelectedSpanLineItem(): Array<SpanLineItem> {
+    getSelectedSpanLineItem(): Array<EnrichedSpanInfo> {
         const { focusedSpanNode, spanLines } = this.state;
         if (focusedSpanNode == null) {
             return [];
         }
         for (const line of spanLines.lines) {
             for (const item of line.items) {
-                if (item.source === focusedSpanNode) {
+                if (item === focusedSpanNode) {
                     return [item];
                 }
             }
@@ -145,7 +135,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
         );
     };
 
-    handleGetMinimapItemColor = (item: SpanLineItem): ?string => itemColors[item.colorConfig].background;
+    handleGetMinimapItemColor = (item: EnrichedSpanInfo): ?string => itemColors[item.colorConfig].background;
 
     render(): React.Node {
         const { onChangeViewPort } = this.props;
