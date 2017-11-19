@@ -3,10 +3,10 @@
 import moment from "moment";
 import _ from "lodash";
 
-import Examples from "../Domain/Responses/Examples";
+import Examples from "../Responses/Examples";
 
-import type { TraceInfo } from "./TraceInfo";
-import type { SpanInfo } from "./SpanInfo";
+import type { TraceInfo } from "../TraceInfo";
+import type { SpanInfo } from "../SpanInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
 function booleanXOR(left: boolean, right: boolean): boolean {

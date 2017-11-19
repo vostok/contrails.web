@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import _ from "lodash";
 
-import { fixLogsearchClientServerSpan } from "../src/Domain/ContrailsLogsearchApi";
+import { fixLogsearchClientServerSpan } from "../src/Domain/Api/ContrailsLogsearchApi";
 
 describe("fixLogsearchClientServerSpan", () => {
     it("Простой случай", () => {

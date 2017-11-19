@@ -10,7 +10,7 @@ import type { ProfilerData, ProfilerItem } from "../ProfilerChart/ProfilerChart"
 import type { ICustomItemDrawer } from "../ProfilerChart/ICustomItemDrawer";
 import ProfilerChartContainer from "../ProfilerChartContainer/ProfilerChartContainer";
 import ProfilerChartMinimap, { type ChartMinimapItem } from "../ProfilerChartMinimap/ProfilerChartMinimap";
-import normalizeWheel from "../../Domain/NormalizeWheel";
+import normalizeWheel from "../../commons/NormalizeWheel";
 
 import cn from "./ProfilerChartWithMinimap.less";
 

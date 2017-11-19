@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable import/prefer-default-export */
-import type { TraceInfo } from "./TraceInfo";
+import type { TraceInfo } from "../TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
 export class ContrailsVostokApi implements IContrailsApi {

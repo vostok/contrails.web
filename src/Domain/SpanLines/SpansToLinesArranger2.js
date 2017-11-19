@@ -1,4 +1,6 @@
 // @flow
+import _ from "lodash";
+
 import type { TNode } from "../TreeTransformation";
 
 export type SpanLineItem = {
@@ -11,7 +13,7 @@ export type SpanLines<T> = Array<{ items: Array<T> }>;
 export default class SpansToLinesArranger<T: SpanLineItem> {
     arrange(rootNode: TNode<T>): SpanLines<T> {
         const result: SpanLines<T> = [];
-        return this.treeTraverse(
+        const lines = this.treeTraverse(
             rootNode,
             (result, { node }, depth) => {
                 result[depth] = result[depth] || { items: [] };
@@ -21,6 +23,9 @@ export default class SpansToLinesArranger<T: SpanLineItem> {
             result,
             x => x.children
         );
+        return lines.map(x => ({
+            items: _.sortBy(x.items, i => i.from),
+        }));
     }
 
     // eslint-disable-next-line max-params

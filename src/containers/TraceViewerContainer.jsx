@@ -9,8 +9,8 @@ import takeLastAndRejectPrevious from "commons/TakeLastAndRejectPrevious";
 import ContrailsLayout from "../components/ContrailsLayout/ContrailsLayout";
 import TraceIdInput from "../components/TraceIdInput/TraceIdInput";
 import type { TraceInfo } from "../Domain/TraceInfo";
-import { withContrailsApi } from "../Domain/ContrailsApiInjection";
-import type { IContrailsApi } from "../Domain/IContrailsApi";
+import { withContrailsApi } from "../Domain/Api/ContrailsApiInjection";
+import type { IContrailsApi } from "../Domain/Api/IContrailsApi";
 import TraceViewer from "../components/TraceViewer/TraceViewer";
 import { type IDataExtractor, LogsearchDataExtractor, VostokDataExtractor } from "../Domain/IDataExtractor";
 
@@ -46,7 +46,6 @@ export class TraceViewerContainer extends React.Component<ContrailsApplicationPr
     };
 
     componentWillReceiveProps(nextProps: ContrailsApplicationProps) {
-        console.log(this.props.traceIdPrefix, nextProps.traceIdPrefix)
         if (this.props.traceIdPrefix !== nextProps.traceIdPrefix) {
             this.updateTrace(nextProps.traceIdPrefix);
         }

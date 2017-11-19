@@ -2,10 +2,10 @@
 /* eslint-disable import/prefer-default-export */
 import PromiseUtils from "commons/PromiseUtils";
 
-import Examples from "../Domain/Responses/Examples";
+import Examples from "../Responses/Examples";
+import type { TraceInfo } from "../TraceInfo";
 
 import { fixLogsearchClientServerSpan } from "./ContrailsLogsearchApi";
-import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
 if (process.env.NODE_ENV === "production") {

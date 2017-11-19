@@ -9,7 +9,7 @@ import { TraceInfoUtils } from "../src/Domain/TraceInfo";
 import Response53ee602db8d444d9a7a674471be6b709 from "../src/Domain/Responses/53ee602db8d444d9a7a674471be6b709.json";
 // import Responseaae265d9c1fa4c2c9d504c798ee9854a from "../src/Domain/Responses/aae265d9c1fa4c2c9d504c798ee9854a.json";
 // import type { SpanInfo } from "../src/Domain/SpanInfo";
-import { buildTree } from "../src/Domain/SpanInfoEnricher";
+import { buildTreeFromSpanInfos } from "../src/Domain/SpanInfoEnricher";
 import Span from "../test/Utils/Span";
 
 // const data1 = new TraceTreeBuilder(new LogsearchDataExtractor()).buildTraceTree(
@@ -22,7 +22,7 @@ import Span from "../test/Utils/Span";
 storiesOf("TraceTreeGrid", module).add("Default", () => (
     <TraceTreeGrid
         totalTimeRange={TraceInfoUtils.getTraceTimeRange(Response53ee602db8d444d9a7a674471be6b709[0])}
-        traceTree={buildTree(Span.create({ from: 0, to: 10 }).build())}
+        traceTree={buildTreeFromSpanInfos(Span.create({ from: 0, to: 10 }).build())}
         onChangeFocusedItem={action("onChangeFocusedItem")}
     />
 ));
