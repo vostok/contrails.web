@@ -2,7 +2,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import type { EnrichedSpanInfo } from "../../Domain/EnrichedSpanInfo";
 import TraceTreeUtils from "../../Domain/TraceTree/TraceTreeUtils";
 import Colors from "../../Domain/Colors";
 import DateTimeUtils from "../../Domain/DateTimeUtils";
@@ -21,12 +21,12 @@ const SpanNodeTimeLineOfViewPort = connect(
 )(SpanNodeTimeLine);
 
 type TraceTreeGridProps = {
-    filterNodes: SpanNode => boolean,
+    filterNodes: EnrichedSpanInfo => boolean,
     totalTimeRange: ?TimeRange,
-    traceTree: SpanNode,
-    focusedItem?: ?SpanNode,
-    onChangeFocusedItem: (spanNode: SpanNode) => void,
-    onItemClick?: (spanNode: SpanNode) => void,
+    traceTree: EnrichedSpanInfo,
+    focusedItem?: ?EnrichedSpanInfo,
+    onChangeFocusedItem: (spanNode: EnrichedSpanInfo) => void,
+    onItemClick?: (spanNode: EnrichedSpanInfo) => void,
 };
 
 type TraceTreeGridState = {};
@@ -39,19 +39,19 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     };
     getSpanNodeSelfTimeCache: { [spanId: string]: number } = {};
 
-    getSpanNodeTotalTimePrecentage(spanNode: SpanNode): number {
+    getSpanNodeTotalTimePrecentage(spanNode: EnrichedSpanInfo): number {
         const { traceTree } = this.props;
         const rootNodeTotalTile = traceTree.to - traceTree.from;
         return (spanNode.to - spanNode.from) / rootNodeTotalTile;
     }
 
-    getSpanNodeSelfTimePrecentage(spanNode: SpanNode): number {
+    getSpanNodeSelfTimePrecentage(spanNode: EnrichedSpanInfo): number {
         const { traceTree } = this.props;
         const rootNodeTotalTile = traceTree.to - traceTree.from;
         return this.getSpanNodeSelfTime(spanNode) / rootNodeTotalTile;
     }
 
-    getSpanNodeSelfTime(spanNode: SpanNode): number {
+    getSpanNodeSelfTime(spanNode: EnrichedSpanInfo): number {
         const spanId = spanNode.type === "RemoteCallSpan" ? spanNode.SpanId : spanNode.SpanId;
         if (this.getSpanNodeSelfTimeCache[spanId] == null) {
             this.getSpanNodeSelfTimeCache[spanId] = TraceTreeUtils.getSpanNodeSelfTime(spanNode);
@@ -75,7 +75,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
         ];
     }
 
-    renderTimeLine(node: SpanNode): React.Node {
+    renderTimeLine(node: EnrichedSpanInfo): React.Node {
         const { totalTimeRange } = this.props;
         if (totalTimeRange == null) {
             return <SpanNodeTimeLineOfViewPort node={node} />;

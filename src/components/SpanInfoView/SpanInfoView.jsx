@@ -2,14 +2,13 @@
 import * as React from "react";
 
 import DateTimeUtils from "../../Domain/DateTimeUtils";
-import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
-import TraceTreeUtils from "../../Domain/TraceTree/TraceTreeUtils";
+import type { EnrichedSpanInfo } from "../../Domain/EnrichedSpanInfo";
 
 import cn from "./SpanInfoView.less";
 
 type SpanInfoViewProps = {
-    root: SpanNode,
-    span: SpanNode,
+    root: EnrichedSpanInfo,
+    span: EnrichedSpanInfo,
 };
 
 export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.Node {
@@ -176,15 +175,15 @@ export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.N
     );
 }
 
-function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): React.Node {
-    const parentSpan = TraceTreeUtils.getParentSpan(root, node);
+function renderTimestampSection(root: EnrichedSpanInfo, node: EnrichedSpanInfo, value: string): React.Node {
+    const parentSpan = node.parent;
 
     const rootSource = root.type === "RemoteCallSpan" ? root : root;
     const relatedToRoot = DateTimeUtils.formatDurationTicks(DateTimeUtils.difference(value, rootSource.BeginTimestamp));
 
     let relatedToParent = null;
     if (parentSpan != null) {
-        const parentSource = parentSpan.type === "RemoteCallSpan" ? parentSpan.clientSource : parentSpan.source;
+        const parentSource = parentSpan;
         relatedToParent = DateTimeUtils.formatDurationTicks(
             DateTimeUtils.difference(value, parentSource.BeginTimestamp)
         );

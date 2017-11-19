@@ -1,21 +1,5 @@
 // @flow
-import { reduceTree } from "../Utils/TreeTraverseUtils";
-import type { TreeReducer } from "../Utils/TreeTraverseUtils";
-
-import type { SpanNode } from "./SpanNode";
-
-function findParentSpanReducer(target: SpanNode): TreeReducer<?SpanNode, SpanNode> {
-    return (childResults, current) => {
-        const childResult = childResults.find(x => x != null);
-        if (childResult != null) {
-            return childResult;
-        }
-        if (current.children.includes(target)) {
-            return current;
-        }
-        return null;
-    };
-}
+import type { EnrichedSpanInfo } from "../EnrichedSpanInfo";
 
 type Range = {
     from: number,
@@ -23,11 +7,6 @@ type Range = {
 };
 
 export default class TraceTreeUtils {
-    static getParentSpan(root: SpanNode, span: SpanNode): ?SpanNode {
-        const result = reduceTree(root, findParentSpanReducer(span), x => x.children);
-        return result;
-    }
-
     static getSpanIntersectionLength(left: Range, right: Range): number {
         const intersection = this.getSpanIntersection(left, right);
         if (intersection == null) {
@@ -58,7 +37,7 @@ export default class TraceTreeUtils {
         return null;
     }
 
-    static getSpanNodeSelfTime(spanNode: SpanNode): number {
+    static getSpanNodeSelfTime(spanNode: EnrichedSpanInfo): number {
         // TODO можно сделать за n * log n, сейчас n^2
         let result = spanNode.to - spanNode.from;
         for (let i = 0; i < spanNode.children.length; i++) {

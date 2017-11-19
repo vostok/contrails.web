@@ -59,20 +59,23 @@ export interface ITreeTransformer<TIn, TOut> {
 export type TNode<T> = { children: Array<TNode<T>> } & T;
 
 export class AddPropertiesToNodeTrasformer<TInfo, TOut: TInfo> implements ITreeTransformer<TNode<TInfo>, TNode<TOut>> {
-    modifyNode(_node: TOut) {
+    modifyNode(_node: TOut, _nodesPath: Array<TNode<TOut>>) {
         throw new Error("AbsractMethodNotImplementedError");
     }
 
-    traverseTree(root: TNode<TOut>) {
-        this.modifyNode(root);
+    traverseTree(root: TNode<TOut>, nodesPath: Array<TNode<TOut>>) {
+        this.modifyNode(root, nodesPath);
+        nodesPath.push(root);
         for (const child of root.children) {
-            this.traverseTree(child);
+            this.traverseTree(child, nodesPath);
         }
+        nodesPath.pop();
     }
 
     transform(roots: Array<TNode<TInfo>>): Array<TNode<TOut>> {
+        const path = [];
         for (const root of roots) {
-            this.traverseTree((root: any));
+            this.traverseTree((root: any), path);
         }
         return (roots: any);
     }

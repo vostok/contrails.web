@@ -5,13 +5,10 @@ import { connect } from "react-redux";
 import type { TraceInfo } from "../../Domain/TraceInfo";
 import { TraceInfoUtils } from "../../Domain/TraceInfo";
 import type { SpanInfo } from "../../Domain/SpanInfo";
-import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
-import SpansToLinesArranger from "../../Domain/SpanLines/SpansToLinesArranger";
-import type { SpanLines, SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
+import type { EnrichedSpanInfo } from "../../Domain/EnrichedSpanInfo";
 import CustomItemDrawer from "../../Domain/CustomItemDrawer/CustomItemDrawer";
 import itemColors from "../../Domain/Colors";
 import TraceTreeBuilder from "../../Domain/TraceTree/TraceTreeBuilder";
-import LostSpanFixer from "../../Domain/TraceTree/LostSpanFixer";
 import type { SpanFactory } from "../../Domain/TraceTree/LostSpanFixer";
 import type { IDataExtractor } from "../../Domain/IDataExtractor";
 import {
@@ -33,6 +30,8 @@ import cn from "./TraceViewer.less";
 
 type TimeRange = { from: number, to: number };
 
+type SpanLines = Array<{ items: Array<EnrichedSpanInfo> }>;
+
 type ChartData = {
     lines: SpanLines,
 };
@@ -44,8 +43,8 @@ type TraceViewerProps = {
 };
 
 type TraceViewerState = {
-    focusedSpanNode: ?SpanNode,
-    traceTree: SpanNode,
+    focusedSpanNode: ?EnrichedSpanInfo,
+    traceTree: EnrichedSpanInfo,
     spanLines: ChartData,
     timeRange: TimeRange,
     viewPort: TimeRange,
@@ -77,21 +76,15 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
             new AddColorConfigNodeTrasformer(),
         ]);
         const lines = arranger.arrange(transformedTree);
-        const treeBuilder = new TraceTreeBuilder(null);
         this.state = {
             focusedSpanNode: null,
             traceTree: transformedTree,
-            spanNodesMap: treeBuilder.buildNodeMap(transformedTree),
+            spanNodesMap: TraceTreeBuilder.buildNodeMap(transformedTree),
             spanLines: { lines: lines },
             timeRange: this.getFromAndTo(props.traceInfo),
             viewPort: this.getFromAndTo(props.traceInfo),
         };
         props.onChangeViewPort(this.getFromAndTo(props.traceInfo));
-    }
-
-    generateDataFromDiTraceResponse(traceTree: SpanNode): ChartData {
-        const arranger = new SpansToLinesArranger();
-        return { lines: arranger.arrange(traceTree) };
     }
 
     getFromAndTo(traceInfo: TraceInfo): { from: number, to: number } {
@@ -103,7 +96,6 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
     };
 
     handleChartItemClick = (spanLineItem: SpanLineItem) => {
-        console.log(spanLineItem.source);
         this.setState({ focusedSpanNode: spanLineItem.source });
     };
 

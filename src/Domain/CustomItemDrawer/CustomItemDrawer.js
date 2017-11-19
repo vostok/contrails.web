@@ -4,7 +4,7 @@ import pixi from "commons/pixi";
 
 import type { ItemDrawContext, ICustomItemDrawer } from "../../components/ProfilerChart/ICustomItemDrawer";
 import itemColors from "../Colors";
-import type { SpanLineItem } from "../SpanLines/SpansToLinesArranger";
+import type { EnrichedSpanInfo } from "../EnrichedSpanInfo";
 
 import cn from "./CustomItemDrawer.less";
 
@@ -12,8 +12,8 @@ function getColorForPixi(value: Color): [number, number] {
     return [value.red() * 0x10000 + value.green() * 0x100 + value.blue(), value.alpha()];
 }
 
-export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem> {
-    drawBackground(graphics: pixi.Graphics, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+export default class CustomItemDrawer implements ICustomItemDrawer<EnrichedSpanInfo> {
+    drawBackground(graphics: pixi.Graphics, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         const colorIndex = item.colorConfig;
         graphics.beginFill(...getColorForPixi(color(itemColors[colorIndex].background)));
         graphics.drawRect(
@@ -25,7 +25,7 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
         graphics.endFill();
     }
 
-    prepareSelectedItem(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+    prepareSelectedItem(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.className = cn("selected-item");
         const colorIndex = item.colorConfig;
         node.style.borderColor = itemColors[colorIndex].border;
@@ -35,7 +35,7 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
         node.style.height = `${itemDrawContext.itemHeight}px`;
     }
 
-    prepareTextElement(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+    prepareTextElement(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.className = cn("item");
         node.innerText = item.serviceName || "";
         node.style.top = `${itemDrawContext.itemTop}px`;
@@ -44,14 +44,14 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
         node.style.height = `${itemDrawContext.itemHeight}px`;
     }
 
-    updateTextElement(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+    updateTextElement(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;
         node.style.width = `${itemDrawContext.itemWidth}px`;
         node.style.height = `${itemDrawContext.itemHeight}px`;
     }
 
-    prepareHoveredItem(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+    prepareHoveredItem(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.className = cn("hovered-item");
         const colorIndex = item.colorConfig;
         node.style.backgroundColor = itemColors[colorIndex].hoverBackground;
@@ -61,14 +61,14 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
         node.style.height = `${itemDrawContext.itemHeight}px`;
     }
 
-    updateSelectedItem(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+    updateSelectedItem(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;
         node.style.width = `${itemDrawContext.itemWidth}px`;
         node.style.height = `${itemDrawContext.itemHeight}px`;
     }
 
-    updateHoveredItem(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
+    updateHoveredItem(node: HTMLDivElement, item: EnrichedSpanInfo, itemDrawContext: ItemDrawContext) {
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;
         node.style.width = `${itemDrawContext.itemWidth}px`;

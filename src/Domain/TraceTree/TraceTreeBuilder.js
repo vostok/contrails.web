@@ -3,6 +3,7 @@ import moment from "moment";
 import { NotImplementedError } from "commons/Errors";
 
 import type { SpanInfo } from "../SpanInfo";
+import type { EnrichedSpanInfo } from "../EnrichedSpanInfo";
 import { reduceTree } from "../Utils/TreeTraverseUtils";
 import type { IDataExtractor } from "../IDataExtractor";
 
@@ -143,9 +144,8 @@ export default class TraceTreeBuilder {
         };
     }
 
-    buildNodeMap(tree: SpanNode): { [key: string]: SpanNode } {
-        const getid = (node: SpanNode) =>
-            node.type === "RemoteCallSpan" ? node.SpanId : node.SpanId;
+    static buildNodeMap(tree: EnrichedSpanInfo): { [key: string]: EnrichedSpanInfo } {
+        const getid = (node: EnrichedSpanInfo) => (node.type === "RemoteCallSpan" ? node.SpanId : node.SpanId);
         return reduceTree(
             tree,
             (childResults, node) => childResults.reduce(merge, { [getid(node)]: node }),

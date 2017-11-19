@@ -22,6 +22,7 @@ declare module 'chai' {
         have: IExpectToHave<T>;
         be: IExpectToBe<T>;
         not: IExpectTo<T>;
+        exist: void;
     }
 
     declare interface IExpectToDeep<T> {

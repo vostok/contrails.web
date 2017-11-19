@@ -1,14 +1,14 @@
 // @flow
 import * as React from "react";
 
-import type { SpanNode } from "../../Domain/TraceTree/SpanNode";
+import type { EnrichedSpanInfo } from "../../Domain/EnrichedSpanInfo";
 import type { TimeRange } from "../../Domain/TimeRange";
 import Colors from "../../Domain/Colors";
 
 import cn from "./SpanNodeTimeLine.less";
 
 type SpanNodeTimeLineProps = {
-    node: SpanNode,
+    node: EnrichedSpanInfo,
     totalTimeRange: TimeRange,
 };
 
