@@ -50,7 +50,6 @@ describe("generateTimeMarkers", () => {
 
     it("wokrs 3", () => {
         const result = generateTimeMarkers(0, 1000, 101);
-        //expect(result).to.have.length(11);
 
         expect(result[0].title).to.eql("0ms");
         expect(result[0].value).to.eql(0);

@@ -1,7 +1,7 @@
 // @flow
 import type { SpanInfo } from "./SpanInfo";
 import type { EnrichedSpanInfo } from "./EnrichedSpanInfo";
-import SpansToLinesArranger2 from "./SpanLines/SpansToLinesArranger2";
+import SpansToLinesArranger from "./SpanLines/SpansToLinesArranger";
 import { transformTree, buildTree } from "./TreeTransformation";
 import {
     AddSimplifiedBoundsToNodeTrasformer,
@@ -23,7 +23,7 @@ export function buildTreeFromSpanInfos(spans: Array<SpanInfo>): EnrichedSpanInfo
 
 export function arrangeSpanInfos(spans: Array<SpanInfo>): SpanLines {
     const tree = buildTree(spans)[0];
-    const arranger = new SpansToLinesArranger2();
+    const arranger = new SpansToLinesArranger();
     const transformedTree: any = transformTree(tree, [
         new AddSimplifiedBoundsToNodeTrasformer(),
         new AddColorConfigNodeTrasformer(),
@@ -34,7 +34,7 @@ export function arrangeSpanInfos(spans: Array<SpanInfo>): SpanLines {
 
 export function buildTreeAndArrangeSpanInfos(spans: Array<SpanInfo>): { tree: EnrichedSpanInfo, lines: SpanLines } {
     const tree = buildTree(spans)[0];
-    const arranger = new SpansToLinesArranger2();
+    const arranger = new SpansToLinesArranger();
     const transformedTree: any = transformTree(tree, [
         new AddSimplifiedBoundsToNodeTrasformer(),
         new AddColorConfigNodeTrasformer(),
