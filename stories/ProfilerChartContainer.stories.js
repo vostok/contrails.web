@@ -59,13 +59,7 @@ class ProfilerChartDemo extends React.Component<ProfilerChartDemoProps, Profiler
                             from: viewPortFrom,
                             scale: xScale,
                         }}>
-                        <ProfilerChart
-                            from={0}
-                            to={6}
-                            viewPort={{ from: 0, to: 6 }}
-                            xScale={xScale}
-                            data={data}
-                        />
+                        <ProfilerChart from={0} to={6} viewPort={{ from: 0, to: 6 }} xScale={xScale} data={data} />
                     </ProfilerChartContainer>
                 </div>
                 <div>

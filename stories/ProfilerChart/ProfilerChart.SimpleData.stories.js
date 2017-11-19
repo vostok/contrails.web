@@ -3,22 +3,13 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
-import type { SpanInfo } from "../src/Domain/SpanInfo";
-import { buildTree, transformTree } from "../src/Domain/TreeTransformation";
-import SpansToLinesArranger2 from "../src/Domain/SpanLines/SpansToLinesArranger2";
-import { AddSimplifiedBoundsToNodeTrasformer } from "../src/Domain/SpanInfoTransformers";
-import ProfilerChart from "../src/components/ProfilerChart/ProfilerChart";
-import Span from "../test/Utils/Span";
-
-function buildTreeWithBounds(spans: SpanInfo[]): * {
-    const tree = buildTree(spans)[0];
-    const arranger = new SpansToLinesArranger2();
-    return arranger.arrange(transformTree(tree, [new AddSimplifiedBoundsToNodeTrasformer()]));
-}
+import BackgroundBorder from "../Utils/BackgroundBorder";
+import ProfilerChart from "../../src/components/ProfilerChart/ProfilerChart";
 
 const item2 = { from: 2, to: 4, name: "Item 2" };
 
-storiesOf("ProfilerChart", module)
+storiesOf("ProfilerChart/SimpleData", module)
+    .addDecorator(story => <BackgroundBorder>{story()}</BackgroundBorder>)
     .add("OneLineSpaces", () => (
         <ProfilerChart
             onItemClick={action("onItemClick")}
