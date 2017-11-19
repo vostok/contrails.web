@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/no-multi-comp */
 import * as React from "react";
 
 import cn from "./ContrailPanels.less";
