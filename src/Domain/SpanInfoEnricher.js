@@ -13,12 +13,12 @@ export type SpanLines = Array<{ items: Array<EnrichedSpanInfo> }>;
 
 export function buildTreeFromSpanInfos(spans: Array<SpanInfo>): EnrichedSpanInfo {
     const tree = buildTree(spans)[0];
-    const transformedTree = transformTree(tree, [
+    const transformedTree: any = transformTree(tree, [
         new AddSimplifiedBoundsToNodeTrasformer(),
         new AddColorConfigNodeTrasformer(),
         new AddReferenceToParentNodeTrasformer(),
     ]);
-    return transformedTree[0];
+    return transformedTree;
 }
 
 export function arrangeSpanInfos(spans: Array<SpanInfo>): SpanLines {

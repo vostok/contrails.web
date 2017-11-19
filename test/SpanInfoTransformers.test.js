@@ -3,7 +3,6 @@ import { expect } from "chai";
 import moment from "moment";
 
 import type { SpanInfo } from "../src/Domain/SpanInfo";
-// import type { EnrichedSpanInfo } from "../src/Domain/EnrichedSpanInfo";
 import { buildTree, TreeTransformerChain, type TNode } from "../src/Domain/TreeTransformation";
 import {
     AddSimplifiedBoundsToNodeTrasformer,
