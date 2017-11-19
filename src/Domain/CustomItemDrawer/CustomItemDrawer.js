@@ -14,7 +14,7 @@ function getColorForPixi(value: Color): [number, number] {
 
 export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem> {
     drawBackground(graphics: pixi.Graphics, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
-        const colorIndex = item.source.colorConfig;
+        const colorIndex = item.colorConfig;
         graphics.beginFill(...getColorForPixi(color(itemColors[colorIndex].background)));
         graphics.drawRect(
             itemDrawContext.itemLeft,
@@ -27,7 +27,7 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
 
     prepareSelectedItem(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
         node.className = cn("selected-item");
-        const colorIndex = item.source.colorConfig;
+        const colorIndex = item.colorConfig;
         node.style.borderColor = itemColors[colorIndex].border;
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;
@@ -37,7 +37,7 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
 
     prepareTextElement(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
         node.className = cn("item");
-        node.innerText = item.source.serviceName || "";
+        node.innerText = item.serviceName || "";
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;
         node.style.width = `${itemDrawContext.itemWidth}px`;
@@ -53,7 +53,7 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
 
     prepareHoveredItem(node: HTMLDivElement, item: SpanLineItem, itemDrawContext: ItemDrawContext) {
         node.className = cn("hovered-item");
-        const colorIndex = item.source.colorConfig;
+        const colorIndex = item.colorConfig;
         node.style.backgroundColor = itemColors[colorIndex].hoverBackground;
         node.style.top = `${itemDrawContext.itemTop}px`;
         node.style.left = `${itemDrawContext.itemLeft}px`;
@@ -91,7 +91,7 @@ export default class CustomItemDrawer implements ICustomItemDrawer<SpanLineItem>
 // function handleCustomDrawItem(context: CanvasRenderingContext2D, item: SpanLineItem, itemContext: ItemDrawContext) {
 //     context.save();
 //     try {
-//         const colorIndex = item.source.colorConfig;
+//         const colorIndex = item.colorConfig;
 //         const { width } = itemContext;
 //         //const { width, lineHeight } = itemContext;
 //         // const { selected, hovered } = itemContext.options;

@@ -87,8 +87,11 @@ class SpanBuilder {
                 ParentSpanId: parent == null ? this.parentId : parent.id,
                 OperationName: "Name",
                 Annotations: {
+                    // @flow-disable-next-line
                     OriginId: this.name,
+                    // @flow-disable-next-line
                     OriginHost: this.host,
+                    // @flow-disable-next-line
                     IsClientSpan: this.isClientSpan,
                 },
             },

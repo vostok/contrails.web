@@ -14,6 +14,10 @@ import type { SpanLines } from "../src/Domain/SpanLines/SpansToLinesArranger";
 import CustomItemDrawer from "../src/Domain/CustomItemDrawer/CustomItemDrawer";
 import { LogsearchDataExtractor } from "../src/Domain/IDataExtractor";
 import DefaultCustomDrawHandler from "../src/components/ProfilerChart/DefaultCustomDrawHandler";
+import { buildTree, transformTree } from "../src/Domain/TreeTransformation";
+import SpansToLinesArranger2 from "../src/Domain/SpanLines/SpansToLinesArranger2";
+import { AddSimplifiedBoundsToNodeTrasformer, AddColorConfigNodeTrasformer } from "../src/Domain/SpanInfoTransformers";
+import Span from "../test/Utils/Span";
 
 import generateProfilerData from "./Utils/GenerateProfilerData";
 
@@ -257,7 +261,6 @@ storiesOf("ProfilerChartWithMinimap", module)
             ])}
         />
     ))
-
     .add("FullScreen-ServerData-StrangeCase", () => (
         <ProfilerChartWithMinimap
             itemDrawer={itemDrawer}
@@ -314,4 +317,33 @@ storiesOf("ProfilerChartWithMinimap", module)
                 },
             ])}
         />
+    ))
+    .add("FullScreen-Data-1", () => (
+        <ProfilerChartWithMinimap itemDrawer={itemDrawer} {...createData(Span.create({ from: 0, to: 10 }).build())} />
     ));
+
+function buildTreeLines(spans: SpanInfo[]): * {
+    const tree = buildTree(spans)[0];
+    const arranger = new SpansToLinesArranger2();
+    const transformedTree = transformTree(tree, [
+        new AddSimplifiedBoundsToNodeTrasformer(),
+        new AddColorConfigNodeTrasformer(),
+    ]);
+    return arranger.arrange(transformedTree);
+}
+
+function createData(spans: SpanInfo[]): * {
+    return {
+        from: spans
+            .map(x => x.BeginTimestamp)
+            .map(x => moment(x))
+            .map(x => x.valueOf())
+            .reduce(min),
+        to: spans
+            .map(x => x.EndTimestamp)
+            .map(x => moment(x))
+            .map(x => x.valueOf())
+            .reduce(max),
+        data: { lines: buildTreeLines(spans) },
+    };
+}

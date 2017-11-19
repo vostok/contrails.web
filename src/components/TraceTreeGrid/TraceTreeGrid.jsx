@@ -52,7 +52,7 @@ export default class TraceTreeGrid extends React.Component<TraceTreeGridProps, T
     }
 
     getSpanNodeSelfTime(spanNode: SpanNode): number {
-        const spanId = spanNode.type === "RemoteCallSpan" ? spanNode.clientSource.SpanId : spanNode.source.SpanId;
+        const spanId = spanNode.type === "RemoteCallSpan" ? spanNode.SpanId : spanNode.SpanId;
         if (this.getSpanNodeSelfTimeCache[spanId] == null) {
             this.getSpanNodeSelfTimeCache[spanId] = TraceTreeUtils.getSpanNodeSelfTime(spanNode);
         }

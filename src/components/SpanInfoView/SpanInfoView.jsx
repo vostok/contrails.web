@@ -14,10 +14,10 @@ type SpanInfoViewProps = {
 
 export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.Node {
     if (span.type === "RemoteCallSpan") {
-        const clientSpanInfo = span.clientSource;
+        const clientSpanInfo = span;
         const clientAnnotations = clientSpanInfo.Annotations;
 
-        const serverSpanInfo = span.serverSource;
+        const serverSpanInfo = span;
         const serverAnnotations = serverSpanInfo.Annotations;
 
         return (
@@ -121,7 +121,7 @@ export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.N
             </div>
         );
     }
-    const spanInfo = span.source;
+    const spanInfo = span;
     const annotations = spanInfo.Annotations;
     return (
         <div>
@@ -179,7 +179,7 @@ export default function SpanInfoView({ span, root }: SpanInfoViewProps): React.N
 function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): React.Node {
     const parentSpan = TraceTreeUtils.getParentSpan(root, node);
 
-    const rootSource = root.type === "RemoteCallSpan" ? root.clientSource : root.source;
+    const rootSource = root.type === "RemoteCallSpan" ? root : root;
     const relatedToRoot = DateTimeUtils.formatDurationTicks(DateTimeUtils.difference(value, rootSource.BeginTimestamp));
 
     let relatedToParent = null;

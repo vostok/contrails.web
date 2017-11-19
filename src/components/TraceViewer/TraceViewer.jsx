@@ -25,6 +25,9 @@ import ProfilerChartWithMinimap from "../ProfilerChartWithMinimap/ProfilerChartW
 import TraceTreeGrid from "../TraceTreeGrid/TraceTreeGrid";
 import SpanInfoView from "../SpanInfoView/SpanInfoView";
 import Tabs from "../Tabs/Tabs";
+import SpansToLinesArranger2 from "../../Domain/SpanLines/SpansToLinesArranger2";
+import { buildTree, transformTree } from "../../Domain/TreeTransformation";
+import { AddSimplifiedBoundsToNodeTrasformer, AddColorConfigNodeTrasformer } from "../../Domain/SpanInfoTransformers";
 
 import cn from "./TraceViewer.less";
 
@@ -66,15 +69,20 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
 
     constructor(props: TraceViewerProps) {
         super(props);
-        const treeBuilder = new TraceTreeBuilder(props.dataExtractor);
-        const lostSpanFixer = new LostSpanFixer();
-        const recoveredSpan = lostSpanFixer.fix(props.traceInfo.Spans, fakeSpanFactory(props.traceInfo.TraceId));
-        const traceTree = treeBuilder.buildTraceTree(recoveredSpan);
+        const spans = props.traceInfo.Spans;
+        const tree = buildTree(spans)[0];
+        const arranger = new SpansToLinesArranger2();
+        const transformedTree = transformTree(tree, [
+            new AddSimplifiedBoundsToNodeTrasformer(),
+            new AddColorConfigNodeTrasformer(),
+        ]);
+        const lines = arranger.arrange(transformedTree);
+        const treeBuilder = new TraceTreeBuilder(null);
         this.state = {
             focusedSpanNode: null,
-            traceTree: traceTree,
-            spanNodesMap: treeBuilder.buildNodeMap(traceTree),
-            spanLines: this.generateDataFromDiTraceResponse(traceTree),
+            traceTree: transformedTree,
+            spanNodesMap: treeBuilder.buildNodeMap(transformedTree),
+            spanLines: { lines: lines },
             timeRange: this.getFromAndTo(props.traceInfo),
             viewPort: this.getFromAndTo(props.traceInfo),
         };
@@ -145,7 +153,7 @@ class TraceViewer extends React.Component<TraceViewerProps, TraceViewerState> {
         );
     };
 
-    handleGetMinimapItemColor = (item: SpanLineItem): ?string => itemColors[item.source.colorConfig].background;
+    handleGetMinimapItemColor = (item: SpanLineItem): ?string => itemColors[item.colorConfig].background;
 
     render(): React.Node {
         const { onChangeViewPort } = this.props;

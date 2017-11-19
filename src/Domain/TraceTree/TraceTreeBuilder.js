@@ -145,7 +145,7 @@ export default class TraceTreeBuilder {
 
     buildNodeMap(tree: SpanNode): { [key: string]: SpanNode } {
         const getid = (node: SpanNode) =>
-            node.type === "RemoteCallSpan" ? node.clientSource.SpanId : node.source.SpanId;
+            node.type === "RemoteCallSpan" ? node.SpanId : node.SpanId;
         return reduceTree(
             tree,
             (childResults, node) => childResults.reduce(merge, { [getid(node)]: node }),

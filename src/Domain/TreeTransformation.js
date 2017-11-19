@@ -1,7 +1,7 @@
 // @flow
 import _ from "lodash";
 
-import type { SpanInfo } from "../src/Domain/SpanInfo";
+import type { SpanInfo } from "./SpanInfo";
 
 type TrasformerChain1<TIn1, TOut> = [ITreeTransformer<TIn1, TOut>];
 
@@ -76,6 +76,14 @@ export class AddPropertiesToNodeTrasformer<TInfo, TOut: TInfo> implements ITreeT
         }
         return (roots: any);
     }
+}
+
+export function transformTree<TIn, TOut>(
+    tree: TNode<TIn>,
+    trasformers: TrasformerChain<TNode<TIn>, TNode<TOut>>
+): TNode<TOut> {
+    const treeTransformer: TreeTransformerChain<TNode<TIn>, TNode<TOut>> = new TreeTransformerChain(trasformers);
+    return treeTransformer.apply([tree])[0];
 }
 
 export function buildTree(nodes: SpanInfo[]): TNode<SpanInfo>[] {

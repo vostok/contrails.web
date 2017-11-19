@@ -1,27 +1,21 @@
 // @flow
-import type { SpanNode } from "../TraceTree/SpanNode";
+import type { TNode } from "../TreeTransformation";
 
 export type SpanLineItem = {
     from: number,
     to: number,
-    colorConfig: number,
-    serviceName: string,
 };
 
-export type SpanLines = Array<{ items: Array<SpanLineItem> }>;
+export type SpanLines<T> = Array<{ items: Array<T> }>;
 
-export default class SpansToLinesArranger {
-    arrange(rootNode: SpanNode): SpanLines {
-        const result: SpanLines = [];
+export default class SpansToLinesArranger<T: SpanLineItem> {
+    arrange(rootNode: TNode<T>): SpanLines<T> {
+        const result: SpanLines<T> = [];
         return this.treeTraverse(
             rootNode,
             (result, { node }, depth) => {
                 result[depth] = result[depth] || { items: [] };
-                result[depth].items.push({
-                    source: node,
-                    from: node.from,
-                    to: node.to,
-                });
+                result[depth].items.push(node);
                 return result;
             },
             result,
