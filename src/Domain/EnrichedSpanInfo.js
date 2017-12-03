@@ -8,8 +8,8 @@ export type EnrichedSpanInfo = {
     EndTimestamp: string,
     Annotations: ?{ [key: string]: mixed },
 
-    // serviceName: string,
-    // serviceTitle: string,
+    serviceName: string,
+    serviceTitle: string,
     type: "SingleSpan" | "FakeSpan" | "RemoteCallSpan",
     from: number,
     to: number,

@@ -30,6 +30,7 @@ function createSpan(from: number, to: number, children?: EnrichedSpanInfo[]): En
         },
         parent: null,
         children: children || [],
+        serviceTitle: "ServiceTitle",
     };
 }
 

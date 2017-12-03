@@ -82,11 +82,11 @@ export class AddPropertiesToNodeTrasformer<TInfo, TOut: TInfo> implements ITreeT
 }
 
 export function transformTree<TIn, TOut>(
-    tree: TNode<TIn>,
+    tree: Array<TNode<TIn>>,
     trasformers: TrasformerChain<TNode<TIn>, TNode<TOut>>
 ): TNode<TOut> {
     const treeTransformer: TreeTransformerChain<TNode<TIn>, TNode<TOut>> = new TreeTransformerChain(trasformers);
-    return treeTransformer.apply([tree])[0];
+    return treeTransformer.apply(tree)[0];
 }
 
 export function buildTree(nodes: SpanInfo[]): TNode<SpanInfo>[] {

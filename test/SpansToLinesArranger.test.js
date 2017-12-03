@@ -9,7 +9,7 @@ import { AddSimplifiedBoundsToNodeTrasformer } from "../src/Domain/SpanInfoTrans
 import Span from "./Utils/Span";
 
 function buildTreeWithBounds(spans: SpanInfo[]): * {
-    const tree = buildTree(spans)[0];
+    const tree = buildTree(spans);
     return transformTree(tree, [new AddSimplifiedBoundsToNodeTrasformer()]);
 }
 

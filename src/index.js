@@ -16,7 +16,7 @@ const rootEl = document.getElementById("root");
 const store = createStore(contrailsApplicationReducer);
 
 if (rootEl == null) {
-    throw new Error("Cannot find #root element to render react content into/");
+    throw new Error("Cannot find #root element to render react content into");
 }
 
 if (process.env.NODE_ENV === "development") {
