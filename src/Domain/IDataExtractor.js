@@ -52,7 +52,17 @@ export class VostokDataExtractor implements IDataExtractor {
         return "";
     }
 
-    getColorConfig(_span: SpanInfo): number {
+    getColorConfig(span: SpanInfo): number {
+        if (span.Annotations == null) {
+            return 0;
+        }
+        const { service } = span.Annotations;
+        if (typeof service === "string" && (service.startsWith("Billy") || service.startsWith("Billing"))) {
+            return 3;
+        }
+        if (typeof service === "string" && service.startsWith("Web.UI")) {
+            return 2;
+        }
         return 0;
     }
 }

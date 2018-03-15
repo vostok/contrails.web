@@ -3,7 +3,8 @@
 import moment from "moment";
 import _ from "lodash";
 
-import Examples from "../Domain/Responses/Examples";
+import buildExamples from "../Domain/Responses/Examples";
+import type { ExampleTraceInfosMap } from "../Domain/Responses/Examples";
 
 import type { TraceInfo } from "./TraceInfo";
 import type { SpanInfo } from "./SpanInfo";
@@ -37,6 +38,8 @@ export function fixLogsearchClientServerSpan(spans: Array<SpanInfo>): Array<Span
 
 export class ContrailsLogsearchApi implements IContrailsApi {
     urlPrefix: string;
+    examples: ExampleTraceInfosMap;
+
     static additionalHeaders = {
         "Cache-Control": "no-cache, no-store",
         Pragma: "no-cache",
@@ -46,11 +49,12 @@ export class ContrailsLogsearchApi implements IContrailsApi {
 
     constructor(urlPrefix: string) {
         this.urlPrefix = urlPrefix;
+        this.examples = buildExamples("logsearch");
     }
 
     async getTrace(id: string): Promise<TraceInfo> {
-        if (Object.keys(Examples).includes(id)) {
-            return Examples[id];
+        if (Object.keys(this.examples).includes(id)) {
+            return this.examples[id];
         }
         const response = await fetch(
             `${this.urlPrefix}/api/findTrace?traceId=${id}&out=vostok`,

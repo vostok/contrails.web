@@ -25,94 +25,110 @@ function addOffset(absoluteValue: string, offset: number): string {
         .format("YYYY-MM-DDTHH:mm:ss.SSSSSSSSZ");
 }
 
-// eslint-disable-next-line max-params
-export function createSpan(
-    name: string, host: string,
-    from: number,
-    to: number,
-    isClientSpan: boolean,
-    chlidren?: Array<Array<SpanInfo>>
-): Array<SpanInfo> {
-    const id = guid();
-    return [
-        {
-            BeginTimestamp: timestamp(from),
-            EndTimestamp: timestamp(to),
-            TraceId: "831a3146-d50f-4fe1-b91e-d37b3197670d",
-            SpanId: id,
-            ParentSpanId: null,
-            OperationName: "Name",
-            Annotations: {
-                OriginId: name,
-                OriginHost: host,
-                IsClientSpan: isClientSpan,
-            },
-        },
-        ..._.flatten(chlidren || []).map(x => ({
-            ...x,
-            ParentSpanId: x.ParentSpanId == null ? id : x.ParentSpanId,
-        })),
-    ];
-}
+export type AnnotationsFormat = "logsearch" | "vostok";
 
-export function createSpanR(
-    name: string, host: string,
-    from: number,
-    to: number,
-    isClientSpan: boolean,
-    chlidren?: Array<Array<SpanInfo>>
-): Array<SpanInfo> {
-    const id = guid();
-    return [
-        {
-            BeginTimestamp: timestamp(from),
-            EndTimestamp: timestamp(to),
-            TraceId: "831a3146-d50f-4fe1-b91e-d37b3197670d",
-            SpanId: id,
-            ParentSpanId: null,
-            OperationName: "Name",
-            Annotations: {
-                OriginId: name,
-                OriginHost: host,
-                IsClientSpan: isClientSpan,
-            },
-        },
-        ..._.flatten(chlidren || []).map(x => ({
-            ...x,
-            BeginTimestamp: addOffset(x.BeginTimestamp, from),
-            EndTimestamp: addOffset(x.EndTimestamp, from),
-            ParentSpanId: x.ParentSpanId == null ? id : x.ParentSpanId,
-        })),
-    ];
-}
+export class SpanInfoBuilder {
+    annotationsFormat: AnnotationsFormat;
 
-export function createSpanR2(
-    name: string, host: string,
-    from: number,
-    to: number,
-    isClientSpan: boolean,
-    chlidren?: Array<Array<SpanInfo>>
-): Array<SpanInfo> {
-    const id = guid();
-    return [
-        {
-            BeginTimestamp: timestamp(from),
-            EndTimestamp: timestamp(to),
-            TraceId: "831a3146-d50f-4fe1-b91e-d37b3197670d",
-            SpanId: id,
-            ParentSpanId: null,
-            OperationName: "Name",
-            Annotations: {
-                OriginId: name,
-                OriginHost: host,
+    constructor(annotationsFormat: AnnotationsFormat) {
+        this.annotationsFormat = annotationsFormat;
+    }
+
+    createAnnotations(name: string, host: string, isClientSpan: boolean) {
+        if (this.annotationsFormat === "vostok") {
+            return {
+                service: name,
+                host: host,
                 IsClientSpan: isClientSpan,
+            };
+        }
+        return {
+            OriginId: name,
+            OriginHost: host,
+            IsClientSpan: isClientSpan,
+        };
+    }
+
+    // eslint-disable-next-line max-params
+    createSpan(
+        name: string,
+        host: string,
+        from: number,
+        to: number,
+        isClientSpan: boolean,
+        chlidren?: Array<Array<SpanInfo>>
+    ): Array<SpanInfo> {
+        const id = guid();
+        return [
+            {
+                BeginTimestamp: timestamp(from),
+                EndTimestamp: timestamp(to),
+                TraceId: "831a3146-d50f-4fe1-b91e-d37b3197670d",
+                SpanId: id,
+                ParentSpanId: null,
+                OperationName: "Name",
+                Annotations: this.createAnnotations(name, host, isClientSpan),
             },
-        },
-        ..._.flatten(chlidren || []).map(x => ({
-            ...x,
-            BeginTimestamp: addOffset(x.BeginTimestamp, from),
-            EndTimestamp: addOffset(x.EndTimestamp, to),
-            ParentSpanId: x.ParentSpanId == null ? id : x.ParentSpanId,
-        })),
-    ];
+            ..._.flatten(chlidren || []).map(x => ({
+                ...x,
+                ParentSpanId: x.ParentSpanId == null ? id : x.ParentSpanId,
+            })),
+        ];
+    }
+
+    createSpanR(
+        name: string,
+        host: string,
+        from: number,
+        to: number,
+        isClientSpan: boolean,
+        chlidren?: Array<Array<SpanInfo>>
+    ): Array<SpanInfo> {
+        const id = guid();
+        return [
+            {
+                BeginTimestamp: timestamp(from),
+                EndTimestamp: timestamp(to),
+                TraceId: "831a3146-d50f-4fe1-b91e-d37b3197670d",
+                SpanId: id,
+                ParentSpanId: null,
+                OperationName: "Name",
+                Annotations: this.createAnnotations(name, host, isClientSpan),
+            },
+            ..._.flatten(chlidren || []).map(x => ({
+                ...x,
+                BeginTimestamp: addOffset(x.BeginTimestamp, from),
+                EndTimestamp: addOffset(x.EndTimestamp, from),
+                ParentSpanId: x.ParentSpanId == null ? id : x.ParentSpanId,
+            })),
+        ];
+    }
+
+    createSpanR2(
+        name: string,
+        host: string,
+        from: number,
+        to: number,
+        isClientSpan: boolean,
+        chlidren?: Array<Array<SpanInfo>>
+    ): Array<SpanInfo> {
+        const id = guid();
+        return [
+            {
+                BeginTimestamp: timestamp(from),
+                EndTimestamp: timestamp(to),
+                TraceId: "831a3146-d50f-4fe1-b91e-d37b3197670d",
+                SpanId: id,
+                ParentSpanId: null,
+                OperationName: "Name",
+                Annotations: this.createAnnotations(name, host, isClientSpan),
+            },
+            ..._.flatten(chlidren || []).map(x => ({
+                ...x,
+                BeginTimestamp: addOffset(x.BeginTimestamp, from),
+                EndTimestamp: addOffset(x.EndTimestamp, to),
+                ParentSpanId: x.ParentSpanId == null ? id : x.ParentSpanId,
+            })),
+        ];
+    }
 }

@@ -2,9 +2,9 @@
 import DatabaseIcon from "../components/Icons/db.png";
 import HTTPIcon from "../components/Icons/http.png";
 import ServiceIcon from "../components/Icons/service.png";
+import type { ItemDrawContext } from "../components/ProfilerChart/ProfilerChart";
 
 import type { SpanLineItem } from "./SpanLines/SpansToLinesArranger";
-import type { ItemDrawContext } from "../components/ProfilerChart/ProfilerChart";
 import itemColors from "./Colors";
 
 const DatabaseImage = new Image(14, 14);

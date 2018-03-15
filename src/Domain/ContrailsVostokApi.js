@@ -1,12 +1,15 @@
 // @flow
 /* eslint-disable import/prefer-default-export */
+import buildExamples from "../Domain/Responses/Examples";
+import type { ExampleTraceInfosMap } from "../Domain/Responses/Examples";
+
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
-import Examples from "../Domain/Responses/Examples";
-
 export class ContrailsVostokApi implements IContrailsApi {
     urlPrefix: string;
+    examples: ExampleTraceInfosMap;
+
     static additionalHeaders = {
         "Cache-Control": "no-cache, no-store",
         Pragma: "no-cache",
@@ -16,11 +19,12 @@ export class ContrailsVostokApi implements IContrailsApi {
 
     constructor(urlPrefix: string) {
         this.urlPrefix = urlPrefix;
+        this.examples = buildExamples("vostok");
     }
 
     async getTrace(id: string): Promise<TraceInfo> {
-        if (Object.keys(Examples).includes(id)) {
-            return Examples[id];
+        if (Object.keys(this.examples).includes(id)) {
+            return this.examples[id];
         }
         const response = await fetch(
             `${this.urlPrefix}/api/findTrace?traceId=${id}`,
