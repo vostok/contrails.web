@@ -3,6 +3,8 @@
 import type { TraceInfo } from "./TraceInfo";
 import type { IContrailsApi } from "./IContrailsApi";
 
+import Examples from "../Domain/Responses/Examples";
+
 export class ContrailsVostokApi implements IContrailsApi {
     urlPrefix: string;
     static additionalHeaders = {
@@ -17,6 +19,9 @@ export class ContrailsVostokApi implements IContrailsApi {
     }
 
     async getTrace(id: string): Promise<TraceInfo> {
+        if (Object.keys(Examples).includes(id)) {
+            return Examples[id];
+        }
         const response = await fetch(
             `${this.urlPrefix}/api/findTrace?traceId=${id}`,
             ContrailsVostokApi.additionalHeaders
