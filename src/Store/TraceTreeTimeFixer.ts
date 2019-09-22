@@ -19,13 +19,10 @@ export class TraceTreeTimeFixer {
 
     public fix(): void {
         this.traverseTree(this.traceTree, this.tryFixNode);
-        console.log(this.hostNameOffsets);
         this.hostNameOffsets.clear();
         this.traverseTree(this.traceTree, this.tryFixNode);
-        console.log(this.hostNameOffsets);
         this.hostNameOffsets.clear();
         this.traverseTree(this.traceTree, this.tryFixNode);
-        console.log(this.hostNameOffsets);
     }
 
     private readonly tryFixNode = (parent: undefined | SpanNode, node: SpanNode): void => {
