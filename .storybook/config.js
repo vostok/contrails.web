@@ -1,5 +1,5 @@
 import { configure } from "@storybook/react";
-import "../src/Styles/Root.less";
+import "../src/Style/Root.less";
 
 const req = require.context("../stories", true, /.stories.tsx$/);
 

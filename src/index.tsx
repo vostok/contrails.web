@@ -2,9 +2,9 @@ import * as React from "react";
 import ReactDOM from "react-dom";
 
 import { ContrailsApplication } from "./Containers/ContrailsApplication";
-import "./Styles/Reset.less";
-import "./Styles/Root.less";
-import "./Styles/Typography.less";
+import "./Style/Reset.less";
+import "./Style/Root.less";
+import "./Style/Typography.less";
 import { wheelPreventDefaultChromeWorkaround } from "./WheelPreventDefaultChromeWorkaround";
 
 const rootEl = document.getElementById("root");

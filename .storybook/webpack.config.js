@@ -4,8 +4,8 @@ const { extensions, createAliases } = require("../build/resolve.js");
 
 module.exports = function({ config }) {
     config.entry = [
-        require.resolve("../src/Styles/Reset.less"),
-        require.resolve("../src/Styles/Typography.less"),
+        require.resolve("../src/Style/Reset.less"),
+        require.resolve("../src/Style/Typography.less"),
         ...config.entry,
     ];
     config.module.rules = createRules();

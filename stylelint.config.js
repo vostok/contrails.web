@@ -1,4 +1,3 @@
-/* eslint-disable */
 module.exports = {
     plugins: [
         'stylelint-declaration-strict-value',
@@ -6,6 +5,7 @@ module.exports = {
         'stylelint-no-unsupported-browser-features',
         'stylelint-csstree-validator',
     ],
+    extends: ["stylelint-prettier/recommended"],
     rules: {
         // =================
         // ==== PLUGINS ====
@@ -18,8 +18,6 @@ module.exports = {
             "declarations",
             "rules",
 		],
-
-        // 'plugin/no-unsupported-browser-features': [true, { browsers: 'last 2 versions, ie >= 10', ignore: ['flexbox', 'outline'] }],
 
         "csstree/validator": true,
 
@@ -46,10 +44,6 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/at-rule-empty-line-before
         // TODO 'at-rule-empty-line-before': 'always'|'never',
 
-        // Specify lowercase or uppercase for at-rules names.
-        // http://stylelint.io/user-guide/rules/at-rule-name-case/
-        'at-rule-name-case': 'lower',
-
         // http://stylelint.io/user-guide/rules/at-rule-name-newline-after
         // TODO 'at-rule-name-newline-after': 'always'|'always-multi-line',
 
@@ -72,18 +66,6 @@ module.exports = {
         // ==== BLOCK ====
         // ===============
 
-        // Disallow an empty line before the closing brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-closing-brace-empty-line-before/
-        'block-closing-brace-empty-line-before': 'never',
-
-        // Require a newline or disallow whitespace after the closing brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-closing-brace-newline-after/
-        'block-closing-brace-newline-after': 'always',
-
-        // Require a newline or disallow whitespace before the closing brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-closing-brace-newline-before/
-        'block-closing-brace-newline-before': 'always-multi-line',
-
         // http://stylelint.io/user-guide/rules/block-closing-brace-space-after
         // DISABLED 'block-closing-brace-space-after': 'always'|'always-single-line'|'never-single-line'|'always-multi-line'|'never-multi-line',
 
@@ -98,30 +80,10 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/block-no-single-line
         // DISABLED 'block-no-single-line': true,
 
-        // Require a newline after the opening brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-opening-brace-newline-after/
-        'block-opening-brace-newline-after': 'always-multi-line',
-
-        // Require a newline or disallow whitespace before the opening brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-opening-brace-newline-before
-        // DISABLED 'block-opening-brace-newline-before': 'never',
-
-        // Require a single space or disallow whitespace after the opening brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-opening-brace-space-after/
-        'block-opening-brace-space-after': 'always-single-line',
-
-        // Require a single space or disallow whitespace before the opening brace of blocks.
-        // http://stylelint.io/user-guide/rules/block-opening-brace-space-before/
-        'block-opening-brace-space-before': 'always',
-
 
         // ===============
         // ==== COLOR ====
         // ===============
-
-        // Specify lowercase or uppercase for hex colors.
-        // http://stylelint.io/user-guide/rules/color-hex-case/
-        'color-hex-case': 'lower',
 
         // Specify short or long notation for hex colors.
         // http://stylelint.io/user-guide/rules/color-hex-length
@@ -204,46 +166,13 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/declaration-block-properties-order
         // DISABLED 'declaration-block-properties-order': 'alphabetical'|[],
 
-        // Require a newline or disallow whitespace after the semicolons of declaration blocks.
-        // http://stylelint.io/user-guide/rules/declaration-block-semicolon-newline-after/
-        'declaration-block-semicolon-newline-after': 'always',
-
-        // Require a newline or disallow whitespace before the semicolons of declaration blocks.
-        // http://stylelint.io/user-guide/rules/declaration-block-semicolon-newline-before/
-        'declaration-block-semicolon-newline-before': 'never-multi-line',
-
-        // Require a single space or disallow whitespace after the semicolons of declaration blocks.
-        // http://stylelint.io/user-guide/rules/declaration-block-semicolon-space-after/
-        'declaration-block-semicolon-space-after': 'always-single-line',
-
-        // Require a single space or disallow whitespace before the semicolons of declaration blocks.
-        // http://stylelint.io/user-guide/rules/declaration-block-semicolon-space-before/
-        'declaration-block-semicolon-space-before': 'never',
-
         // Limit the number of declaration within a single line declaration block.
         // http://stylelint.io/user-guide/rules/declaration-block-single-line-max-declarations/
         'declaration-block-single-line-max-declarations': 1,
 
-        // Require or disallow a trailing semicolon within declaration blocks.
-        // http://stylelint.io/user-guide/rules/declaration-block-trailing-semicolon/
-        'declaration-block-trailing-semicolon': 'always',
-
-
         // =====================
         // ==== DECLARATION ====
         // =====================
-
-        // Require a newline or disallow whitespace after the colon of declarations.
-        // http://stylelint.io/user-guide/rules/declaration-colon-newline-after
-        'declaration-colon-newline-after': 'always-multi-line',
-
-        // Require a single space or disallow whitespace after the colon of declarations.
-        // http://stylelint.io/user-guide/rules/declaration-colon-space-after
-        'declaration-colon-space-after': 'always-single-line',
-
-        // Require a single space or disallow whitespace before the colon of declarations.
-        // http://stylelint.io/user-guide/rules/declaration-colon-space-before
-        'declaration-colon-space-before': 'never',
 
         // Require or disallow an empty line before declarations.
         // http://stylelint.io/user-guide/rules/declaration-empty-line-before
@@ -295,41 +224,13 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/function-calc-no-unspaced-operator
         'function-calc-no-unspaced-operator': true,
 
-        // Require a newline or disallow whitespace after the commas of functions.
-        // http://stylelint.io/user-guide/rules/function-comma-newline-after
-        'function-comma-newline-after': 'always-multi-line',
-
-        // Require a newline or disallow whitespace before the commas of functions.
-        // http://stylelint.io/user-guide/rules/function-comma-newline-before
-        'function-comma-newline-before': 'never-multi-line',
-
-        // Require a single space or disallow whitespace after the commas of functions.
-        // http://stylelint.io/user-guide/rules/function-comma-space-after
-        'function-comma-space-after': 'always-single-line',
-
-        // Require a single space or disallow whitespace before the commas of functions.
-        // http://stylelint.io/user-guide/rules/function-comma-space-before
-        'function-comma-space-before': 'never',
-
         // Disallow direction values in linear-gradient() calls that are not valid according to the standard syntax.
         // http://stylelint.io/user-guide/rules/function-linear-gradient-no-nonstandard-direction
         'function-linear-gradient-no-nonstandard-direction': true,
 
-        // Limit the number of adjacent empty lines within functions.
-        // http://stylelint.io/user-guide/rules/function-max-empty-lines
-        'function-max-empty-lines': 0,
-
         // Specify lowercase or uppercase for function names.
         // http://stylelint.io/user-guide/rules/function-name-case/
         'function-name-case': 'lower',
-
-        // Require a newline or disallow whitespace on the inside of the parentheses of functions.
-        // http://stylelint.io/user-guide/rules/function-parentheses-newline-inside
-        'function-parentheses-newline-inside': 'always-multi-line',
-
-        // Require a single space or disallow whitespace on the inside of the parentheses of functions.
-        // http://stylelint.io/user-guide/rules/function-parentheses-space-inside
-        'function-parentheses-space-inside': 'never',
 
         // Disallow scheme-relative urls.
         // http://stylelint.io/user-guide/rules/function-url-no-scheme-relative
@@ -361,10 +262,6 @@ module.exports = {
         // ==== GENERAL / SHEET ====
         // =========================
 
-        // Specify indentation.
-        // http://stylelint.io/user-guide/rules/indentation/
-        'indentation': 4,
-
         // Disallow !important within keyframe declarations.
         // http://stylelint.io/user-guide/rules/keyframe-declaration-no-important
         'keyframe-declaration-no-important': true,
@@ -372,14 +269,6 @@ module.exports = {
         // Disallow units for zero lengths.
         // http://stylelint.io/user-guide/rules/length-zero-no-unit/
         'length-zero-no-unit': true,
-
-        // Limit the number of adjacent empty lines.
-        // http://stylelint.io/user-guide/rules/max-empty-lines
-        'max-empty-lines': 1,
-
-        // Limit the length of a line.
-        // http://stylelint.io/user-guide/rules/max-line-length
-        'max-line-length': 120,
 
         // Disallow browser hacks that are irrelevant to the browsers you are targeting.
         // http://stylelint.io/user-guide/rules/no-browser-hacks
@@ -398,13 +287,6 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/no-empty-source
         'no-empty-source': true,
 
-        // Disallow end-of-line whitespace.
-        // http://stylelint.io/user-guide/rules/no-eol-whitespace
-        'no-eol-whitespace': true,
-
-        // Disallow extra semicolons.
-        // http://stylelint.io/user-guide/rules/no-extra-semicolons
-        'no-extra-semicolons': true,
 
         // Disallow colors that are suspiciously close to being identical.
         // http://stylelint.io/user-guide/rules/no-indistinguishable-colors
@@ -413,10 +295,6 @@ module.exports = {
         // Disallow double-slash comments (//...) which are not supported by CSS and could lead to unexpected results.
         // http://stylelint.io/user-guide/rules/no-invalid-double-slash-comments
         // DISABLED 'no-invalid-double-slash-comments': true,
-
-        // Disallow missing end-of-source newlines.
-        // http://stylelint.io/user-guide/rules/no-missing-end-of-source-newline
-        'no-missing-end-of-source-newline': true,
 
         // Disallow animation names that do not correspond to a @keyframes declaration.
         // http://stylelint.io/user-guide/rules/no-unknown-animations
@@ -487,17 +365,9 @@ module.exports = {
         // ==== NUMBER ====
         // ================
 
-        // Require or disallow a leading zero for fractional numbers less than 1.
-        // http://stylelint.io/user-guide/rules/number-leading-zero/
-        'number-leading-zero': 'always',
-
         // Limit the number of decimal places allowed in numbers.
         // http://stylelint.io/user-guide/rules/number-max-precision
         'number-max-precision': 4,
-
-        // Disallow trailing zeros in numbers.
-        // http://stylelint.io/user-guide/rules/number-no-trailing-zeros
-        'number-no-trailing-zeros': true,
 
 
         // ==================
@@ -507,10 +377,6 @@ module.exports = {
         // Specify a blacklist of disallowed properties.
         // http://stylelint.io/user-guide/rules/property-blacklist
         'property-blacklist': [],
-
-        // Specify lowercase or uppercase for properties.
-        // http://stylelint.io/user-guide/rules/property-case
-        'property-case': 'lower',
 
         // Disallow unknown properties.
         // http://stylelint.io/user-guide/rules/property-no-unknown
@@ -527,19 +393,6 @@ module.exports = {
         // Disallow standard properties inside :root rules.
         // http://stylelint.io/user-guide/rules/root-no-standard-properties
         // TODO 'root-no-standard-properties': true,
-
-
-        // ===============
-        // ==== RULES ====
-        // ===============
-
-        // Require or disallow an empty line before rules.
-        // http://stylelint.io/user-guide/rules/rule-empty-line-before/
-        'rule-empty-line-before': ['always-multi-line', { except: ['first-nested'], ignore: ["after-comment"] }],
-
-        // Require or disallow an empty line before non-nested rules.
-        // http://stylelint.io/user-guide/rules/rule-non-nested-empty-line-before/
-        // 'rule-non-nested-empty-line-before': ['always-multi-line', { ignore: ["after-comment"] }],
 
 
         // ===================
@@ -574,41 +427,9 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/selector-class-pattern/
         'selector-class-pattern': ['^[a-z][a-z0-9\-]*$', { resolveNestedSelectors: true, "message": "Use kebab-lower-case for class names (eg. some-class-name)" }],
 
-        //Require a single space or disallow whitespace after the combinators of selectors.
-        // http://stylelint.io/user-guide/rules/selector-combinator-space-after
-        'selector-combinator-space-after': 'always',
-
-        // Require a single space or disallow whitespace before the combinators of selectors.
-        // http://stylelint.io/user-guide/rules/selector-combinator-space-before
-        'selector-combinator-space-before': 'always',
-
-        // Disallow non-space characters for descendant combinators of selectors.
-        // http://stylelint.io/user-guide/rules/selector-descendant-combinator-no-non-space
-        'selector-descendant-combinator-no-non-space': true,
-
         // Specify a pattern for id selectors.
         // http://stylelint.io/user-guide/rules/selector-id-pattern
         // DISABLED 'selector-id-pattern': string,
-
-        // Require a newline or disallow whitespace after the commas of selector lists.
-        // http://stylelint.io/user-guide/rules/selector-list-comma-newline-after/
-        'selector-list-comma-newline-after': 'always-multi-line',
-
-        // Require a newline or disallow whitespace before the commas of selector lists.
-        // http://stylelint.io/user-guide/rules/selector-list-comma-newline-before/
-        'selector-list-comma-newline-before': 'never-multi-line',
-
-        // Require a single space or disallow whitespace after the commas of selector lists.
-        // http://stylelint.io/user-guide/rules/selector-list-comma-space-after/
-        'selector-list-comma-space-after': 'always-single-line',
-
-        // Require a single space or disallow whitespace before the commas of selector lists.
-        // http://stylelint.io/user-guide/rules/selector-list-comma-space-before/
-        'selector-list-comma-space-before': 'never',
-
-        // Limit the number of adjacent empty lines within selectors.
-        // http://stylelint.io/user-guide/rules/selector-max-empty-lines/
-        'selector-max-empty-lines': 0,
 
         'selector-max-attribute': 0,
 
@@ -659,10 +480,6 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/selector-pseudo-class-blacklist
         'selector-pseudo-class-blacklist': [],
 
-        // Specify lowercase or uppercase for pseudo-class selectors.
-        // http://stylelint.io/user-guide/rules/selector-pseudo-class-case/
-        'selector-pseudo-class-case': 'lower',
-
         // Disallow unknown pseudo-class selectors.
         // http://stylelint.io/user-guide/rules/selector-pseudo-class-no-unknown/
         'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ["/^(local|global)$/", "string"] }],
@@ -674,10 +491,6 @@ module.exports = {
         // Specify a whitelist of allowed pseudo-class selectors.
         // http://stylelint.io/user-guide/rules/selector-pseudo-class-whitelist
         // DISABLED 'selector-pseudo-class-whitelist': string|[],
-
-        // Specify lowercase or uppercase for pseudo-element selectors.
-        // http://stylelint.io/user-guide/rules/selector-pseudo-element-case/
-        'selector-pseudo-element-case': 'lower',
 
         // Specify single or double colon notation for applicable pseudo-elements.
         // http://stylelint.io/user-guide/rules/selector-pseudo-element-colon-notation
@@ -707,10 +520,6 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/string-no-newline
         'string-no-newline': true,
 
-        // Specify single or double quotes around strings.
-        // http://stylelint.io/user-guide/rules/string-quotes/
-        'string-quotes': 'single',
-
         // Specify the minimum number of milliseconds for time values.
         // https://stylelint.io/user-guide/rules/time-min-milliseconds/
         'time-min-milliseconds': 100,
@@ -724,10 +533,6 @@ module.exports = {
         // http://stylelint.io/user-guide/rules/unit-blacklist
         'unit-blacklist': [],
 
-        // Specify lowercase or uppercase for units.
-        // http://stylelint.io/user-guide/rules/unit-case/
-        'unit-case': 'lower',
-
         //Disallow unknown units.
         // http://stylelint.io/user-guide/rules/unit-no-unknown/
         'unit-no-unknown': true,
@@ -739,26 +544,6 @@ module.exports = {
         // Specify lowercase or uppercase for keywords values.
         // http://stylelint.io/user-guide/rules/value-keyword-case
         'value-keyword-case': 'lower',
-
-        // Require a newline or disallow whitespace after the commas of value lists.
-        // http://stylelint.io/user-guide/rules/value-list-comma-newline-after
-        'value-list-comma-newline-after': 'always-multi-line',
-
-        // Require a newline or disallow whitespace before the commas of value lists.
-        // http://stylelint.io/user-guide/rules/value-list-comma-newline-before
-        'value-list-comma-newline-before': 'never-multi-line',
-
-        // Require a single space or disallow whitespace after the commas of value lists.
-        // http://stylelint.io/user-guide/rules/value-list-comma-space-after
-        'value-list-comma-space-after': 'always-single-line',
-
-        // Require a single space or disallow whitespace before the commas of value lists.
-        // http://stylelint.io/user-guide/rules/value-list-comma-space-before
-        'value-list-comma-space-before': 'never',
-
-        // Limit the number of adjacent empty lines within value lists.
-        // http://stylelint.io/user-guide/rules/value-list-max-empty-lines
-        'value-list-max-empty-lines': 0,
 
         // Disallow vendor prefixes for values.
         // http://stylelint.io/user-guide/rules/value-no-vendor-prefix
