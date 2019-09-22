@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { strictDefined } from "../../Commons/StrictDefined";
 import { handleCustomDrawItem } from "../../Domain/ItemDrawer";
 import { SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { changeFocusedNode, getSelectedSpanLineItemMemoized } from "../../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
 
 import { ProfilerChart, ProfilerChartProps } from "./ProfilerChart";

@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
 
+import { ChartData } from "../Domain/ChartData";
 import { IDataExtractor, VostokDataExtractor } from "../Domain/IDataExtractor";
 import { SpanInfo } from "../Domain/SpanInfo";
 import { SpansToLinesArranger } from "../Domain/SpanLines/SpansToLinesArranger";
@@ -9,9 +10,8 @@ import { LostSpanFixer, SpanFactory } from "../Domain/TraceTree/LostSpanFixer";
 import { SpanNode } from "../Domain/TraceTree/SpanNode";
 import { TraceTreeBuilder } from "../Domain/TraceTree/TraceTreeBuilder";
 
-import { ContrailsApplicationState } from "./ContrailsApplicationState";
-import { ChartData } from "../Domain/ChartData";
 import { Actions, ActionType } from "./ContrailsApplicationActions";
+import { ContrailsApplicationState } from "./ContrailsApplicationState";
 
 export function createContrailsApplicationReducer(
     dataExtractor: IDataExtractor = new VostokDataExtractor()
@@ -19,7 +19,10 @@ export function createContrailsApplicationReducer(
     const treeBuilder = new TraceTreeBuilder(dataExtractor);
     const lostSpanFixer = new LostSpanFixer();
 
-    return function contrailsApplicationReducer(state: ContrailsApplicationState = {}, action: Actions): ContrailsApplicationState {
+    return function contrailsApplicationReducer(
+        state: ContrailsApplicationState = {},
+        action: Actions
+    ): ContrailsApplicationState {
         if (action.type === ActionType.ChangeViewPort) {
             return {
                 ...state,

@@ -2,6 +2,7 @@ import memoizee from "memoizee";
 import { Dispatch } from "redux";
 
 import { strictDefined } from "../Commons/StrictDefined";
+import { ChartData } from "../Domain/ChartData";
 import { IContrailsApi } from "../Domain/IContrailsApi";
 import { SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
 import { TimeRange } from "../Domain/TimeRange";
@@ -9,7 +10,6 @@ import { TraceInfo } from "../Domain/TraceInfo";
 import { SpanNode } from "../Domain/TraceTree/SpanNode";
 
 import { ContrailsApplicationState } from "./ContrailsApplicationState";
-import { ChartData } from "../Domain/ChartData";
 
 export enum ActionType {
     ChangeViewPort = "ChangeViewPort",

@@ -5,8 +5,8 @@ import { strictDefined } from "../../Commons/StrictDefined";
 import { Colors as itemColors } from "../../Domain/Colors";
 import { SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
 import { TimeRange } from "../../Domain/TimeRange";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { ActionType } from "../../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
 import { ProfilerData } from "../ProfilerChart/Internal/ProfilerChartDrawer";
 

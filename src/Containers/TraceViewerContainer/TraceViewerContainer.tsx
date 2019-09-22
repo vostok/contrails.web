@@ -12,8 +12,8 @@ import { ContrailsLoader } from "../../Components/ContrailsLoader/ContrailsLoade
 import { TraceIdInput } from "../../Components/TraceIdInput/TraceIdInput";
 import { TraceViewerContainer } from "../../Components/TraceViewer/TraceViewer";
 import { TraceInfo } from "../../Domain/TraceInfo";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { loadTrace } from "../../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
 
 interface TraceViewerContainerProps {

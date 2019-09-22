@@ -2,8 +2,8 @@ import { connect } from "react-redux";
 
 import { strictDefined } from "../../Commons/StrictDefined";
 import { SpanNode } from "../../Domain/TraceTree/SpanNode";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { changeFocusedNodeAndUpdateViewPort } from "../../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
 
 import { TraceTreeGrid } from "./TraceTreeGrid";
