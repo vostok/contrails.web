@@ -35,7 +35,8 @@ export class TraceTreeBuilder {
                 source: span,
                 children: spans
                     .filter(x => x !== span && x.ParentSpanId != undefined && x.ParentSpanId === span.SpanId)
-                    .map(x => this.spanInfoToSpanNode(x, spans)),
+                    .map(x => this.spanInfoToSpanNode(x, spans))
+                    .sort((x, y) => x.from - y.from),
             };
         }
         return {
@@ -48,7 +49,8 @@ export class TraceTreeBuilder {
             source: span,
             children: spans
                 .filter(x => x !== span && x.ParentSpanId != undefined && x.ParentSpanId === span.SpanId)
-                .map(x => this.spanInfoToSpanNode(x, spans)),
+                .map(x => this.spanInfoToSpanNode(x, spans))
+                .sort((x, y) => x.from - y.from),
         };
     }
 

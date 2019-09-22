@@ -49,6 +49,7 @@ export function TraceViewerApplication(props: TraceViewerContainerProps): JSX.El
                     }
                 }
                 if (!(e instanceof OperationAbortedError)) {
+                    console.error(e);
                     setError({ errorTitle: "Упс :-(", errorMessage: "Произошла непредвиденная ошибка" });
                 }
             } finally {

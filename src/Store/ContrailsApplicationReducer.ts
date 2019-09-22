@@ -12,6 +12,7 @@ import { TraceTreeBuilder } from "../Domain/TraceTree/TraceTreeBuilder";
 
 import { Actions, ActionType } from "./ContrailsApplicationActions";
 import { ContrailsApplicationState } from "./ContrailsApplicationState";
+import { TraceTreeTimeFixer } from "./TraceTreeTimeFixer";
 
 export function createContrailsApplicationReducer(
     dataExtractor: IDataExtractor = new VostokDataExtractor()
@@ -48,6 +49,8 @@ export function createContrailsApplicationReducer(
             const traceInfo = action.payload.traceInfo;
             const recoveredSpan = lostSpanFixer.fix(traceInfo.Spans, fakeSpanFactory(traceInfo.TraceId));
             const traceTree = treeBuilder.buildTraceTree(recoveredSpan);
+            const traceTreeTimeFixer = new TraceTreeTimeFixer(traceTree, dataExtractor);
+            traceTreeTimeFixer.fix();
 
             return {
                 ...state,
