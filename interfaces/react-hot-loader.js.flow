@@ -1,8 +1,0 @@
-// @flow
-declare module "react-hot-loader" {
-    declare type AppContainerProps = {
-        children: React$Node,
-    };
-
-    declare class AppContainer extends React$Component<AppContainerProps> {}
-}

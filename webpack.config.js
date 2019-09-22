@@ -6,17 +6,15 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const createRules = require("./build/rules.js");
 const { extensions, createAliases } = require("./build/resolve.js");
 
 const NODE_ENV = process.env.NODE_ENV;
-
-const apiTargets = ["vostok", "logsearch"];
 
 const defaultApiMode = "production";
 const apiModes = ["production", "local-testing", "fake"];
@@ -26,7 +24,6 @@ const defaultPort = 3001;
 module.exports = function createConfig(env) {
     const options = env || {};
     options.apiMode = options.apiMode || defaultApiMode;
-    options.apiTarget = options.apiTarget;
     options.port = options.port || defaultPort;
     options.addIISWebConfig = Boolean(options.addIISWebConfig);
     options.baseUrl = options.baseUrl || "";
@@ -34,13 +31,11 @@ module.exports = function createConfig(env) {
     if (!apiModes.includes(options.apiMode)) {
         throw new Error(`Please specify correct api mode --env.apiMode={${apiModes.join(",")}}`);
     }
-    if (!apiTargets.includes(options.apiTarget)) {
-        throw new Error(`Please specify correct target --env.apiTarget={${apiTargets.join(",")}}`);
-    }
 
     const result = {
+        mode: NODE_ENV,
         entry: {
-            index: ["babel-polyfill", "whatwg-fetch", "./src/index.js"],
+            index: ["@babel/polyfill", "whatwg-fetch", "./src/index"],
         },
         output: {
             path: path.resolve(__dirname, "dist"),
@@ -76,9 +71,14 @@ module.exports = function createConfig(env) {
             }),
             new webpack.DefinePlugin({
                 "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
-                "process.env.API_TARGET": JSON.stringify(options.apiTarget),
                 "process.env.API_MODE": JSON.stringify(options.apiMode),
                 "process.env.BASE_URL": JSON.stringify(options.baseUrl),
+            }),
+            new FaviconsWebpackPlugin({
+                logo: './src/favicon.svg',
+                cache: true,
+                mode: 'webapp',
+                devMode: 'webapp'
             }),
             new CopyWebpackPlugin(
                 [
@@ -105,7 +105,7 @@ module.exports = function createConfig(env) {
     };
 
     if (NODE_ENV === "development") {
-        result.devtool = "eval-source-map";
+        result.devtool = "source-map";
         result.entry.index = []
             .concat(["react-hot-loader/patch", `webpack-dev-server/client?http://localhost:${options.port}`])
             .concat(result.entry.index);
@@ -115,14 +115,14 @@ module.exports = function createConfig(env) {
             new webpack.NamedModulesPlugin(),
             new webpack.NoEmitOnErrorsPlugin()
         );
+        result.resolve.alias["react-dom"] = "@hot-loader/react-dom";
         result.devServer.hot = true;
     }
 
     if (NODE_ENV === "production") {
         result.output.filename = "[name].[hash].js";
-        result.plugins.push(new UglifyJSPlugin({ extractComments: true }));
         result.plugins.push(
-            new ExtractTextPlugin({
+            new MiniCssExtractPlugin({
                 filename: "[name].[hash].css",
             })
         );
@@ -138,7 +138,7 @@ module.exports = function createConfig(env) {
         }
     }
 
-    if (env.mode === "debug-build") {
+    if (env && env.mode === "debug-build") {
         result.plugins.push(new BundleAnalyzerPlugin());
     }
 

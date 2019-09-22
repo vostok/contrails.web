@@ -9,8 +9,24 @@
     max-height: 100%;
 }
 
+.spacer-for-markers {
+    position: relative;
+    height: 20px;
+}
+
 .chart-container {
     flex-shrink: 1;
     flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.chart-container-wrapper {
+    flex-shrink: 1;
+    flex-grow: 0;
+    position: relative;
+    overflow-x: hidden;
     overflow-y: auto;
 }

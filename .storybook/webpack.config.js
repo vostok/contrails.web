@@ -2,16 +2,14 @@ const path = require("path");
 const createRules = require("../build/rules.js");
 const { extensions, createAliases } = require("../build/resolve.js");
 
-module.exports = function(storybookBaseConfig, configType) {
-    storybookBaseConfig.module.rules.push(...createRules());
-
-    storybookBaseConfig.entry.preview = [
-        require.resolve("babel-polyfill"),
-        require.resolve("react-hot-loader/patch"),
-        require.resolve("../src/styles/reset.less"),
-        require.resolve("../src/styles/typography.less"),
-        ...storybookBaseConfig.entry.preview,
+module.exports = function({ config }) {
+    config.entry = [
+        require.resolve("../src/Styles/Reset.less"),
+        require.resolve("../src/Styles/Typography.less"),
+        ...config.entry,
     ];
-    storybookBaseConfig.resolve.alias = Object.assign({}, storybookBaseConfig.resolve.alias, createAliases());
-    return storybookBaseConfig;
+    config.module.rules = createRules();
+    config.resolve.extensions = [...config.resolve.extensions, ...extensions];
+    config.resolve.alias = Object.assign({}, config.resolve.alias, createAliases());
+    return config;
 };

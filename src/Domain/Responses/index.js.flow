@@ -1,4 +1,0 @@
-// @flow
-import type { SpanInfo } from "../SpanInfo";
-
-declare export default { [traceId: string]: Array<{ Spans: Array<SpanInfo>, TraceId: string }> };
