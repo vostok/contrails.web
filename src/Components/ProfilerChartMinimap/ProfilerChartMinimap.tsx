@@ -151,14 +151,10 @@ export class ProfilerChartMinimap extends React.Component<ProfilerChartMinimapPr
 
     private readonly handleDragLeftHandle = (e: DraggableEvent, dragInfo: DraggableData) => {
         if (dragInfo.deltaX !== 0) {
-            const {
-                timeRange: { from },
-                viewPort,
-                onChangeViewPort,
-            } = this.props;
+            const { timeRange, viewPort, onChangeViewPort } = this.props;
             onChangeViewPort({
                 from: Math.min(
-                    Math.max(from, this.toRelativeX(dragInfo.x)),
+                    Math.max(timeRange.from, this.toRelativeX(dragInfo.x)),
                     this.toRelativeX(this.toAbsoluteX(viewPort.to) - 10)
                 ),
                 to: viewPort.to,
@@ -168,15 +164,11 @@ export class ProfilerChartMinimap extends React.Component<ProfilerChartMinimapPr
 
     private readonly handleDragRightHandle = (e: DraggableEvent, dragInfo: DraggableData) => {
         if (dragInfo.deltaX !== 0) {
-            const {
-                timeRange: { to },
-                viewPort,
-                onChangeViewPort,
-            } = this.props;
+            const { timeRange, viewPort, onChangeViewPort } = this.props;
             onChangeViewPort({
                 from: viewPort.from,
                 to: Math.max(
-                    Math.min(to, this.toRelativeX(dragInfo.x)),
+                    Math.min(timeRange.to, this.toRelativeX(dragInfo.x)),
                     this.toRelativeX(this.toAbsoluteX(viewPort.from) + 10)
                 ),
             });
@@ -218,7 +210,7 @@ export class ProfilerChartMinimap extends React.Component<ProfilerChartMinimapPr
                     width={width}
                     viewPort={this.props.timeRange}
                     fontSize={10}
-                    titleHeight={14}
+                    titleHeight={18}
                 />
             </div>
         );

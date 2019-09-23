@@ -35,13 +35,13 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
                     <Tabs
                         tabs={[
                             {
-                                name: "FullCallStack",
-                                caption: "Full call stack",
+                                name: "FullCallTree",
+                                caption: "Full call tree",
                                 renderContent: () => <FullCallTreeContainer />,
                             },
                             {
-                                name: "CallStack",
-                                caption: "Call stack",
+                                name: "CallTree",
+                                caption: "Call tree",
                                 renderContent: () => <CallTreeContainer />,
                             },
                         ]}

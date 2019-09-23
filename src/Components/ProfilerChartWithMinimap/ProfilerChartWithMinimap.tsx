@@ -37,10 +37,6 @@ export class ProfilerChartWithMinimap<TItem extends TimeRange> extends React.Com
     private mouseMoveListener?: IListenerHandler;
     private mouseUpListener?: IListenerHandler;
 
-    public componentDidUpdate(): void {
-        this.updateWidth();
-    }
-
     public componentDidMount(): void {
         this.updateWidth();
         window.addEventListener("resize", this.handleWindowResize);
