@@ -11,8 +11,8 @@ import { ContrailsVostokDemoApi } from "../Domain/ContrailsVostokDemoApi";
 import { IContrailsApi } from "../Domain/IContrailsApi";
 import { createContrailsApplicationReducer } from "../Store/ContrailsApplicationReducer";
 
-import { ContrailsRootContainer } from "./ContrailsRootContainer/ContrailsRootContainer";
-import { TraceViewerApplicationContainer } from "./TraceViewerContainer/TraceViewerContainer";
+import { ContrailsRootContainer } from "./ContrailsRootContainer";
+import { TraceViewerApplicationContainer } from "./TraceViewerContainer";
 
 let api: IContrailsApi;
 if (process.env.API_MODE === "production") {
@@ -22,10 +22,11 @@ if (process.env.API_MODE === "fake") {
     api = new ContrailsVostokDemoApi();
 }
 
-export const ContrailsApplication = hot(function ContrailsApplicationInternal(): JSX.Element {
-    const [store] = React.useState(() =>
-        createStore(createContrailsApplicationReducer(), applyMiddleware(thunk.withExtraArgument({ api: api })))
-    );
+function ContrailsApplicationInternal(): JSX.Element {
+    const [store] = React.useState(() => {
+        console.log("create");
+        return createStore(createContrailsApplicationReducer(), applyMiddleware(thunk.withExtraArgument({ api: api })));
+    });
 
     return (
         <Provider store={store}>
@@ -37,4 +38,6 @@ export const ContrailsApplication = hot(function ContrailsApplicationInternal():
             </BrowserRouter>
         </Provider>
     );
-});
+}
+
+export const ContrailsApplication = hot(ContrailsApplicationInternal);

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { runAsyncAction } from "../Components/ProfilerChart/TypingHacks";
+import { runAsyncAction } from "./TypingHacks";
 
 export function useAsyncEffect(action: (abortSignal: AbortSignal) => Promise<void>, deps?: React.DependencyList): void {
     React.useEffect(() => {

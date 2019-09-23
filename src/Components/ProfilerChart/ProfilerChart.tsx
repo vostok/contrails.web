@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { InvalidProgramStateError } from "../../Commons/Errors";
+import { emptyRef, runAsyncAction } from "../../Commons/TypingHacks";
 import { TimeRange } from "../../Domain/TimeRange";
 
 import { defaultCustomDrawHandler } from "./Internal/DefaultCustomDrawHandler";
@@ -11,7 +12,6 @@ import {
     ProfilerChartDrawer,
     ProfilerData,
 } from "./Internal/ProfilerChartDrawer";
-import { emptyRef, runAsyncAction } from "./TypingHacks";
 
 export interface ProfilerChartProps<TItem extends TimeRange> {
     data: ProfilerData<TItem>;

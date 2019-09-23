@@ -9,10 +9,10 @@ import { TraceInfo, TraceInfoUtils } from "../Domain/TraceInfo";
 import { LostSpanFixer, SpanFactory } from "../Domain/TraceTree/LostSpanFixer";
 import { SpanNode } from "../Domain/TraceTree/SpanNode";
 import { TraceTreeBuilder } from "../Domain/TraceTree/TraceTreeBuilder";
+import { TraceTreeTimeFixer } from "../Domain/TraceTreeTimeFixer";
 
 import { Actions, ActionType } from "./ContrailsApplicationActions";
 import { ContrailsApplicationState } from "./ContrailsApplicationState";
-import { TraceTreeTimeFixer } from "./TraceTreeTimeFixer";
 
 export function createContrailsApplicationReducer(
     dataExtractor: IDataExtractor = new VostokDataExtractor()

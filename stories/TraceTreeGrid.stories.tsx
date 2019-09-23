@@ -5,7 +5,7 @@ import * as React from "react";
 import { TraceTreeGrid } from "../src/Components/TraceTreeGrid/TraceTreeGrid";
 import { VostokDataExtractor } from "../src/Domain/IDataExtractor";
 import Response1 from "../src/Domain/Responses/1885c01e-6a20-4b17-85ca-84bd0518a65c.json";
-import Response2 from "../src/Domain/Responses/a7f26865-a1d4-4064-b565-84df9b2e780a.json";
+import Response2 from "../src/Domain/Responses/a7f26865-a1d4-4064-b565-84df9b2e780f.json";
 import { TraceInfoUtils } from "../src/Domain/TraceInfo";
 import { TraceTreeBuilder } from "../src/Domain/TraceTree/TraceTreeBuilder";
 

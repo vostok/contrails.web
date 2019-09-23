@@ -16,7 +16,7 @@ class InterruptibleContext implements IInterruptibleContext {
                     reject(new InterruptedError());
                 } else {
                     this.timer = new Date().getTime();
-                    requestAnimationFrame(() => resolve());
+                    requestAnimationFrame((_time: number) => resolve());
                 }
             });
         }
@@ -78,10 +78,4 @@ export function interruptible<TA extends unknown[]>(
             }
         }
     };
-}
-
-function delay(timeout: number): Promise<void> {
-    return new Promise(resolve => {
-        setTimeout(resolve, timeout);
-    });
 }

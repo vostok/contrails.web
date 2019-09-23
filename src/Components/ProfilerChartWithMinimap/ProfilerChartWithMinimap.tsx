@@ -1,12 +1,12 @@
 import * as React from "react";
 
 import { InvalidProgramStateError } from "../../Commons/Errors";
+import { ProfilerChartContainer } from "../../Containers/ProfilerChartContainer";
+import { ProfilerChartMinimapContainer } from "../../Containers/ProfilerChartMinimapContainer";
 import { normalizeWheel } from "../../Domain/NormalizeWheel";
 import { TimeRange } from "../../Domain/TimeRange";
 import { ViewPortUtils } from "../../Domain/ViewPortUtils";
 import { DocumentUtils, IListenerHandler } from "../DocumentUtils";
-import { ProfilerChartContainer } from "../ProfilerChart/ProfilerChartContainer";
-import { ProfilerChartMinimapContainer } from "../ProfilerChartMinimap/ProfilerChartMinimapContainer";
 import { TimeMarkersBackground } from "../TimeMarkersBackground/TimeMarkersBackground";
 
 import cn from "./ProfilerChartWithMinimap.less";

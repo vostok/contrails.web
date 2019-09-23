@@ -4,17 +4,17 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { match } from "react-router";
 
-import { useAsyncEffect } from "../../Commons/Effects";
-import { OperationAbortedError } from "../../Commons/PromiseUtils";
-import { ContrailsErrorMessage, ErrorInfo } from "../../Components/ContrailsErrorMessage/ContrailsErrorMessage";
-import { ContrailsLayout } from "../../Components/ContrailsLayout/ContrailsLayout";
-import { ContrailsLoader } from "../../Components/ContrailsLoader/ContrailsLoader";
-import { TraceIdInput } from "../../Components/TraceIdInput/TraceIdInput";
-import { TraceViewerContainer } from "../../Components/TraceViewer/TraceViewer";
-import { TraceInfo } from "../../Domain/TraceInfo";
-import { loadTrace } from "../../Store/ContrailsApplicationActions";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
-import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
+import { useAsyncEffect } from "../Commons/Effects";
+import { OperationAbortedError } from "../Commons/PromiseUtils";
+import { ContrailsErrorMessage, ErrorInfo } from "../Components/ContrailsErrorMessage/ContrailsErrorMessage";
+import { ContrailsLayout } from "../Components/ContrailsLayout/ContrailsLayout";
+import { ContrailsLoader } from "../Components/ContrailsLoader/ContrailsLoader";
+import { TraceIdInput } from "../Components/TraceIdInput/TraceIdInput";
+import { TraceViewerContainer } from "../Components/TraceViewer/TraceViewer";
+import { TraceInfo } from "../Domain/TraceInfo";
+import { loadTrace } from "../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
+import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 
 interface TraceViewerContainerProps {
     history: H.History;
@@ -24,7 +24,7 @@ interface TraceViewerContainerProps {
 }
 
 export function TraceViewerApplication(props: TraceViewerContainerProps): JSX.Element {
-    const traceIdPrefix: string = props.match.params.traceIdPrefix;
+    const traceIdPrefix = props.match.params.traceIdPrefix;
     const onLoadTrace = props.onLoadTrace;
     const traceInfo = props.traceInfo;
 
@@ -33,6 +33,9 @@ export function TraceViewerApplication(props: TraceViewerContainerProps): JSX.El
 
     useAsyncEffect(
         async (abortSignal: AbortSignal) => {
+            if (traceInfo != undefined && traceInfo.TraceId === traceIdPrefix) {
+                return;
+            }
             setError(undefined);
             setLoading(true);
             try {

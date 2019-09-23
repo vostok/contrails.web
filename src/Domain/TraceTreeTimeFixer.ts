@@ -1,5 +1,5 @@
-import { IDataExtractor } from "../Domain/IDataExtractor";
-import { SpanNode } from "../Domain/TraceTree/SpanNode";
+import { IDataExtractor } from "./IDataExtractor";
+import { SpanNode } from "./TraceTree/SpanNode";
 
 interface HostOffsetInfo {
     offset: number;

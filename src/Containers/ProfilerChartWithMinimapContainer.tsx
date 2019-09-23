@@ -1,13 +1,12 @@
 import { connect } from "react-redux";
 
-import { strictDefined } from "../../Commons/StrictDefined";
-import { SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
-import { TimeRange } from "../../Domain/TimeRange";
-import { ActionType } from "../../Store/ContrailsApplicationActions";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
-import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
-
-import { ProfilerChartWithMinimap } from "./ProfilerChartWithMinimap";
+import { strictDefined } from "../Commons/StrictDefined";
+import { ProfilerChartWithMinimap } from "../Components/ProfilerChartWithMinimap/ProfilerChartWithMinimap";
+import { SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
+import { TimeRange } from "../Domain/TimeRange";
+import { ActionType } from "../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
+import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 
 class ProfilerChartWithMinimapForSpanLineItem extends ProfilerChartWithMinimap<SpanLineItem> {}
 

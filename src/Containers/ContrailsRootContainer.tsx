@@ -1,10 +1,8 @@
 import * as H from "history";
 import * as React from "react";
 
-import { ContrailsLayout } from "../../Components/ContrailsLayout/ContrailsLayout";
-import { TraceIdInput } from "../../Components/TraceIdInput/TraceIdInput";
-
-import cn from "./ContrailsRootContainer.less";
+import { ContrailsLayout } from "../Components/ContrailsLayout/ContrailsLayout";
+import { TraceIdInput } from "../Components/TraceIdInput/TraceIdInput";
 
 interface ContrailsRootContainerProps {
     history: H.History;
@@ -15,9 +13,9 @@ export function ContrailsRootContainer({ history }: ContrailsRootContainerProps)
 
     return (
         <ContrailsLayout>
-            <div className={cn("content")}>
+            <ContrailsLayout.Center>
                 <TraceIdInput value={traceId} onChange={setTraceId} onOpenTrace={() => history.push(`/${traceId}`)} />
-            </div>
+            </ContrailsLayout.Center>
         </ContrailsLayout>
     );
 }

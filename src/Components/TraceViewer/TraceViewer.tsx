@@ -1,6 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import { CallTreeContainer } from "../../Containers/CallTreeContainer";
+import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
+import { ProfilerChartWithMinimapContainer } from "../../Containers/ProfilerChartWithMinimapContainer";
+import { SpanInfoViewContainer } from "../../Containers/SpanInfoViewContainer";
 import { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import {
@@ -10,11 +14,7 @@ import {
     ContrailPanelsContainer,
     ContrailPanelsTop,
 } from "../ContrailPanels/ContrailPanels";
-import { ProfilerChartWithMinimapContainer } from "../ProfilerChartWithMinimap/ProfilerChartWithMinimapContainer";
-import { SpanInfoViewContainer } from "../SpanInfoView/SpanInfoViewContainer";
 import { Tabs } from "../Tabs/Tabs";
-import { CallTreeContainer } from "../TraceTreeGrid/CallTreeContainer";
-import { FullCallTreeContainer } from "../TraceTreeGrid/FullCallTreeContainer";
 
 import cn from "./TraceViewer.less";
 

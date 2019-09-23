@@ -26,3 +26,7 @@ export function ContrailsLayout({ children, header }: ContrailsLayoutProps): JSX
         </div>
     );
 }
+
+ContrailsLayout.Center = function ContrailsLayoutCenter(props: { children?: React.ReactNode }): JSX.Element {
+    return <div className={cn("center")}>{props.children}</div>;
+};

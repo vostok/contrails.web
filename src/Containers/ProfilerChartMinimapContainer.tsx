@@ -1,16 +1,15 @@
 import memoizee from "memoizee";
 import { connect } from "react-redux";
 
-import { strictDefined } from "../../Commons/StrictDefined";
-import { Colors as itemColors } from "../../Domain/Colors";
-import { SpanLineItem } from "../../Domain/SpanLines/SpansToLinesArranger";
-import { TimeRange } from "../../Domain/TimeRange";
-import { ActionType } from "../../Store/ContrailsApplicationActions";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
-import { ContrailsDispatch } from "../../Store/ContrailsDispatch";
-import { ProfilerData } from "../ProfilerChart/Internal/ProfilerChartDrawer";
-
-import { MinimapChartData, ProfilerChartMinimap } from "./ProfilerChartMinimap";
+import { strictDefined } from "../Commons/StrictDefined";
+import { ProfilerData } from "../Components/ProfilerChart/Internal/ProfilerChartDrawer";
+import { MinimapChartData, ProfilerChartMinimap } from "../Components/ProfilerChartMinimap/ProfilerChartMinimap";
+import { Colors as itemColors } from "../Domain/Colors";
+import { SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
+import { TimeRange } from "../Domain/TimeRange";
+import { ActionType } from "../Store/ContrailsApplicationActions";
+import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
+import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 
 function getMinimapItemColor(item: SpanLineItem): undefined | string {
     return itemColors[item.source.colorConfig].background;
