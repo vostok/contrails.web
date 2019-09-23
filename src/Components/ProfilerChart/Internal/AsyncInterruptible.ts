@@ -9,14 +9,18 @@ class InterruptibleContext implements IInterruptibleContext {
     public nextDrawResolve?: (x: boolean) => void;
     public timer: number = new Date().getTime();
 
-    public async check(): Promise<void> {
-        if (new Date().getTime() - this.timer > 30) {
-            await delay(0);
-            if (this.nextDrawResolve != undefined) {
-                throw new InterruptedError();
-            }
-            this.timer = new Date().getTime();
+    public check(): Promise<void> {
+        if (new Date().getTime() - this.timer > 20) {
+            return new Promise((resolve, reject) => {
+                if (this.nextDrawResolve != undefined) {
+                    reject(new InterruptedError());
+                } else {
+                    this.timer = new Date().getTime();
+                    requestAnimationFrame(() => resolve());
+                }
+            });
         }
+        return Promise.resolve();
     }
 
     public async start(): Promise<boolean> {
