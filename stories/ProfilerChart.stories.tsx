@@ -13,7 +13,7 @@ storiesOf("ProfilerChart", module)
             selectedItems={[item2]}
             viewPort={{ from: 0, to: 5 }}
             width={500}
-            data={{
+            spanLines={{
                 lines: [
                     {
                         items: [{ from: 0, to: 2, name: "Item 1" }, item2, { from: 4, to: 6, name: "Item 3" }],
@@ -28,7 +28,7 @@ storiesOf("ProfilerChart", module)
             selectedItems={[item2]}
             viewPort={{ from: 0, to: 5 }}
             width={500}
-            data={{
+            spanLines={{
                 lines: [
                     {
                         items: [{ from: 0, to: 4, name: "Item 1", serverRange: { from: 1, to: 3 } }],
@@ -41,7 +41,7 @@ storiesOf("ProfilerChart", module)
         <ProfilerChart
             viewPort={{ from: 0, to: 5 }}
             width={500}
-            data={{
+            spanLines={{
                 lines: [
                     {
                         items: [{ from: 0, to: 2, name: "123" }, { from: 2.1, to: 3.993, name: "123" }],
@@ -62,7 +62,7 @@ storiesOf("ProfilerChart", module)
             selectedItems={[item2]}
             viewPort={{ from: 11, to: 20 }}
             width={500}
-            data={{
+            spanLines={{
                 lines: [
                     {
                         items: [{ from: 11, to: 19, name: "Item 1" }],

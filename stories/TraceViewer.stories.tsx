@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
 
-import { TraceViewerContainer } from "../src/Components/TraceViewer/TraceViewer";
+import { TraceViewer } from "../src/Components/TraceViewer/TraceViewer";
 import { IDataExtractor, VostokDataExtractor } from "../src/Domain/IDataExtractor";
 import Response53ee602db8d444d9a7a674471be6b709 from "../src/Domain/Responses/a7f26865-a1d4-4064-b565-84df9b2e780f.json";
 import { TraceInfo } from "../src/Domain/TraceInfo";
@@ -25,7 +25,7 @@ function TraceViewerStory({ dataExtractor, traceInfo }: TraceViewerStoryProps): 
     });
     return (
         <Provider store={store}>
-            <TraceViewerContainer />
+            <TraceViewer />
         </Provider>
     );
 }

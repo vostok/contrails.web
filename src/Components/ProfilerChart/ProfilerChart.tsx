@@ -14,7 +14,7 @@ import {
 } from "./Internal/ProfilerChartDrawer";
 
 export interface ProfilerChartProps<TItem extends TimeRange> {
-    data: ProfilerData<TItem>;
+    spanLines: ProfilerData<TItem>;
     width: number;
     viewPort: TimeRange;
     onItemClick?: (item: TItem, lineIndex: number) => void;
@@ -32,7 +32,7 @@ export function ProfilerChart<TItem extends TimeRange>(props: ProfilerChartProps
         }
         drawer.current = new ProfilerChartDrawer(
             canvas.current,
-            props.data,
+            props.spanLines,
             props.width,
             props.viewPort,
             props.onCustomDrawItem || defaultCustomDrawHandler
@@ -90,7 +90,7 @@ export function ProfilerChart<TItem extends TimeRange>(props: ProfilerChartProps
             onClick={handleMouseClick}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            height={(lineHeight + lineGap) * props.data.lines.length}
+            height={(lineHeight + lineGap) * props.spanLines.lines.length}
         />
     );
 }

@@ -11,10 +11,10 @@ import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 const ProfilerChartSpanLines: (props: ProfilerChartProps<SpanLineItem>) => JSX.Element = ProfilerChart;
 
 const mapProps = (state: ContrailsApplicationState, ownProps: { width: number }) => ({
+    spanLines: strictDefined(state.spanLines),
     viewPort: strictDefined(state.viewPort),
     onCustomDrawItem: handleCustomDrawItem,
     selectedItems: getSelectedSpanLineItemMemoized(strictDefined(state.spanLines), state.focusedSpanNode),
-    data: strictDefined(state.spanLines),
 });
 
 const mapDispatch = (dispatch: ContrailsDispatch) => ({
