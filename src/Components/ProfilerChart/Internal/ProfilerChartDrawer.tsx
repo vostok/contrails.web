@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { InvalidProgramStateError } from "../../../Commons/Errors";
 import { TimeRange } from "../../../Domain/TimeRange";
+import { TimeRangeUtils } from "../../../Store/TimeRangeUtils";
 
 import { IInterruptibleContext, interruptible } from "./AsyncInterruptible";
 
@@ -141,7 +142,7 @@ export class ProfilerChartDrawer<TItem extends TimeRange> {
             for (let lineIndex = 0; lineIndex < this.data.lines.length; lineIndex++) {
                 const line = this.data.lines[lineIndex];
                 for (const item of line.items) {
-                    if (!this.isItemInViewPort(item)) {
+                    if (!TimeRangeUtils.isItemIntersectsViewPort(this.viewPort, item)) {
                         continue;
                     }
                     this.drawItemAtLine(item, lineIndex, {
@@ -197,17 +198,6 @@ export class ProfilerChartDrawer<TItem extends TimeRange> {
         } finally {
             this.drawContext.restore();
         }
-    }
-
-    private isItemInViewPort(item: TItem): boolean {
-        const viewPort = this.viewPort;
-        if (item.from < viewPort.from && item.to < viewPort.from) {
-            return false;
-        }
-        if (item.from > viewPort.to && item.to > viewPort.to) {
-            return false;
-        }
-        return true;
     }
 
     private toAbsoluteX(itemX: number): number {

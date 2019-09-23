@@ -6,20 +6,14 @@ import { SpanNode } from "../Domain/TraceTree/SpanNode";
 import { changeFocusedNode } from "../Store/ContrailsApplicationActions";
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../Store/ContrailsDispatch";
+import { TimeRangeUtils } from "../Store/TimeRangeUtils";
 
-const mapProps = (state: ContrailsApplicationState) => {
-    const viewPort = strictDefined(state.viewPort);
-
-    return {
-        filterNodes: (x: SpanNode) =>
-            (viewPort.from < x.from && x.from < viewPort.to) ||
-            (viewPort.from < x.to && x.to < viewPort.to) ||
-            (x.from < viewPort.from && viewPort.to < x.to),
-        totalTimeRange: undefined,
-        focusedItem: state.focusedSpanNode,
-        traceTree: strictDefined(state.traceTree),
-    };
-};
+const mapProps = (state: ContrailsApplicationState) => ({
+    filterNodes: (x: SpanNode) => TimeRangeUtils.isItemIntersectsViewPort(strictDefined(state.viewPort), x),
+    totalTimeRange: undefined,
+    focusedItem: state.focusedSpanNode,
+    traceTree: strictDefined(state.traceTree),
+});
 
 const mapDispatch = (dispatch: ContrailsDispatch) => ({
     onItemClick: (focusedNode: undefined | SpanNode) => dispatch(changeFocusedNode(focusedNode)),

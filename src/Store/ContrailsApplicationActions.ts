@@ -10,6 +10,7 @@ import { TraceInfo } from "../Domain/TraceInfo";
 import { SpanNode } from "../Domain/TraceTree/SpanNode";
 
 import { ContrailsApplicationState } from "./ContrailsApplicationState";
+import { TimeRangeUtils } from "./TimeRangeUtils";
 
 export enum ActionType {
     ChangeViewPort = "ChangeViewPort",
@@ -84,7 +85,7 @@ export const changeFocusedNodeAndUpdateViewPort = (focusedNode: SpanNode) => (
 
     const firstSelectedItem = selectedItems[0];
     const viewPort = strictDefined(state.viewPort);
-    if (!isItemInViewPort(viewPort, firstSelectedItem)) {
+    if (!TimeRangeUtils.isItemIntersectsViewPort(viewPort, firstSelectedItem)) {
         if (firstSelectedItem.to < viewPort.from) {
             dispatch({
                 type: ActionType.ChangeViewPort,
@@ -110,6 +111,3 @@ export const changeFocusedNodeAndUpdateViewPort = (focusedNode: SpanNode) => (
     dispatch({ type: ActionType.ChangeFocusedNode, payload: { focusedSpanNode: focusedNode } });
 };
 
-function isItemInViewPort(viewPort: TimeRange, item: SpanLineItem): boolean {
-    return item.to > viewPort.from && item.from < viewPort.to;
-}
