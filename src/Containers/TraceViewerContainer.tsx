@@ -10,7 +10,7 @@ import { ContrailsErrorMessage, ErrorInfo } from "../Components/ContrailsErrorMe
 import { ContrailsLayout } from "../Components/ContrailsLayout/ContrailsLayout";
 import { ContrailsLoader } from "../Components/ContrailsLoader/ContrailsLoader";
 import { TraceIdInput } from "../Components/TraceIdInput/TraceIdInput";
-import { TraceViewerContainer } from "../Components/TraceViewer/TraceViewer";
+import { TraceViewer } from "../Components/TraceViewer/TraceViewer";
 import { TraceInfo } from "../Domain/TraceInfo";
 import { loadTrace } from "../Store/ContrailsApplicationActions";
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
@@ -74,7 +74,7 @@ export function TraceViewerApplication(props: TraceViewerContainerProps): JSX.El
             </Helmet>
             {loading && <ContrailsLoader />}
             {error && <ContrailsErrorMessage error={error} />}
-            {traceInfo != undefined && <TraceViewerContainer />}
+            {traceInfo != undefined && <TraceViewer />}
         </ContrailsLayout>
     );
 }

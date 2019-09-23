@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { nullElement } from "../../Commons/TypingHacks";
 import { DateTimeUtils } from "../../Domain/DateTimeUtils";
 import { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import { TraceTreeUtils } from "../../Domain/TraceTree/TraceTreeUtils";
@@ -8,10 +9,13 @@ import cn from "./SpanInfoView.less";
 
 interface SpanInfoViewProps {
     root: SpanNode;
-    span: SpanNode;
+    span?: SpanNode;
 }
 
-export function SpanInfoView({ span, root }: SpanInfoViewProps): JSX.Element {
+export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Element {
+    if (span == undefined) {
+        return nullElement;
+    }
     const spanInfo = span.source;
     const annotations = spanInfo.Annotations;
     return (

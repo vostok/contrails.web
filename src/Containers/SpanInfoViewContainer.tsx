@@ -6,7 +6,7 @@ import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 
 const mapProps = (state: ContrailsApplicationState) => ({
     root: strictDefined(state.traceTree),
-    span: strictDefined(state.focusedSpanNode),
+    span: state.focusedSpanNode,
 });
 
 export const SpanInfoViewContainer = connect(mapProps)(SpanInfoView);

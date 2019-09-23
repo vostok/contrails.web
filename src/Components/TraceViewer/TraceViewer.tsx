@@ -1,12 +1,9 @@
 import * as React from "react";
-import { connect } from "react-redux";
 
 import { CallTreeContainer } from "../../Containers/CallTreeContainer";
 import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
 import { ProfilerChartWithMinimapContainer } from "../../Containers/ProfilerChartWithMinimapContainer";
 import { SpanInfoViewContainer } from "../../Containers/SpanInfoViewContainer";
-import { SpanNode } from "../../Domain/TraceTree/SpanNode";
-import { ContrailsApplicationState } from "../../Store/ContrailsApplicationState";
 import {
     ContrailPanelsBottom,
     ContrailPanelsBottomLeft,
@@ -18,13 +15,7 @@ import { Tabs } from "../Tabs/Tabs";
 
 import cn from "./TraceViewer.less";
 
-interface TraceViewerProps {
-    focusedSpanNode?: SpanNode;
-}
-
-export function TraceViewer(props: TraceViewerProps): JSX.Element {
-    const { focusedSpanNode } = props;
-
+export function TraceViewer(): JSX.Element {
     return (
         <ContrailPanelsContainer>
             <ContrailPanelsTop>
@@ -49,16 +40,10 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
                 </ContrailPanelsBottomLeft>
                 <ContrailPanelsBottomRight>
                     <div className={cn("span-info-view-container")}>
-                        {focusedSpanNode != undefined && <SpanInfoViewContainer />}
+                        <SpanInfoViewContainer />
                     </div>
                 </ContrailPanelsBottomRight>
             </ContrailPanelsBottom>
         </ContrailPanelsContainer>
     );
 }
-
-const mapProps = (state: ContrailsApplicationState) => ({
-    focusedSpanNode: state.focusedSpanNode,
-});
-
-export const TraceViewerContainer = connect(mapProps)(TraceViewer);
