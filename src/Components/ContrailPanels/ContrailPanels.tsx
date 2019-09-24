@@ -1,14 +1,27 @@
 import * as React from "react";
 
 import cn from "./ContrailPanels.less";
+import { LayoutKind } from "../../Containers/LayoutKind/LayoutKind";
 
 interface ContainerProps {
     className?: string;
     children: React.ReactNode;
 }
 
-export function ContrailPanelsContainer(props: ContainerProps): JSX.Element {
-    return <div className={cn("contrail-panels-container", props.className)}>{props.children}</div>;
+interface ContrailPanelsContainerProps extends ContainerProps {
+    layoutKind: LayoutKind;
+}
+
+export function ContrailPanelsContainer(props: ContrailPanelsContainerProps): JSX.Element {
+    return (
+        <div
+            className={cn("contrail-panels-container", props.className, {
+                "chart-with-minimap-and-tree": props.layoutKind === LayoutKind.ChartWithMinimapAndTree,
+                "minimap-and-tree": props.layoutKind === LayoutKind.MinimapAndTree,
+            })}>
+            {props.children}
+        </div>
+    );
 }
 
 export function ContrailPanelsTop(props: ContainerProps): JSX.Element {

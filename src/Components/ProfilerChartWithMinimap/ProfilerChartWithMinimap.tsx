@@ -15,6 +15,7 @@ interface ProfilerChartWithMinimapProps<TItem extends TimeRange> {
     timeRange: TimeRange;
     viewPort: TimeRange;
     onChangeViewPort: (viewPort: TimeRange) => void;
+    showProfilerChart: boolean;
 }
 
 interface ProfilerChartWithMinimapState {
@@ -55,23 +56,25 @@ export class ProfilerChartWithMinimap<TItem extends TimeRange> extends React.Com
                         <div className={cn("minimap-container")}>
                             <ProfilerChartMinimapContainer width={width} />
                         </div>
-                        <div className={cn("chart-container")}>
-                            <div
-                                className={cn("chart-container-wrapper")}
-                                onWheel={this.handleWheel}
-                                onMouseDown={this.handleMouseDown}
-                                ref={this.chartContainer}>
-                                <div className={cn("spacer-for-markers")} />
-                                <ProfilerChartContainer width={width} />
+                        {this.props.showProfilerChart && (
+                            <div className={cn("chart-container")}>
+                                <div
+                                    className={cn("chart-container-wrapper")}
+                                    onWheel={this.handleWheel}
+                                    onMouseDown={this.handleMouseDown}
+                                    ref={this.chartContainer}>
+                                    <div className={cn("spacer-for-markers")} />
+                                    <ProfilerChartContainer width={width} />
+                                </div>
+                                <TimeMarkersBackground
+                                    timeRange={this.props.timeRange}
+                                    viewPort={this.props.viewPort}
+                                    width={width}
+                                    fontSize={14}
+                                    titleHeight={20}
+                                />
                             </div>
-                            <TimeMarkersBackground
-                                timeRange={this.props.timeRange}
-                                viewPort={this.props.viewPort}
-                                width={width}
-                                fontSize={14}
-                                titleHeight={20}
-                            />
-                        </div>
+                        )}
                     </>
                 )}
             </div>

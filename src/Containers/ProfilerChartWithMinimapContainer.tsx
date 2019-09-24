@@ -8,11 +8,14 @@ import { ActionType } from "../Store/ContrailsApplicationActions";
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 
+import { LayoutKind } from "./LayoutKind/LayoutKind";
+
 class ProfilerChartWithMinimapForSpanLineItem extends ProfilerChartWithMinimap<SpanLineItem> {}
 
 const mapProps = (state: ContrailsApplicationState) => ({
     timeRange: strictDefined(state.subtreeTimeRange),
     viewPort: strictDefined(state.viewPort),
+    showProfilerChart: state.layoutKind === LayoutKind.ChartWithMinimapAndTree,
 });
 
 const mapDispatch = (dispatch: ContrailsDispatch) => ({

@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
 
+import { LayoutKind } from "../Containers/LayoutKind/LayoutKind";
 import { ChartData } from "../Domain/ChartData";
 import { IDataExtractor, VostokDataExtractor } from "../Domain/IDataExtractor";
 import { SpanInfo } from "../Domain/SpanInfo";
@@ -26,6 +27,8 @@ function findSpanNode(traceTree: SpanNode, subtreeSpanId: string): undefined | S
     return undefined;
 }
 
+const defaultState = { layoutKind: LayoutKind.ChartWithMinimapAndTree };
+
 export function createContrailsApplicationReducer(
     dataExtractor: IDataExtractor = new VostokDataExtractor()
 ): Reducer<ContrailsApplicationState, Actions> {
@@ -33,13 +36,19 @@ export function createContrailsApplicationReducer(
     const lostSpanFixer = new LostSpanFixer();
 
     return function contrailsApplicationReducer(
-        state: ContrailsApplicationState = {},
+        state: ContrailsApplicationState = defaultState,
         action: Actions
     ): ContrailsApplicationState {
         if (action.type === ActionType.ChangeViewPort) {
             return {
                 ...state,
                 viewPort: action.payload.viewPort,
+            };
+        }
+        if (action.type === ActionType.ChangeLayoutKind) {
+            return {
+                ...state,
+                layoutKind: action.payload.layoutKind,
             };
         }
         if (action.type === ActionType.ChangeFocusedNode) {

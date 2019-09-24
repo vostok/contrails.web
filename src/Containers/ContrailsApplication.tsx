@@ -12,6 +12,7 @@ import { IContrailsApi } from "../Domain/IContrailsApi";
 import { createContrailsApplicationReducer } from "../Store/ContrailsApplicationReducer";
 
 import { ContrailsRootContainer } from "./ContrailsRootContainer";
+import { LayoutKindUtils } from "./LayoutKind/LayoutKindUtils";
 import { TraceViewerContainer } from "./TraceViewerContainer";
 
 let api: IContrailsApi;
@@ -23,10 +24,13 @@ if (process.env.API_MODE === "fake") {
 }
 
 function ContrailsApplicationInternal(): JSX.Element {
-    const [store] = React.useState(() => {
-        console.log("create");
-        return createStore(createContrailsApplicationReducer(), applyMiddleware(thunk.withExtraArgument({ api: api })));
-    });
+    const [store] = React.useState(() =>
+        createStore(
+            createContrailsApplicationReducer(),
+            { layoutKind: LayoutKindUtils.getLayoutKind() },
+            applyMiddleware(thunk.withExtraArgument({ api: api }))
+        )
+    );
 
     return (
         <Provider store={store}>

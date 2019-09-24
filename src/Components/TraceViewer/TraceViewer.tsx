@@ -5,6 +5,7 @@ import { useAsyncEffect } from "../../Commons/Effects";
 import { OperationAbortedError } from "../../Commons/PromiseUtils";
 import { CallTreeContainer } from "../../Containers/CallTreeContainer";
 import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
+import { LayoutKind } from "../../Containers/LayoutKind/LayoutKind";
 import { ProfilerChartWithMinimapContainer } from "../../Containers/ProfilerChartWithMinimapContainer";
 import { SpanInfoViewContainer } from "../../Containers/SpanInfoViewContainer";
 import { TraceInfo } from "../../Domain/TraceInfo";
@@ -18,6 +19,7 @@ import {
     ContrailPanelsContainer,
     ContrailPanelsTop,
 } from "../ContrailPanels/ContrailPanels";
+import { LayoutKindSelect } from "../LayoutKindSelect/LayoutKindSelect";
 import { TabConfig, Tabs } from "../Tabs/Tabs";
 import { TraceIdInput } from "../TraceIdInput/TraceIdInput";
 
@@ -26,10 +28,13 @@ import cn from "./TraceViewer.less";
 interface TraceViewerProps {
     traceIdPrefix: string;
     subtreeSpanId?: string;
+    traceInfo?: TraceInfo;
+    layoutKind: LayoutKind;
+
     onLoadTrace: (traceId: string, subtreeSpanId: undefined | string, abortSignal?: AbortSignal) => Promise<void>;
     onChangeSubtree: (subtreeSpanId: undefined | string) => void;
+    onChangeLayoutKind: (layoutKind: LayoutKind) => void;
     onOpenTrace: (traceId: string) => void;
-    traceInfo?: TraceInfo;
 }
 
 export function TraceViewer(props: TraceViewerProps): JSX.Element {
@@ -94,14 +99,15 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
 
     return (
         <ContrailsLayout
-            header={<HeaderContent traceId={traceIdPrefix} onOpen={nextTraceId => props.onOpenTrace(nextTraceId)} />}>
+            header={<HeaderContent traceId={traceIdPrefix} onOpen={nextTraceId => props.onOpenTrace(nextTraceId)} />}
+            right={<LayoutKindSelect onChange={props.onChangeLayoutKind} value={props.layoutKind} />}>
             <Helmet>
                 <title>{`Trace ${traceIdPrefix}`}</title>
             </Helmet>
             {loading && <ContrailsLoader />}
             {error && <ContrailsErrorMessage error={error} />}
             {traceInfo != undefined && (
-                <ContrailPanelsContainer>
+                <ContrailPanelsContainer layoutKind={props.layoutKind}>
                     <ContrailPanelsTop>
                         <ProfilerChartWithMinimapContainer />
                     </ContrailPanelsTop>

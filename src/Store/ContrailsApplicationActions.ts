@@ -2,6 +2,8 @@ import memoizee from "memoizee";
 import { Dispatch } from "redux";
 
 import { strictDefined } from "../Commons/StrictDefined";
+import { LayoutKind } from "../Containers/LayoutKind/LayoutKind";
+import { LayoutKindUtils } from "../Containers/LayoutKind/LayoutKindUtils";
 import { ChartData } from "../Domain/ChartData";
 import { IContrailsApi } from "../Domain/IContrailsApi";
 import { SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
@@ -18,12 +20,20 @@ export enum ActionType {
     ChangeSubtree = "ChangeSubtree",
     ResetTrace = "ResetTrace",
     ChangeFocusedNode = "ChangeFocusedNode",
+    ChangeLayoutKind = "ChangeLayoutKind",
 }
 
 interface ChangeViewPortAction {
     type: ActionType.ChangeViewPort;
     payload: {
         viewPort: TimeRange;
+    };
+}
+
+interface ChangeLayoutKindAction {
+    type: ActionType.ChangeLayoutKind;
+    payload: {
+        layoutKind: LayoutKind;
     };
 }
 
@@ -57,7 +67,13 @@ export type Actions =
     | UpdateTraceAction
     | ResetTraceAction
     | ChangeFocusedNodeAction
-    | ChangeSubtreeAction;
+    | ChangeSubtreeAction
+    | ChangeLayoutKindAction;
+
+export const changeLayoutKind = (layoutKind: LayoutKind) => (dispatch: Dispatch<Actions>): void => {
+    LayoutKindUtils.saveLayoutKind(layoutKind);
+    dispatch({ type: ActionType.ChangeLayoutKind, payload: { layoutKind: layoutKind } });
+};
 
 export const loadTrace = (traceId: string, subtreeSpanId: undefined | string, abortSignal?: AbortSignal) => async (
     dispatch: Dispatch<Actions>,

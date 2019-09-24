@@ -3,9 +3,11 @@ import { connect } from "react-redux";
 import { match } from "react-router";
 
 import { TraceViewer } from "../Components/TraceViewer/TraceViewer";
-import { ActionType, loadTrace } from "../Store/ContrailsApplicationActions";
+import { ActionType, changeLayoutKind, loadTrace } from "../Store/ContrailsApplicationActions";
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../Store/ContrailsDispatch";
+
+import { LayoutKind } from "./LayoutKind/LayoutKind";
 
 interface TraceViewerContainerProps {
     history: H.History;
@@ -15,6 +17,7 @@ interface TraceViewerContainerProps {
 
 const mapProps = (state: ContrailsApplicationState, ownProps: TraceViewerContainerProps) => ({
     traceInfo: state.traceInfo,
+    layoutKind: state.layoutKind,
     traceIdPrefix: ownProps.match.params.traceIdPrefix,
     subtreeSpanId: extractSubtreeSpanId(ownProps.location),
 });
@@ -25,6 +28,7 @@ const mapDispatch = (dispatch: ContrailsDispatch, ownProps: TraceViewerContainer
     onChangeSubtree: (subtreeSpanId: undefined | string) =>
         dispatch({ type: ActionType.ChangeSubtree, payload: { subtreeSpanId: subtreeSpanId } }),
     onOpenTrace: (traceId: string) => ownProps.history.push(`/${traceId}`),
+    onChangeLayoutKind: (layoutKind: LayoutKind) => dispatch(changeLayoutKind(layoutKind)),
 });
 
 export const TraceViewerContainer = connect(
