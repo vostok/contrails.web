@@ -19,10 +19,6 @@ export function ContrailPanelsBottom(props: ContainerProps): JSX.Element {
     return <div className={cn("contrail-panels-bottom", props.className)}>{props.children}</div>;
 }
 
-export function ContrailPanelsFooter({ children, className }: ContainerProps): JSX.Element {
-    return <div className={cn("contrail-panels-footer", className)}>{children}</div>;
-}
-
 export function ContrailPanelsBottomLeft(props: ContainerProps): JSX.Element {
     return <div className={cn("contrail-panels-bottom-left", props.className)}>{props.children}</div>;
 }
