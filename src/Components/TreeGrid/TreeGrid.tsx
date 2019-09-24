@@ -351,15 +351,16 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         );
     }
 
-    private readonly renderVisibleRow = (visibleRowInfo: VisibleRowInfo<TItem>): React.ReactNode => {
+    private readonly renderVisibleRow = (visibleRowInfo: VisibleRowInfo<TItem>, index: number): React.ReactNode => {
         const { key, item, parents } = visibleRowInfo;
         const { onItemClick, focusedItem } = this.props;
         const isItemFocused = focusedItem === item;
+        const indexDiv2 = index % 2;
 
         return (
             <tr
                 key={key}
-                className={cn("item-row", { focused: isItemFocused })}
+                className={cn("item-row", { focused: isItemFocused, odd: indexDiv2 === 1, even: indexDiv2 === 0 })}
                 onClick={() => {
                     if (onItemClick != undefined) {
                         onItemClick(item);

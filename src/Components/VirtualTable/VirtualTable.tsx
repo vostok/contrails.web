@@ -6,7 +6,7 @@ import cn from "./VirtualTable.less";
 interface VirtualTableProps<T> {
     data: T[];
     renderHeader: () => React.ReactNode;
-    renderRow: (item: T) => React.ReactNode;
+    renderRow: (item: T, index: number) => React.ReactNode;
     rowHeight: number;
     headerHeight: number;
     tableClassName?: string;
@@ -72,7 +72,7 @@ export class VirtualTable<T> extends React.Component<VirtualTableProps<T>> {
                     ref={this.scrollContainer}>
                     <div ref={this.topOffsetRow} style={{ height: topOffset }} />
                     <table tabIndex={-1} className={cn("table", tableClassName)} onKeyDown={onKeyDown}>
-                        <tbody>{data.slice(renderRange.from, renderRange.to).map(renderRow)}</tbody>
+                        <tbody>{data.slice(renderRange.from, renderRange.to).map((x, i) => renderRow(x, i + renderRange.from))}</tbody>
                     </table>
                     <div
                         ref={this.bottomOffsetRow}
