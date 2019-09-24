@@ -12,7 +12,7 @@ const mapProps = (state: ContrailsApplicationState) => ({
     filterNodes: (x: SpanNode) => TimeRangeUtils.isItemIntersectsViewPort(strictDefined(state.viewPort), x),
     totalTimeRange: undefined,
     focusedItem: state.focusedSpanNode,
-    traceTree: strictDefined(state.traceTree),
+    traceTree: strictDefined(state.currentTraceSubtree),
 });
 
 const mapDispatch = (dispatch: ContrailsDispatch) => ({

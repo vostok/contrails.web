@@ -5,7 +5,6 @@ import { IDataExtractor, VostokDataExtractor } from "../Domain/IDataExtractor";
 import { SpanInfo } from "../Domain/SpanInfo";
 import { SpansToLinesArranger } from "../Domain/SpanLines/SpansToLinesArranger";
 import { TimeRange } from "../Domain/TimeRange";
-import { TraceInfo, TraceInfoUtils } from "../Domain/TraceInfo";
 import { LostSpanFixer, SpanFactory } from "../Domain/TraceTree/LostSpanFixer";
 import { SpanNode } from "../Domain/TraceTree/SpanNode";
 import { TraceTreeBuilder } from "../Domain/TraceTree/TraceTreeBuilder";
@@ -13,6 +12,19 @@ import { TraceTreeTimeFixer } from "../Domain/TraceTreeTimeFixer";
 
 import { Actions, ActionType } from "./ContrailsApplicationActions";
 import { ContrailsApplicationState } from "./ContrailsApplicationState";
+
+function findSpanNode(traceTree: SpanNode, subtreeSpanId: string): undefined | SpanNode {
+    if (traceTree.source.SpanId === subtreeSpanId) {
+        return traceTree;
+    }
+    for (const child of traceTree.children) {
+        const result = findSpanNode(child, subtreeSpanId);
+        if (result != undefined) {
+            return result;
+        }
+    }
+    return undefined;
+}
 
 export function createContrailsApplicationReducer(
     dataExtractor: IDataExtractor = new VostokDataExtractor()
@@ -41,8 +53,12 @@ export function createContrailsApplicationReducer(
                 ...state,
                 traceInfo: undefined,
                 spanLines: undefined,
-                timeRange: undefined,
+                totalTimeRange: undefined,
                 viewPort: undefined,
+
+                subtreeTimeRange: undefined,
+                currentTraceSubtree: undefined,
+                currentSpanLines: undefined,
             };
         }
         if (action.type === ActionType.UpdateTrace) {
@@ -52,17 +68,53 @@ export function createContrailsApplicationReducer(
             const traceTreeTimeFixer = new TraceTreeTimeFixer(traceTree, dataExtractor);
             traceTreeTimeFixer.fix();
 
+            const spanLines = generateDataFromDiTraceResponse(traceTree);
+            const totalTimeRange = getFromAndToFromTraceTree(traceTree);
             return {
                 ...state,
                 traceInfo: action.payload.traceInfo,
                 // @ts-ignore Понять зачем тут строится этот мап
                 // spanNodesMap: treeBuilder.buildNodeMap(traceTree),
+                totalTimeRange: totalTimeRange,
+
                 traceTree: traceTree,
-                spanLines: generateDataFromDiTraceResponse(traceTree),
-                timeRange: getFromAndTo(traceInfo),
-                viewPort: getFromAndTo(traceInfo),
+                spanLines: spanLines,
+
+                currentTraceSubtree: traceTree,
+                currentSpanLines: spanLines,
+                subtreeTimeRange: totalTimeRange,
+
+                viewPort: totalTimeRange,
             };
         }
+
+        if (action.type === ActionType.ChangeSubtree) {
+            const subtreeSpanId = action.payload.subtreeSpanId;
+            if (subtreeSpanId == undefined) {
+                return {
+                    ...state,
+                    currentTraceSubtree: state.traceTree,
+                    currentSpanLines: state.spanLines,
+                    subtreeTimeRange: state.totalTimeRange,
+                };
+            } else if (state.traceTree != undefined) {
+                const traceSubtree = findSpanNode(state.traceTree, subtreeSpanId);
+                if (traceSubtree == undefined) {
+                    throw new Error("Span id not found");
+                }
+                const totalTimeRange = getFromAndToFromTraceTree(traceSubtree);
+                const currentSpanLines = generateDataFromDiTraceResponse(traceSubtree);
+                return {
+                    ...state,
+                    currentTraceSubtree: traceSubtree,
+                    currentSpanLines: currentSpanLines,
+                    subtreeTimeRange: totalTimeRange,
+                    viewPort: totalTimeRange,
+                    focusedSpanNode: traceSubtree,
+                };
+            }
+        }
+
         return state;
     };
 }
@@ -89,6 +141,13 @@ function generateDataFromDiTraceResponse(traceTree: SpanNode): ChartData {
     return { lines: arranger.arrange(traceTree) };
 }
 
-function getFromAndTo(traceInfo: TraceInfo): TimeRange {
-    return TraceInfoUtils.getTraceTimeRange(traceInfo.Spans);
+function getFromAndToFromTraceTree(traceTree: SpanNode): TimeRange {
+    let minFrom = traceTree.from;
+    let maxTo = traceTree.to;
+    for (const child of traceTree.children) {
+        const childBounds = getFromAndToFromTraceTree(child);
+        minFrom = Math.min(childBounds.from, minFrom);
+        maxTo = Math.max(childBounds.to, maxTo);
+    }
+    return { from: minFrom, to: maxTo };
 }

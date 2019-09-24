@@ -3,10 +3,12 @@ import { storiesOf } from "@storybook/react";
 import _ from "lodash";
 import * as React from "react";
 
-import { TreeGrid, withExpandedItems } from "../../src/Components/TreeGrid/TreeGrid";
+import { TreeGrid, TreeGridProps } from "../../src/Components/TreeGrid/TreeGrid";
 
-// tslint:disable-next-line no-inferred-empty-object-type Тут tslint тупит, всё нормально
-const TreeGrid2 = withExpandedItems(TreeGrid);
+function TreeGrid2(props: Omit<TreeGridProps<Item>, "onChangeExpandedItems" | "expandedItems">): JSX.Element {
+    const [expandedItems, setExpandedItems] = React.useState<Item[]>([]);
+    return <TreeGrid {...props} onChangeExpandedItems={setExpandedItems} expandedItems={expandedItems} />;
+}
 
 interface Item {
     value1: string;

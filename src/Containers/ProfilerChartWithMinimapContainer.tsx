@@ -11,7 +11,7 @@ import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 class ProfilerChartWithMinimapForSpanLineItem extends ProfilerChartWithMinimap<SpanLineItem> {}
 
 const mapProps = (state: ContrailsApplicationState) => ({
-    timeRange: strictDefined(state.timeRange),
+    timeRange: strictDefined(state.subtreeTimeRange),
     viewPort: strictDefined(state.viewPort),
 });
 

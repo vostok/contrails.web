@@ -7,10 +7,13 @@ import { changeFocusedNodeAndUpdateViewPort } from "../Store/ContrailsApplicatio
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 
+const acceptAllNodesFilter = () => true;
+
 const mapProps = (state: ContrailsApplicationState) => ({
-    totalTimeRange: strictDefined(state.timeRange),
+    filterNodes: acceptAllNodesFilter,
+    totalTimeRange: strictDefined(state.subtreeTimeRange),
     focusedItem: state.focusedSpanNode,
-    traceTree: strictDefined(state.traceTree),
+    traceTree: strictDefined(state.currentTraceSubtree),
 });
 
 const mapDispatch = (dispatch: ContrailsDispatch) => ({

@@ -3,37 +3,30 @@ import * as React from "react";
 import cn from "./ContrailPanels.less";
 
 interface ContainerProps {
+    className?: string;
     children: React.ReactNode;
 }
 
-export class ContrailPanelsContainer extends React.Component<ContainerProps> {
-    public render(): React.ReactNode {
-        return <div className={cn("contrail-panels-container")}>{this.props.children}</div>;
-    }
+export function ContrailPanelsContainer(props: ContainerProps): JSX.Element {
+    return <div className={cn("contrail-panels-container", props.className)}>{props.children}</div>;
 }
 
-export class ContrailPanelsTop extends React.Component<ContainerProps> {
-    public render(): React.ReactNode {
-        return <div className={cn("contrail-panels-top")}>{this.props.children}</div>;
-    }
+export function ContrailPanelsTop(props: ContainerProps): JSX.Element {
+    return <div className={cn("contrail-panels-top", props.className)}>{props.children}</div>;
 }
 
-export class ContrailPanelsBottom extends React.Component<ContainerProps> {
-    public render(): React.ReactNode {
-        return <div className={cn("contrail-panels-bottom")}>{this.props.children}</div>;
-    }
+export function ContrailPanelsBottom(props: ContainerProps): JSX.Element {
+    return <div className={cn("contrail-panels-bottom", props.className)}>{props.children}</div>;
 }
 
-export function ContrailPanelsFooter({ children }: ContainerProps): JSX.Element {
-    return <div className={cn("contrail-panels-footer")}>{children}</div>;
+export function ContrailPanelsFooter({ children, className }: ContainerProps): JSX.Element {
+    return <div className={cn("contrail-panels-footer", className)}>{children}</div>;
 }
 
-export class ContrailPanelsBottomLeft extends React.Component<ContainerProps> {
-    public render(): React.ReactNode {
-        return <div className={cn("contrail-panels-bottom-left")}>{this.props.children}</div>;
-    }
+export function ContrailPanelsBottomLeft(props: ContainerProps): JSX.Element {
+    return <div className={cn("contrail-panels-bottom-left", props.className)}>{props.children}</div>;
 }
 
-export function ContrailPanelsBottomRight({ children }: ContainerProps): JSX.Element {
-    return <div className={cn("contrail-panels-bottom-right")}>{children}</div>;
+export function ContrailPanelsBottomRight({ children, className }: ContainerProps): JSX.Element {
+    return <div className={cn("contrail-panels-bottom-right", className)}>{children}</div>;
 }

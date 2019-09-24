@@ -30,6 +30,7 @@ export function ProfilerChart<TItem extends TimeRange>(props: ProfilerChartProps
         if (canvas.current == undefined) {
             throw new InvalidProgramStateError();
         }
+        console.log(props.spanLines);
         drawer.current = new ProfilerChartDrawer(
             canvas.current,
             props.spanLines,
@@ -44,6 +45,12 @@ export function ProfilerChart<TItem extends TimeRange>(props: ProfilerChartProps
             drawer.current.updateViewPort(props.width, props.viewPort);
         }
     }, [props.width, props.viewPort]);
+
+    React.useEffect(() => {
+        if (drawer.current != undefined) {
+            drawer.current.updateData(props.spanLines);
+        }
+    }, [props.spanLines]);
 
     React.useEffect(() => {
         if (drawer.current != undefined) {

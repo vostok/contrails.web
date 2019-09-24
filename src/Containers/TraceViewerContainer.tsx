@@ -1,101 +1,43 @@
 import * as H from "history";
-import * as React from "react";
-import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { match } from "react-router";
 
-import { useAsyncEffect } from "../Commons/Effects";
-import { OperationAbortedError } from "../Commons/PromiseUtils";
-import { ContrailsErrorMessage, ErrorInfo } from "../Components/ContrailsErrorMessage/ContrailsErrorMessage";
-import { ContrailsLayout } from "../Components/ContrailsLayout/ContrailsLayout";
-import { ContrailsLoader } from "../Components/ContrailsLoader/ContrailsLoader";
-import { TraceIdInput } from "../Components/TraceIdInput/TraceIdInput";
 import { TraceViewer } from "../Components/TraceViewer/TraceViewer";
-import { TraceInfo } from "../Domain/TraceInfo";
-import { loadTrace } from "../Store/ContrailsApplicationActions";
+import { ActionType, loadTrace } from "../Store/ContrailsApplicationActions";
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 
 interface TraceViewerContainerProps {
     history: H.History;
+    location: H.Location;
     match: match<{ traceIdPrefix: string }>;
-    onLoadTrace: (traceId: string, abortSignal?: AbortSignal) => Promise<void>;
-    traceInfo?: TraceInfo;
 }
 
-export function TraceViewerApplication(props: TraceViewerContainerProps): JSX.Element {
-    const traceIdPrefix = props.match.params.traceIdPrefix;
-    const onLoadTrace = props.onLoadTrace;
-    const traceInfo = props.traceInfo;
-
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState<undefined | ErrorInfo>(undefined);
-
-    useAsyncEffect(
-        async (abortSignal: AbortSignal) => {
-            if (traceInfo != undefined && traceInfo.TraceId === traceIdPrefix) {
-                return;
-            }
-            setError(undefined);
-            setLoading(true);
-            try {
-                await onLoadTrace(traceIdPrefix, abortSignal);
-            } catch (e) {
-                if (e instanceof Error) {
-                    if (e.message === "500") {
-                        setError({ errorTitle: "500", errorMessage: "Кажется что-то пошло не так :-(" });
-                        return;
-                    }
-                    if (e.message === "404") {
-                        setError({ errorTitle: "404", errorMessage: "Трассировок не найдено." });
-                        return;
-                    }
-                }
-                if (!(e instanceof OperationAbortedError)) {
-                    console.error(e);
-                    setError({ errorTitle: "Упс :-(", errorMessage: "Произошла непредвиденная ошибка" });
-                }
-            } finally {
-                if (!abortSignal.aborted) {
-                    setLoading(false);
-                }
-            }
-        },
-        [traceIdPrefix]
-    );
-
-    return (
-        <ContrailsLayout
-            header={
-                <HeaderContent traceId={traceIdPrefix} onOpen={nextTraceId => props.history.push(`/${nextTraceId}`)} />
-            }>
-            <Helmet>
-                <title>{`Trace ${traceIdPrefix}`}</title>
-            </Helmet>
-            {loading && <ContrailsLoader />}
-            {error && <ContrailsErrorMessage error={error} />}
-            {traceInfo != undefined && <TraceViewer />}
-        </ContrailsLayout>
-    );
-}
-
-function HeaderContent(props: { traceId: string; onOpen: (traceId: string) => void }): JSX.Element {
-    const [traceId, setTraceId] = React.useState(props.traceId);
-
-    React.useEffect(() => setTraceId(props.traceId), [props.traceId]);
-
-    return <TraceIdInput value={traceId} onChange={setTraceId} onOpenTrace={() => props.onOpen(traceId)} />;
-}
-
-const mapProps = (state: ContrailsApplicationState) => ({
+const mapProps = (state: ContrailsApplicationState, ownProps: TraceViewerContainerProps) => ({
     traceInfo: state.traceInfo,
+    traceIdPrefix: ownProps.match.params.traceIdPrefix,
+    subtreeSpanId: extractSubtreeSpanId(ownProps.location),
 });
 
-const mapDispatch = (dispatch: ContrailsDispatch) => ({
-    onLoadTrace: (traceId: string, abortSignal?: AbortSignal) => dispatch(loadTrace(traceId, abortSignal)),
+const mapDispatch = (dispatch: ContrailsDispatch, ownProps: TraceViewerContainerProps) => ({
+    onLoadTrace: (traceId: string, subtreeSpanId: undefined | string, abortSignal?: AbortSignal) =>
+        dispatch(loadTrace(traceId, subtreeSpanId, abortSignal)),
+    onChangeSubtree: (subtreeSpanId: undefined | string) =>
+        dispatch({ type: ActionType.ChangeSubtree, payload: { subtreeSpanId: subtreeSpanId } }),
+    onOpenTrace: (traceId: string) => ownProps.history.push(`/${traceId}`),
 });
 
-export const TraceViewerApplicationContainer = connect(
+export const TraceViewerContainer = connect(
     mapProps,
     mapDispatch
-)(TraceViewerApplication);
+)(TraceViewer);
+
+function extractSubtreeSpanId(location: H.Location): undefined | string {
+    if (location.hash != undefined) {
+        const spanIdMatch = /#(.*?)#(.*?)$/.exec(location.hash);
+        if (spanIdMatch != undefined) {
+            return spanIdMatch[2];
+        }
+    }
+    return undefined;
+}

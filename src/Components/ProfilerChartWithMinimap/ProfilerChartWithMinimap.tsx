@@ -177,5 +177,6 @@ export class ProfilerChartWithMinimap<TItem extends TimeRange> extends React.Com
             this.mouseUpListener.remove();
             this.mouseUpListener = undefined;
         }
+        DocumentUtils.endDragging();
     };
 }

@@ -7,7 +7,7 @@ import { VirtualTable } from "../VirtualTable/VirtualTable";
 
 import cn from "./TreeGrid.less";
 
-interface ColumnDefinition<TItem> {
+export interface ColumnDefinition<TItem> {
     name: string;
     renderHeader: () => React.ReactNode;
     renderValue: (item: TItem, focused: boolean) => React.ReactNode;
@@ -17,9 +17,9 @@ interface ColumnDefinition<TItem> {
     cellClassName?: string;
 }
 
-interface TreeGridProps<TItem> {
+export interface TreeGridProps<TItem> {
     data: TItem[];
-    filterNodes: (item: TItem) => boolean;
+    filterNodes?: (item: TItem) => boolean;
     columns: Array<ColumnDefinition<TItem>>;
     focusedItem?: TItem;
     onItemClick?: (item: TItem) => void;
@@ -45,13 +45,9 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         visibleRows: [],
     };
 
-    public static defaultProps = {
-        filterNodes: () => true,
-    };
-
     private readonly table = React.createRef<VirtualTable<VisibleRowInfo<TItem>>>();
 
-    public componentWillMount(): void {
+    public UNSAFE_componentWillMount(): void {
         const expandedItems = this.getExpandedForFocusedItemAndUpdate(this.props.focusedItem, this.props.expandedItems);
         const rows = this.buildRows(this.props.data, expandedItems);
         this.setState({
@@ -59,13 +55,17 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         });
     }
 
-    public componentWillReceiveProps(nextProps: TreeGridProps<TItem>): void {
+    public UNSAFE_componentWillReceiveProps(nextProps: TreeGridProps<TItem>): void {
         const expandedItems = this.getExpandedForFocusedItem(this.props.focusedItem, this.props.expandedItems);
         const nextExpandedItems = this.getExpandedForFocusedItemAndUpdate(
             nextProps.focusedItem,
             nextProps.expandedItems
         );
-        if (expandedItems !== nextExpandedItems || this.props.filterNodes !== nextProps.filterNodes) {
+        if (
+            expandedItems !== nextExpandedItems ||
+            this.props.filterNodes !== nextProps.filterNodes ||
+            this.props.data !== nextProps.data
+        ) {
             const rows = this.buildRows(nextProps.data, nextExpandedItems);
             this.setState({
                 visibleRows: rows,
@@ -83,9 +83,9 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         const { onGetChildren, filterNodes } = this.props;
         const itemChildren = onGetChildren(node);
         if (itemChildren == undefined || itemChildren.length === 0) {
-            return filterNodes(node);
+            return !filterNodes || filterNodes(node);
         }
-        return filterNodes(node) || itemChildren.some(x => this.isNodeVisibleRecursive(x));
+        return !filterNodes || filterNodes(node) || itemChildren.some(x => this.isNodeVisibleRecursive(x));
     }
 
     public buildVisibleRows(
@@ -99,7 +99,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         const expanded = expandedItems.includes(item);
         let visibleChildren: Array<VisibleRowInfo<TItem>> = [];
         if (itemChildren == undefined || itemChildren.length === 0) {
-            if (!filterNodes(item)) {
+            if (filterNodes && !filterNodes(item)) {
                 return [];
             }
         } else if (expanded) {
@@ -107,7 +107,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
                 .map((x, index) => this.buildVisibleRows(`${key}_${index}`, x, [...parents, item], expandedItems))
                 .reduce(flatten, []);
             if (visibleChildren.length === 0) {
-                if (!filterNodes(item)) {
+                if (filterNodes && !filterNodes(item)) {
                     return [];
                 }
             }
@@ -381,27 +381,4 @@ function flatten<T>(memo: T[], items: T[]): T[] {
         memo.push(item);
     }
     return memo;
-}
-
-export function withExpandedItems(
-    Component: new <TItem>(props: TreeGridProps<TItem>) => TreeGrid<TItem>
-): new <TItem>(props: Omit<TreeGridProps<TItem>, "onChangeExpandedItems" | "expandedItems">) => React.Component<
-    Omit<TreeGridProps<TItem>, "onChangeExpandedItems" | "expandedItems">
-> {
-    return class ExpandedItemsContainer<TItem> extends React.Component<
-        Omit<TreeGridProps<TItem>, "onChangeExpandedItems" | "expandedItems">,
-        { expandedItems: TItem[] }
-    > {
-        public state: { expandedItems: TItem[] } = { expandedItems: [] };
-
-        public render(): JSX.Element {
-            return (
-                <Component
-                    {...this.props}
-                    onChangeExpandedItems={x => this.setState({ expandedItems: x })}
-                    expandedItems={this.state.expandedItems}
-                />
-            );
-        }
-    };
 }

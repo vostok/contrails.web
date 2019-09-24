@@ -35,6 +35,12 @@ export class ProfilerChartMinimap extends React.Component<ProfilerChartMinimapPr
         this.drawItems();
     }
 
+    public componentDidUpdate(prevProps: ProfilerChartMinimapProps): void {
+        if (prevProps.data !== this.props.data) {
+            this.drawItems();
+        }
+    }
+
     public render(): JSX.Element {
         const { timeRange, viewPort, width } = this.props;
 

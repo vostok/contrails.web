@@ -37,11 +37,11 @@ export type CustomDrawHandler<TItem extends TimeRange> = (
 ) => void;
 
 export class ProfilerChartDrawer<TItem extends TimeRange> {
-    private readonly data: ProfilerData<TItem>;
     private readonly onCustomDrawItem: CustomDrawHandler<TItem>;
     private readonly drawContext: CanvasRenderingContext2D;
     private readonly canvas: HTMLCanvasElement;
 
+    private data: ProfilerData<TItem>;
     private width: number;
     private viewPort: TimeRange;
     private selectedItems?: TItem[];
@@ -75,6 +75,10 @@ export class ProfilerChartDrawer<TItem extends TimeRange> {
     public updateViewPort(width: number, viewPort: TimeRange): void {
         this.width = width;
         this.viewPort = viewPort;
+    }
+
+    public updateData(data: ProfilerData<TItem>): void {
+        this.data = data;
     }
 
     public setSelectedItems(selectedItems?: TItem[]): void {

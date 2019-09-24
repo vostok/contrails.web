@@ -15,6 +15,7 @@ import { TimeRangeUtils } from "./TimeRangeUtils";
 export enum ActionType {
     ChangeViewPort = "ChangeViewPort",
     UpdateTrace = "UpdateTrace",
+    ChangeSubtree = "ChangeSubtree",
     ResetTrace = "ResetTrace",
     ChangeFocusedNode = "ChangeFocusedNode",
 }
@@ -23,6 +24,13 @@ interface ChangeViewPortAction {
     type: ActionType.ChangeViewPort;
     payload: {
         viewPort: TimeRange;
+    };
+}
+
+interface ChangeSubtreeAction {
+    type: ActionType.ChangeSubtree;
+    payload: {
+        subtreeSpanId?: string;
     };
 }
 
@@ -44,9 +52,14 @@ interface UpdateTraceAction {
     };
 }
 
-export type Actions = ChangeViewPortAction | UpdateTraceAction | ResetTraceAction | ChangeFocusedNodeAction;
+export type Actions =
+    | ChangeViewPortAction
+    | UpdateTraceAction
+    | ResetTraceAction
+    | ChangeFocusedNodeAction
+    | ChangeSubtreeAction;
 
-export const loadTrace = (traceId: string, abortSignal?: AbortSignal) => async (
+export const loadTrace = (traceId: string, subtreeSpanId: undefined | string, abortSignal?: AbortSignal) => async (
     dispatch: Dispatch<Actions>,
     getState: unknown,
     { api }: { api: IContrailsApi }
@@ -54,6 +67,9 @@ export const loadTrace = (traceId: string, abortSignal?: AbortSignal) => async (
     dispatch({ type: ActionType.ResetTrace });
     const trace = await api.getTrace(traceId, abortSignal);
     dispatch({ type: ActionType.UpdateTrace, payload: { traceInfo: trace } });
+    if (subtreeSpanId != undefined) {
+        dispatch({ type: ActionType.ChangeSubtree, payload: { subtreeSpanId: subtreeSpanId } });
+    }
 };
 
 export function changeFocusedNode(focusedNode: undefined | SpanNode): ChangeFocusedNodeAction {
@@ -110,4 +126,3 @@ export const changeFocusedNodeAndUpdateViewPort = (focusedNode: SpanNode) => (
     }
     dispatch({ type: ActionType.ChangeFocusedNode, payload: { focusedSpanNode: focusedNode } });
 };
-

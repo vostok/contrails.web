@@ -33,9 +33,9 @@ function buildMinimapChartData(
 const buildMinimapChartDataMemoized = memoizee(buildMinimapChartData);
 
 const mapProps = (state: ContrailsApplicationState) => ({
-    timeRange: strictDefined(state.timeRange),
+    timeRange: strictDefined(state.subtreeTimeRange),
     viewPort: strictDefined(state.viewPort),
-    data: buildMinimapChartDataMemoized(strictDefined(state.spanLines), getMinimapItemColor),
+    data: buildMinimapChartDataMemoized(strictDefined(state.currentSpanLines), getMinimapItemColor),
 });
 
 const mapDispatch = (dispatch: ContrailsDispatch) => ({

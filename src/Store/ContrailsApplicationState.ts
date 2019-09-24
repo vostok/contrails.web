@@ -4,10 +4,16 @@ import { TraceInfo } from "../Domain/TraceInfo";
 import { SpanNode } from "../Domain/TraceTree/SpanNode";
 
 export interface ContrailsApplicationState {
-    viewPort?: TimeRange;
-    traceTree?: SpanNode;
     traceInfo?: TraceInfo;
+
+    totalTimeRange?: TimeRange;
+    traceTree?: SpanNode;
     spanLines?: ChartData;
-    timeRange?: TimeRange;
+
+    subtreeTimeRange?: TimeRange;
+    currentTraceSubtree?: SpanNode;
+    currentSpanLines?: ChartData;
+
+    viewPort?: TimeRange;
     focusedSpanNode?: SpanNode;
 }

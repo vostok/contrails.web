@@ -29,11 +29,15 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
 
                 <div className={cn("item")}>
                     <div className={cn("caption")}>SpanId:</div>
-                    <span className={cn("value")}>{spanInfo.SpanId}</span>
+                    <span className={cn("value")}>
+                        <a href={`##${spanInfo.SpanId}`}>{spanInfo.SpanId}</a>
+                    </span>
                 </div>
                 <div className={cn("item")}>
                     <div className={cn("caption")}>ParentSpanId:</div>
-                    <span className={cn("value")}>{spanInfo.ParentSpanId}</span>
+                    <span className={cn("value")}>
+                        <a href={`##${spanInfo.ParentSpanId}`}>{spanInfo.ParentSpanId}</a>
+                    </span>
                 </div>
                 <div className={cn("item")}>
                     <div className={cn("caption")}>OperationName:</div>

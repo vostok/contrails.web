@@ -1,9 +1,16 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 
+import { useAsyncEffect } from "../../Commons/Effects";
+import { OperationAbortedError } from "../../Commons/PromiseUtils";
 import { CallTreeContainer } from "../../Containers/CallTreeContainer";
 import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
 import { ProfilerChartWithMinimapContainer } from "../../Containers/ProfilerChartWithMinimapContainer";
 import { SpanInfoViewContainer } from "../../Containers/SpanInfoViewContainer";
+import { TraceInfo } from "../../Domain/TraceInfo";
+import { ContrailsErrorMessage, ErrorInfo } from "../ContrailsErrorMessage/ContrailsErrorMessage";
+import { ContrailsLayout } from "../ContrailsLayout/ContrailsLayout";
+import { ContrailsLoader } from "../ContrailsLoader/ContrailsLoader";
 import {
     ContrailPanelsBottom,
     ContrailPanelsBottomLeft,
@@ -11,39 +18,111 @@ import {
     ContrailPanelsContainer,
     ContrailPanelsTop,
 } from "../ContrailPanels/ContrailPanels";
-import { Tabs } from "../Tabs/Tabs";
+import { TabConfig, Tabs } from "../Tabs/Tabs";
+import { TraceIdInput } from "../TraceIdInput/TraceIdInput";
 
 import cn from "./TraceViewer.less";
 
-export function TraceViewer(): JSX.Element {
-    return (
-        <ContrailPanelsContainer>
-            <ContrailPanelsTop>
-                <ProfilerChartWithMinimapContainer />
-            </ContrailPanelsTop>
-            <ContrailPanelsBottom>
-                <ContrailPanelsBottomLeft>
-                    <Tabs
-                        tabs={[
-                            {
-                                name: "FullCallTree",
-                                caption: "Full call tree",
-                                renderContent: () => <FullCallTreeContainer />,
-                            },
-                            {
-                                name: "CallTree",
-                                caption: "Call tree",
-                                renderContent: () => <CallTreeContainer />,
-                            },
-                        ]}
-                    />
-                </ContrailPanelsBottomLeft>
-                <ContrailPanelsBottomRight>
-                    <div className={cn("span-info-view-container")}>
-                        <SpanInfoViewContainer />
-                    </div>
-                </ContrailPanelsBottomRight>
-            </ContrailPanelsBottom>
-        </ContrailPanelsContainer>
+interface TraceViewerProps {
+    traceIdPrefix: string;
+    subtreeSpanId?: string;
+    onLoadTrace: (traceId: string, subtreeSpanId: undefined | string, abortSignal?: AbortSignal) => Promise<void>;
+    onChangeSubtree: (subtreeSpanId: undefined | string) => void;
+    onOpenTrace: (traceId: string) => void;
+    traceInfo?: TraceInfo;
+}
+
+export function TraceViewer(props: TraceViewerProps): JSX.Element {
+    const tabs = React.useMemo<TabConfig[]>(
+        () => [
+            {
+                name: "FullCallTree",
+                caption: "Full call tree",
+                renderContent: () => <FullCallTreeContainer />,
+            },
+            {
+                name: "CallTree",
+                caption: "Call tree",
+                renderContent: () => <CallTreeContainer />,
+            },
+        ],
+        []
     );
+
+    const traceIdPrefix = props.traceIdPrefix;
+    const subtreeSpanId = props.subtreeSpanId;
+
+    const onLoadTrace = props.onLoadTrace;
+    const traceInfo = props.traceInfo;
+
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState<undefined | ErrorInfo>(undefined);
+
+    useAsyncEffect(
+        async (abortSignal: AbortSignal) => {
+            if (traceInfo != undefined && traceInfo.TraceId === traceIdPrefix) {
+                props.onChangeSubtree(subtreeSpanId);
+                return;
+            }
+            setError(undefined);
+            setLoading(true);
+            try {
+                await onLoadTrace(traceIdPrefix, subtreeSpanId, abortSignal);
+            } catch (e) {
+                if (e instanceof Error) {
+                    if (e.message === "500") {
+                        setError({ errorTitle: "500", errorMessage: "Кажется что-то пошло не так :-(" });
+                        return;
+                    }
+                    if (e.message === "404") {
+                        setError({ errorTitle: "404", errorMessage: "Трассировок не найдено." });
+                        return;
+                    }
+                }
+                if (!(e instanceof OperationAbortedError)) {
+                    console.error(e);
+                    setError({ errorTitle: "Упс :-(", errorMessage: "Произошла непредвиденная ошибка" });
+                }
+            } finally {
+                if (!abortSignal.aborted) {
+                    setLoading(false);
+                }
+            }
+        },
+        [traceIdPrefix, subtreeSpanId]
+    );
+
+    return (
+        <ContrailsLayout
+            header={<HeaderContent traceId={traceIdPrefix} onOpen={nextTraceId => props.onOpenTrace(nextTraceId)} />}>
+            <Helmet>
+                <title>{`Trace ${traceIdPrefix}`}</title>
+            </Helmet>
+            {loading && <ContrailsLoader />}
+            {error && <ContrailsErrorMessage error={error} />}
+            {traceInfo != undefined && (
+                <ContrailPanelsContainer>
+                    <ContrailPanelsTop>
+                        <ProfilerChartWithMinimapContainer />
+                    </ContrailPanelsTop>
+                    <ContrailPanelsBottom>
+                        <ContrailPanelsBottomLeft>
+                            <Tabs tabs={tabs} />
+                        </ContrailPanelsBottomLeft>
+                        <ContrailPanelsBottomRight className={cn("span-info-view-container")}>
+                            <SpanInfoViewContainer />
+                        </ContrailPanelsBottomRight>
+                    </ContrailPanelsBottom>
+                </ContrailPanelsContainer>
+            )}
+        </ContrailsLayout>
+    );
+}
+
+function HeaderContent(props: { traceId: string; onOpen: (traceId: string) => void }): JSX.Element {
+    const [traceId, setTraceId] = React.useState(props.traceId);
+
+    React.useEffect(() => setTraceId(props.traceId), [props.traceId]);
+
+    return <TraceIdInput value={traceId} onChange={setTraceId} onOpenTrace={() => props.onOpen(traceId)} />;
 }

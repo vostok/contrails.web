@@ -1,0 +1,32 @@
+.cell-bar-chart {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: linear-gradient(to right, rgba(255, 251, 244, 1) 0%, rgba(255, 239, 191, 1) 100%);
+    border: 1px solid #ffdd7a;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.cell-values {
+    position: absolute;
+    right: 10px;
+
+    .percentage {
+        mix-blend-mode: difference;
+        color: #777777;
+        margin-left: 5px;
+        width: 50px;
+    }
+
+    &.focused {
+        .value {
+            color: #444444;
+        }
+
+        .percentage {
+            color: #777777;
+        }
+    }
+}

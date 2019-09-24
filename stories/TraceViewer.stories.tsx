@@ -1,3 +1,4 @@
+import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import * as React from "react";
 import { Provider } from "react-redux";
@@ -25,7 +26,15 @@ function TraceViewerStory({ dataExtractor, traceInfo }: TraceViewerStoryProps): 
     });
     return (
         <Provider store={store}>
-            <TraceViewer />
+            <TraceViewer
+                traceIdPrefix={traceInfo.TraceId}
+                traceInfo={store.getState().traceInfo}
+                onLoadTrace={async () => {
+                    action("onLoadTrace")();
+                }}
+                onChangeSubtree={action("onChangeSubtree")}
+                onOpenTrace={action("onOpenTrace")}
+            />
         </Provider>
     );
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import cn from "./Tabs.less";
 
-interface TabConfig {
+export interface TabConfig {
     name: string;
     caption: string;
     renderContent: () => React.ReactNode;

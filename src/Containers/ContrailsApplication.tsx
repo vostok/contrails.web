@@ -12,7 +12,7 @@ import { IContrailsApi } from "../Domain/IContrailsApi";
 import { createContrailsApplicationReducer } from "../Store/ContrailsApplicationReducer";
 
 import { ContrailsRootContainer } from "./ContrailsRootContainer";
-import { TraceViewerApplicationContainer } from "./TraceViewerContainer";
+import { TraceViewerContainer } from "./TraceViewerContainer";
 
 let api: IContrailsApi;
 if (process.env.API_MODE === "production") {
@@ -33,7 +33,7 @@ function ContrailsApplicationInternal(): JSX.Element {
             <BrowserRouter basename={process.env.BASE_URL}>
                 <Switch>
                     <Route exact path="/" component={ContrailsRootContainer} />
-                    <Route path="/:traceIdPrefix" component={TraceViewerApplicationContainer} />
+                    <Route path="/:traceIdPrefix" component={TraceViewerContainer} />
                 </Switch>
             </BrowserRouter>
         </Provider>
