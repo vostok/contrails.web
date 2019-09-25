@@ -30,7 +30,6 @@ export function ProfilerChart<TItem extends TimeRange>(props: ProfilerChartProps
         if (canvas.current == undefined) {
             throw new InvalidProgramStateError();
         }
-        console.log(props.spanLines);
         drawer.current = new ProfilerChartDrawer(
             canvas.current,
             props.spanLines,

@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { ArrowTriangleDown, ArrowTriangleRight } from "../../Commons/ui";
 import { findNodeToReducer, reduceTree } from "../../Domain/Utils/TreeTraverseUtils";
-import { VirtualTable } from "../VirtualTable/VirtualTable";
+import { VirtualTable, VirtualTableType } from "../VirtualTable/VirtualTable";
 
 import cn from "./TreeGrid.less";
 
@@ -45,7 +45,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         visibleRows: [],
     };
 
-    private readonly table = React.createRef<VirtualTable<VisibleRowInfo<TItem>>>();
+    private readonly table = React.createRef<VirtualTableType<VisibleRowInfo<TItem>>>();
 
     public UNSAFE_componentWillMount(): void {
         const expandedItems = this.getExpandedForFocusedItemAndUpdate(this.props.focusedItem, this.props.expandedItems);
@@ -73,13 +73,37 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         }
     }
 
-    public buildRows(data: TItem[], expandedItems: TItem[]): Array<VisibleRowInfo<TItem>> {
+    public componentDidUpdate(prevProps: TreeGridProps<TItem>): void {
+        if (this.props.focusedItem !== prevProps.focusedItem) {
+            const item = this.state.visibleRows.find(x => x.item === this.props.focusedItem);
+            if (item != undefined && this.table.current != undefined) {
+                this.table.current.scrollIntoView(item);
+            }
+        }
+    }
+
+    public render(): JSX.Element {
+        return (
+            <VirtualTable
+                ref={this.table}
+                onKeyDown={this.handleTableKeyPress}
+                tableClassName={cn("table")}
+                renderHeader={this.renderHeader}
+                headerHeight={16}
+                rowHeight={20}
+                renderRow={this.renderVisibleRow}
+                data={this.state.visibleRows}
+            />
+        );
+    }
+
+    private buildRows(data: TItem[], expandedItems: TItem[]): Array<VisibleRowInfo<TItem>> {
         return data
             .map((x, index) => this.buildVisibleRows(index.toString(), x, [], expandedItems))
             .reduce(flatten, []);
     }
 
-    public isNodeVisibleRecursive(node: TItem): boolean {
+    private isNodeVisibleRecursive(node: TItem): boolean {
         const { onGetChildren, filterNodes } = this.props;
         const itemChildren = onGetChildren(node);
         if (itemChildren == undefined || itemChildren.length === 0) {
@@ -88,7 +112,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         return !filterNodes || filterNodes(node) || itemChildren.some(x => this.isNodeVisibleRecursive(x));
     }
 
-    public buildVisibleRows(
+    private buildVisibleRows(
         key: string,
         item: TItem,
         parents: TItem[],
@@ -124,7 +148,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         ];
     }
 
-    public getExpandedForFocusedItemAndUpdate(focusedItem: undefined | TItem, expandedItems: TItem[]): TItem[] {
+    private getExpandedForFocusedItemAndUpdate(focusedItem: undefined | TItem, expandedItems: TItem[]): TItem[] {
         const { onChangeExpandedItems } = this.props;
         if (focusedItem == undefined) {
             return expandedItems;
@@ -137,7 +161,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         return _.union(expandedItems || [], nodes);
     }
 
-    public getExpandedForFocusedItem(focusedItem: undefined | TItem, expandedItems: TItem[]): TItem[] {
+    private getExpandedForFocusedItem(focusedItem: undefined | TItem, expandedItems: TItem[]): TItem[] {
         if (focusedItem == undefined) {
             return expandedItems;
         }
@@ -148,7 +172,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         return _.union(expandedItems || [], nodes);
     }
 
-    public findNodeTo(item: TItem): TItem[] {
+    private findNodeTo(item: TItem): TItem[] {
         const { data, onGetChildren } = this.props;
         const result = data
             .map(rootNode => reduceTree(rootNode, findNodeToReducer(item), onGetChildren))
@@ -157,7 +181,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         return result.slice(1);
     }
 
-    public getItemColor(item: TItem): string {
+    private getItemColor(item: TItem): string {
         const { onGetItemColor } = this.props;
         const defaultColor = "#000";
         if (onGetItemColor != undefined) {
@@ -166,12 +190,12 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         return defaultColor;
     }
 
-    public updateExpandedItems(updateAction: (items: TItem[]) => TItem[]): void {
+    private updateExpandedItems(updateAction: (items: TItem[]) => TItem[]): void {
         const { expandedItems, onChangeExpandedItems } = this.props;
         onChangeExpandedItems(updateAction(expandedItems));
     }
 
-    public handleToggleItemExpand(item: TItem): void {
+    private handleToggleItemExpand(item: TItem): void {
         const { focusedItem, expandedItems, onChangeExpandedItems, onChangeFocusedItem } = this.props;
         if (expandedItems.includes(item)) {
             if (focusedItem == undefined) {
@@ -192,7 +216,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         }
     }
 
-    public renderParentBlock(item: TItem): JSX.Element {
+    private renderParentBlock(item: TItem): JSX.Element {
         return (
             <div className={cn("parent-line")} style={{ backgroundColor: this.getItemColor(item) }}>
                 &nbsp;
@@ -200,21 +224,12 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         );
     }
 
-    public componentDidUpdate(prevProps: TreeGridProps<TItem>): void {
-        if (this.props.focusedItem !== prevProps.focusedItem) {
-            const item = this.state.visibleRows.find(x => x.item === this.props.focusedItem);
-            if (item != undefined && this.table.current != undefined) {
-                this.table.current.scrollIntoView(item);
-            }
-        }
-    }
-
-    public renderCells(item: TItem, parents: TItem[]): React.ReactNode {
+    private renderCells(item: TItem, parents: TItem[]): React.ReactNode {
         const { columns } = this.props;
         return columns.map(x => this.renderCell(x, item, parents));
     }
 
-    public renderCell(column: ColumnDefinition<TItem>, item: TItem, parents: TItem[]): JSX.Element {
+    private renderCell(column: ColumnDefinition<TItem>, item: TItem, parents: TItem[]): JSX.Element {
         const { onGetChildren, focusedItem } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = this.props.expandedItems.includes(item);
@@ -258,7 +273,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         );
     }
 
-    public renderHeaderCell(column: ColumnDefinition<TItem>): React.ReactNode {
+    private renderHeaderCell(column: ColumnDefinition<TItem>): React.ReactNode {
         return (
             <th
                 key={column.name}
@@ -271,7 +286,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         );
     }
 
-    public buildItemsFlatList(): TItem[] {
+    private buildItemsFlatList(): TItem[] {
         const { data, onGetChildren } = this.props;
 
         const buildItemsFlatListFrom = (root: TItem): TItem[] => {
@@ -287,19 +302,19 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         return data.map(buildItemsFlatListFrom).reduce(flatten, []);
     }
 
-    public findPreviousExpandedItem(item: TItem): undefined | TItem {
+    private findPreviousExpandedItem(item: TItem): undefined | TItem {
         const flatList = this.buildItemsFlatList();
         const itemIndex = flatList.indexOf(item);
         return flatList[Math.max(itemIndex - 1, 0)];
     }
 
-    public findNextExpandedItem(item: TItem): undefined | TItem {
+    private findNextExpandedItem(item: TItem): undefined | TItem {
         const flatList = this.buildItemsFlatList();
         const itemIndex = flatList.indexOf(item);
         return flatList[Math.min(itemIndex + 1, flatList.length - 1)];
     }
 
-    public handleTableKeyPress = (e: React.KeyboardEvent<HTMLTableElement>) => {
+    private readonly handleTableKeyPress = (e: React.KeyboardEvent<HTMLTableElement>) => {
         const { focusedItem, onChangeFocusedItem, onGetChildren } = this.props;
         if (onChangeFocusedItem == undefined) {
             return;
@@ -335,21 +350,6 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
             e.preventDefault();
         }
     };
-
-    public render(): JSX.Element {
-        return (
-            <VirtualTable
-                ref={this.table}
-                onKeyDown={this.handleTableKeyPress}
-                tableClassName={cn("table")}
-                renderHeader={this.renderHeader}
-                headerHeight={16}
-                rowHeight={20}
-                renderRow={this.renderVisibleRow}
-                data={this.state.visibleRows}
-            />
-        );
-    }
 
     private readonly renderVisibleRow = (visibleRowInfo: VisibleRowInfo<TItem>, index: number): React.ReactNode => {
         const { key, item, parents } = visibleRowInfo;

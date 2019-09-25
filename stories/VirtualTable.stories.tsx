@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import _ from "lodash";
 import * as React from "react";
 
-import { VirtualTable } from "../src/Components/VirtualTable/VirtualTable";
+import { VirtualTable, VirtualTableType } from "../src/Components/VirtualTable/VirtualTable";
 
 interface VirtualTableContainerState {
     intoViewIndex: number;
@@ -11,7 +11,7 @@ interface VirtualTableContainerState {
 }
 
 class VirtualTableContainer extends React.Component<{}, VirtualTableContainerState> {
-    public table = React.createRef<VirtualTable<{ value: string }>>();
+    public table = React.createRef<VirtualTableType<{ value: string }>>();
 
     public constructor(props: {}) {
         super(props);
