@@ -44,8 +44,9 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
                 width: 140,
                 align: "right",
                 renderHeader: () => "Total time",
-                renderValue: (x, focused) => (
+                renderValue: (x, focused, highlighted) => (
                     <PercentageAndTimeBar
+                        faded={!highlighted}
                         time={SpanNodeTimeUtils.getSpanNodeTime(traceTree, x)}
                         percentage={SpanNodeTimeUtils.getSpanNodeTotalTimePercentage(traceTree, x)}
                         focused={focused}
@@ -57,8 +58,9 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
                 width: 140,
                 align: "right",
                 renderHeader: () => "Self time",
-                renderValue: (x, focused) => (
+                renderValue: (x, focused, highlighted) => (
                     <PercentageAndTimeBar
+                        faded={!highlighted}
                         time={SpanNodeTimeUtils.getSpanNodeSelfTime(traceTree, x)}
                         percentage={SpanNodeTimeUtils.getSpanNodeSelfTimePercentage(traceTree, x)}
                         focused={focused}
@@ -70,13 +72,15 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
                 width: 300,
                 cellClassName: cn("service-cell"),
                 renderHeader: () => "Service",
-                renderValue: x => x.serviceName,
+                renderValue: (x, focused, highlighted) => (
+                    <span className={cn({ faded: !highlighted })}>x.serviceName</span>
+                ),
                 mainCell: true,
             },
             {
                 name: "timeline",
                 renderHeader: () => "Timeline",
-                renderValue: x => renderTimeLine(x, totalTimeRange),
+                renderValue: (x, focused, highlighted) => renderTimeLine(x, totalTimeRange, highlighted),
             },
         ],
         [traceTree]
@@ -87,6 +91,7 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
 
     return (
         <TreeGridWithState
+            highlightStack
             filterNodes={filterNodes}
             focusedItem={focusedItem}
             columns={columns}
@@ -99,9 +104,9 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
     );
 }
 
-function renderTimeLine(node: SpanNode, totalTimeRange: undefined | TimeRange): JSX.Element {
+function renderTimeLine(node: SpanNode, totalTimeRange: undefined | TimeRange, highlighted: boolean): JSX.Element {
     if (totalTimeRange == undefined) {
-        return <SpanNodeTimeLineOfViewPort node={node} />;
+        return <SpanNodeTimeLineOfViewPort node={node} highlighted={highlighted} />;
     }
-    return <SpanNodeTimeLine node={node} totalTimeRange={totalTimeRange} />;
+    return <SpanNodeTimeLine node={node} totalTimeRange={totalTimeRange} highlighted={highlighted} />;
 }

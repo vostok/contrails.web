@@ -1,24 +1,11 @@
 import { TimeRange } from "../TimeRange";
-import { reduceTree, TreeReducer } from "../Utils/TreeTraverseUtils";
+import { findParentNode } from "../Utils/FindParentTreeNodeVisitor";
 
 import { SpanNode } from "./SpanNode";
 
-function findParentSpanReducer(target: SpanNode): TreeReducer<undefined | SpanNode, SpanNode> {
-    return (childResults, current) => {
-        const childResult = childResults.find(x => x != undefined);
-        if (childResult != undefined) {
-            return childResult;
-        }
-        if (current.children.includes(target)) {
-            return current;
-        }
-        return undefined;
-    };
-}
-
 export class TraceTreeUtils {
     public static getParentSpan(root: SpanNode, span: SpanNode): undefined | SpanNode {
-        const result = reduceTree(root, findParentSpanReducer(span), x => x.children);
+        const result = findParentNode(root, span, x => x.children);
         return result;
     }
 

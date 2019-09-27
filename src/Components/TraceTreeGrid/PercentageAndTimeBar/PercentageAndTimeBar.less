@@ -7,11 +7,19 @@
     border: 1px solid #ffdd7a;
     box-sizing: border-box;
     overflow: hidden;
+
+    &.faded {
+        opacity: 0.4;
+    }
 }
 
 .cell-values {
     position: absolute;
     right: 10px;
+
+    &.faded {
+        opacity: 0.4;
+    }
 
     .percentage {
         mix-blend-mode: difference;

@@ -10,9 +10,10 @@ import cn from "./SpanNodeTimeLine.less";
 interface SpanNodeTimeLineProps {
     node: SpanNode;
     totalTimeRange?: TimeRange;
+    highlighted: boolean;
 }
 
-export function SpanNodeTimeLine({ node, totalTimeRange }: SpanNodeTimeLineProps): JSX.Element {
+export function SpanNodeTimeLine({ node, totalTimeRange, highlighted }: SpanNodeTimeLineProps): JSX.Element {
     const container = React.useRef<HTMLDivElement>(emptyRef);
     const span = React.useRef<HTMLDivElement>(emptyRef);
     const containerWidth = React.useRef<undefined | number>();
@@ -59,7 +60,7 @@ export function SpanNodeTimeLine({ node, totalTimeRange }: SpanNodeTimeLineProps
         <div ref={container} className={cn("container")}>
             <div
                 ref={span}
-                className={cn("time-span")}
+                className={cn("time-span", { faded: !highlighted })}
                 style={{
                     backgroundColor: Colors[node.colorConfig].background,
                 }}

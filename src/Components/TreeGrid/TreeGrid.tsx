@@ -2,7 +2,7 @@ import _ from "lodash";
 import * as React from "react";
 
 import { ArrowTriangleDown, ArrowTriangleRight } from "../../Commons/ui";
-import { findNodeToReducer, reduceTree } from "../../Domain/Utils/TreeTraverseUtils";
+import { findNodesPathTo } from "../../Domain/Utils/FindNodesPathToVisitor";
 import { VirtualTable, VirtualTableType } from "../VirtualTable/VirtualTable";
 
 import cn from "./TreeGrid.less";
@@ -10,7 +10,7 @@ import cn from "./TreeGrid.less";
 export interface ColumnDefinition<TItem> {
     name: string;
     renderHeader: () => React.ReactNode;
-    renderValue: (item: TItem, focused: boolean) => React.ReactNode;
+    renderValue: (item: TItem, focused: boolean, highlighted: boolean) => React.ReactNode;
     width?: number;
     align?: "right" | "left" | "center";
     mainCell?: boolean;
@@ -22,6 +22,7 @@ export interface TreeGridProps<TItem> {
     filterNodes?: (item: TItem) => boolean;
     columns: Array<ColumnDefinition<TItem>>;
     focusedItem?: TItem;
+    highlightStack: boolean;
     onItemClick?: (item: TItem) => void;
     expandedItems: TItem[];
     onGetItemColor?: (item: TItem) => undefined | string;
@@ -44,11 +45,12 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
     public state: TreeGridState<TItem> = {
         visibleRows: [],
     };
-
+    private readonly highlightedItems: Set<TItem> = new Set<TItem>();
     private readonly table = React.createRef<VirtualTableType<VisibleRowInfo<TItem>>>();
 
     public UNSAFE_componentWillMount(): void {
         const expandedItems = this.getExpandedForFocusedItemAndUpdate(this.props.focusedItem, this.props.expandedItems);
+        this.updateHighlightedItems(this.props.focusedItem);
         const rows = this.buildRows(this.props.data, expandedItems);
         this.setState({
             visibleRows: rows,
@@ -61,6 +63,9 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
             nextProps.focusedItem,
             nextProps.expandedItems
         );
+        if (this.props.focusedItem !== nextProps.focusedItem) {
+            this.updateHighlightedItems(nextProps.focusedItem);
+        }
         if (
             expandedItems !== nextExpandedItems ||
             this.props.filterNodes !== nextProps.filterNodes ||
@@ -148,12 +153,24 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         ];
     }
 
+    private updateHighlightedItems(focusedItem: undefined | TItem): void {
+        this.highlightedItems.clear();
+        if (focusedItem != undefined) {
+            this.highlightedItems.clear();
+            const nodes = findNodeTo(focusedItem, this.props.data, this.props.onGetChildren);
+            for (const node of nodes) {
+                this.highlightedItems.add(node);
+            }
+            this.highlightedItems.add(focusedItem);
+        }
+    }
+
     private getExpandedForFocusedItemAndUpdate(focusedItem: undefined | TItem, expandedItems: TItem[]): TItem[] {
         const { onChangeExpandedItems } = this.props;
         if (focusedItem == undefined) {
             return expandedItems;
         }
-        const nodes = this.findNodeTo(focusedItem);
+        const nodes = findNodeTo(focusedItem, this.props.data, this.props.onGetChildren);
         if (nodes.every(x => expandedItems.includes(x))) {
             return expandedItems;
         }
@@ -165,20 +182,11 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         if (focusedItem == undefined) {
             return expandedItems;
         }
-        const nodes = this.findNodeTo(focusedItem);
+        const nodes = findNodeTo(focusedItem, this.props.data, this.props.onGetChildren);
         if (nodes.every(x => expandedItems.includes(x))) {
             return expandedItems;
         }
         return _.union(expandedItems || [], nodes);
-    }
-
-    private findNodeTo(item: TItem): TItem[] {
-        const { data, onGetChildren } = this.props;
-        const result = data
-            .map(rootNode => reduceTree(rootNode, findNodeToReducer(item), onGetChildren))
-            .reduce(flatten, []);
-
-        return result.slice(1);
     }
 
     private getItemColor(item: TItem): string {
@@ -201,7 +209,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
             if (focusedItem == undefined) {
                 onChangeExpandedItems(_.difference(expandedItems, [item]));
             } else {
-                const nodes = this.findNodeTo(focusedItem);
+                const nodes = findNodeTo(focusedItem, this.props.data, this.props.onGetChildren);
                 const index = nodes.indexOf(item);
                 if (index >= 0) {
                     const nodeToHide = nodes.slice(index);
@@ -218,7 +226,9 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
 
     private renderParentBlock(item: TItem): JSX.Element {
         return (
-            <div className={cn("parent-line")} style={{ backgroundColor: this.getItemColor(item) }}>
+            <div
+                className={cn("parent-line", { highlighted: this.highlightedItems.has(item) })}
+                style={{ backgroundColor: this.getItemColor(item) }}>
                 &nbsp;
             </div>
         );
@@ -233,6 +243,8 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         const { onGetChildren, focusedItem } = this.props;
         const itemChildren = onGetChildren(item);
         const expanded = this.props.expandedItems.includes(item);
+        const highlighted =
+            this.props.highlightStack && this.highlightedItems.size > 0 ? this.highlightedItems.has(item) : true;
 
         if (column.mainCell) {
             return (
@@ -254,7 +266,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
                                 itemChildren.length > 0 &&
                                 (expanded ? <ArrowTriangleDown /> : <ArrowTriangleRight />)}
                         </button>
-                        {column.renderValue(item, focusedItem === item)}
+                        {column.renderValue(item, focusedItem === item, highlighted)}
                     </span>
                 </td>
             );
@@ -268,7 +280,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
                     maxWidth: column.width,
                     textAlign: column.align,
                 }}>
-                {column.renderValue(item, focusedItem === item)}
+                {column.renderValue(item, focusedItem === item, highlighted)}
             </td>
         );
     }
@@ -382,4 +394,9 @@ function flatten<T>(memo: T[], items: T[]): T[] {
         memo.push(item);
     }
     return memo;
+}
+
+function findNodeTo<TItem>(item: TItem, data: TItem[], onGetChildren: (item: TItem) => undefined | TItem[]): TItem[] {
+    const result = data.map(rootNode => findNodesPathTo(rootNode, item, onGetChildren)).reduce(flatten, []);
+    return result.slice(1);
 }
