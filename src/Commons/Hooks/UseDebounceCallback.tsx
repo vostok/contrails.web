@@ -1,18 +1,6 @@
 import _ from "lodash";
 import * as React from "react";
 
-import { runAsyncAction } from "./TypingHacks";
-
-export function useAsyncEffect(action: (abortSignal: AbortSignal) => Promise<void>, deps?: React.DependencyList): void {
-    React.useEffect(() => {
-        const abortController = new AbortController();
-        runAsyncAction(() => action(abortController.signal));
-        return () => {
-            abortController.abort();
-        };
-    }, deps);
-}
-
 export function useDebounceCallback<TA extends unknown[]>(
     action: (...args: TA) => void,
     delay: number,

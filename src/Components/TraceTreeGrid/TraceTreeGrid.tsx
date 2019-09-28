@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import { strictDefined } from "../../Commons/StrictDefined";
 import { Colors } from "../../Domain/Colors";
 import { SpanNodeTimeUtils } from "../../Domain/SpanNodeTimeUtils";
 import { TimeRange } from "../../Domain/TimeRange";
@@ -19,9 +20,9 @@ function TreeGridWithState(
     return <TreeGrid {...props} onChangeExpandedItems={setExpandedItems} expandedItems={expandedItems} />;
 }
 
-const SpanNodeTimeLineOfViewPort = connect((state: ContrailsApplicationState) => ({ totalTimeRange: state.viewPort }))(
-    SpanNodeTimeLine
-);
+const SpanNodeTimeLineOfViewPort = connect((state: ContrailsApplicationState) => ({
+    totalTimeRange: strictDefined(state.viewPort),
+}))(SpanNodeTimeLine);
 
 interface TraceTreeGridProps {
     filterNodes?: (node: SpanNode) => boolean;
@@ -74,7 +75,7 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
                 renderHeader: () => "Service",
                 renderValue: (x, focused, highlighted) => (
                     <span className={cn({ faded: !highlighted })}>{x.serviceName}</span>
-),
+                ),
                 mainCell: true,
             },
             {

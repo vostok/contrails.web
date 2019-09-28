@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { useDebounceCallback } from "../../Commons/Effects";
+import { useDebounceCallback } from "../../Commons/Hooks/UseDebounceCallback";
 import { emptyRef } from "../../Commons/TypingHacks";
 
 import { PartialRenderCalculator } from "./PartialRenderCalculator";

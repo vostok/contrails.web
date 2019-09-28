@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 
-import { useAsyncEffect } from "../../Commons/Effects";
+import { useAsyncEffect } from "../../Commons/Hooks/UseAsyncEffect";
 import { OperationAbortedError } from "../../Commons/PromiseUtils";
 import { CallTreeContainer } from "../../Containers/CallTreeContainer";
 import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
