@@ -1,6 +1,10 @@
 import { TimeRange } from "./TimeRange";
 
 export class ViewPortUtils {
+    public static clamp(value: number, min: number, max: number): number {
+        return Math.min(Math.max(value, min), max);
+    }
+
     public static offset(timeRange: TimeRange, viewPort: TimeRange, viewPortOffset: number): TimeRange {
         const { from, to } = timeRange;
 

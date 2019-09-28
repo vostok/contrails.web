@@ -1,23 +1,14 @@
 import * as React from "react";
-import ReactDom from "react-dom";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
-import { InvalidProgramStateError } from "../../Commons/Errors";
+import { normalizeWheel } from "../../Domain/NormalizeWheel";
 import { TimeRange } from "../../Domain/TimeRange";
 import { ViewPortUtils } from "../../Domain/ViewPortUtils";
 import { TimeMarkersBackground } from "../TimeMarkersBackground/TimeMarkersBackground";
 
+import { MinimapChartData } from "./MinimapChartData";
 import cn from "./ProfilerChartMinimap.less";
-
-export interface ChartMinimapItem {
-    from: number;
-    to: number;
-    color?: string;
-}
-
-export interface MinimapChartData {
-    lines: Array<{ items: ChartMinimapItem[] }>;
-}
+import { ProfilerChartMinimapImage } from "./ProfilerChartMinimapImage/ProfilerChartMinimapImage";
 
 interface ProfilerChartMinimapProps {
     timeRange: TimeRange;
@@ -27,198 +18,129 @@ interface ProfilerChartMinimapProps {
     width: number;
 }
 
-export class ProfilerChartMinimap extends React.Component<ProfilerChartMinimapProps> {
-    private readonly canvas = React.createRef<HTMLCanvasElement>();
-    private readonly container = React.createRef<HTMLDivElement>();
+export function ProfilerChartMinimap(props: ProfilerChartMinimapProps): JSX.Element {
+    const { timeRange, viewPort, onChangeViewPort, data, width } = props;
 
-    public componentDidMount(): void {
-        this.drawItems();
-    }
-
-    public componentDidUpdate(prevProps: ProfilerChartMinimapProps): void {
-        if (prevProps.data !== this.props.data) {
-            this.drawItems();
-        }
-    }
-
-    public render(): JSX.Element {
-        const { timeRange, viewPort, width } = this.props;
-
-        return (
-            <div className={cn("container")} ref={this.container}>
-                {this.renderCanvas(width)}
-                <div
-                    className={cn("left-shadow")}
-                    style={{
-                        width: this.toAbsoluteX(viewPort.from),
-                    }}
-                />
-                <div
-                    className={cn("right-shadow")}
-                    style={{
-                        width: this.toAbsoluteX(timeRange.from + timeRange.to - viewPort.to),
-                    }}
-                />
-                <Draggable
-                    axis="x"
-                    onDrag={this.handleViewPortDrag}
-                    bounds={{
-                        top: 0,
-                        bottom: 0,
-                        left: this.toAbsoluteX(timeRange.from),
-                        right: this.toAbsoluteX(timeRange.to - (viewPort.to - viewPort.from)),
-                    }}
-                    position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
-                    <div
-                        className={cn("scroller")}
-                        style={{
-                            width: this.toAbsoluteX(viewPort.to) - this.toAbsoluteX(viewPort.from),
-                        }}
-                    />
-                </Draggable>
-                <Draggable
-                    axis="x"
-                    onDrag={this.handleDragLeftHandle}
-                    bounds={{
-                        top: 0,
-                        bottom: 0,
-                        left: this.toAbsoluteX(timeRange.from),
-                        right: this.toAbsoluteX(viewPort.to) - 10,
-                    }}
-                    position={{ x: this.toAbsoluteX(viewPort.from), y: 0 }}>
-                    <div className={cn("left-handler-container")}>
-                        <div className={cn("left-handler")} />
-                    </div>
-                </Draggable>
-                <Draggable
-                    axis="x"
-                    onDrag={this.handleDragRightHandle}
-                    bounds={{
-                        top: 0,
-                        bottom: 0,
-                        left: this.toAbsoluteX(viewPort.from) + 10,
-                        right: this.toAbsoluteX(timeRange.to),
-                    }}
-                    position={{ x: this.toAbsoluteX(viewPort.to), y: 0 }}>
-                    <div className={cn("right-handler-container")}>
-                        <div className={cn("right-handler")} />
-                    </div>
-                </Draggable>
-            </div>
-        );
-    }
-
-    private executeWithDrawContext(action: (context: CanvasRenderingContext2D, width: number) => void): void {
-        const canvas = ReactDom.findDOMNode(this.canvas.current);
-        const { width } = this.props;
-        if (canvas instanceof HTMLCanvasElement && width != undefined) {
-            const drawContext = canvas.getContext("2d");
-            if (drawContext == undefined) {
-                throw new InvalidProgramStateError();
-            }
-            action(drawContext, width);
-        }
-    }
-
-    private drawItems(): void {
-        this.executeWithDrawContext((context, width) => {
-            context.save();
-            try {
-                const { data } = this.props;
-                context.clearRect(0, 0, width, 100);
-                const lineHeight = 5;
-
-                let lineIndex = 0;
-                for (const line of data.lines) {
-                    for (const item of line.items) {
-                        context.fillStyle = item.color || "rgba(30, 121, 190, 0.50)";
-                        context.strokeStyle = "rgba(30, 121, 190, 1.0)";
-                        context.lineWidth = 0.5;
-                        context.fillRect(
-                            this.toAbsoluteX(item.from),
-                            lineIndex * lineHeight,
-                            this.toAbsoluteX(item.to) - this.toAbsoluteX(item.from),
-                            lineHeight
-                        );
-                        context.strokeRect(
-                            this.toAbsoluteX(item.from),
-                            lineIndex * lineHeight,
-                            this.toAbsoluteX(item.to) - this.toAbsoluteX(item.from),
-                            lineHeight
-                        );
-                    }
-                    lineIndex++;
-                }
-            } finally {
-                context.restore();
-            }
-        });
-    }
-
-    private readonly handleDragLeftHandle = (e: DraggableEvent, dragInfo: DraggableData) => {
-        if (dragInfo.deltaX !== 0) {
-            const { timeRange, viewPort, onChangeViewPort } = this.props;
-            onChangeViewPort({
-                from: Math.min(
-                    Math.max(timeRange.from, this.toRelativeX(dragInfo.x)),
-                    this.toRelativeX(this.toAbsoluteX(viewPort.to) - 10)
-                ),
-                to: viewPort.to,
-            });
-        }
-    };
-
-    private readonly handleDragRightHandle = (e: DraggableEvent, dragInfo: DraggableData) => {
-        if (dragInfo.deltaX !== 0) {
-            const { timeRange, viewPort, onChangeViewPort } = this.props;
-            onChangeViewPort({
-                from: viewPort.from,
-                to: Math.max(
-                    Math.min(timeRange.to, this.toRelativeX(dragInfo.x)),
-                    this.toRelativeX(this.toAbsoluteX(viewPort.from) + 10)
-                ),
-            });
-        }
-    };
-
-    private readonly handleViewPortDrag = (e: DraggableEvent, dragInfo: DraggableData) => {
-        const { viewPort, onChangeViewPort } = this.props;
-        const viewPortOffset = this.toRelativeX(dragInfo.x) - viewPort.from;
-        const nextViewPort = ViewPortUtils.offset(this.props.timeRange, viewPort, viewPortOffset);
-        onChangeViewPort(nextViewPort);
-    };
-
-    private toRelativeX(value: number): number {
-        const { timeRange, width } = this.props;
-        if (width == undefined) {
-            throw new InvalidProgramStateError();
-        }
+    function toRelativeX(value: number): number {
         return (value * (timeRange.to - timeRange.from)) / width + timeRange.from;
     }
 
-    private toAbsoluteX(value: number): number {
-        const { timeRange, width } = this.props;
-        if (width == undefined) {
-            throw new InvalidProgramStateError();
-        }
+    function toAbsoluteX(value: number): number {
         return ((value - timeRange.from) * width) / (timeRange.to - timeRange.from);
     }
 
-    private renderCanvas(width: number): JSX.Element {
-        return (
+    const handleDragLeftHandle = React.useCallback(
+        (e: DraggableEvent, dragInfo: DraggableData) => {
+            if (dragInfo.deltaX !== 0) {
+                const nextFrom = toRelativeX(dragInfo.x);
+                onChangeViewPort({
+                    from: ViewPortUtils.clamp(nextFrom, timeRange.from, toRelativeX(toAbsoluteX(viewPort.to) - 10)),
+                    to: viewPort.to,
+                });
+            }
+        },
+        [onChangeViewPort, width, viewPort, timeRange]
+    );
+
+    const handleDragRightHandle = React.useCallback(
+        (e: DraggableEvent, dragInfo: DraggableData) => {
+            if (dragInfo.deltaX !== 0) {
+                const nextTo = toRelativeX(dragInfo.x);
+                onChangeViewPort({
+                    from: viewPort.from,
+                    to: ViewPortUtils.clamp(nextTo, toRelativeX(toAbsoluteX(viewPort.from) + 10), timeRange.to),
+                });
+            }
+        },
+        [onChangeViewPort, width, viewPort, timeRange]
+    );
+
+    const handleWheel = React.useCallback(
+        (event: React.WheelEvent<HTMLDivElement>) => {
+            const { spinY } = normalizeWheel(event);
+            const containerRect = event.currentTarget.getBoundingClientRect();
+            const mouseX = event.clientX - containerRect.left;
+            const mouseXRelative = toRelativeX(mouseX);
+            const newViewPort = ViewPortUtils.zoom(timeRange, viewPort, spinY, mouseXRelative);
+            onChangeViewPort(newViewPort);
+        },
+        [onChangeViewPort, width, viewPort, timeRange]
+    );
+
+    const handleViewPortDrag = React.useCallback(
+        (e: DraggableEvent, dragInfo: DraggableData) => {
+            const viewPortOffset = toRelativeX(dragInfo.x) - viewPort.from;
+            const nextViewPort = ViewPortUtils.offset(timeRange, viewPort, viewPortOffset);
+            onChangeViewPort(nextViewPort);
+        },
+        [onChangeViewPort, width, viewPort, timeRange]
+    );
+
+    const leftAbsolute = 0;
+    const rightAbsolute = width;
+
+    const viewPortFromAbsolute = toAbsoluteX(viewPort.from);
+    const viewPortToAbsolute = toAbsoluteX(viewPort.to);
+    const viewPortSizeAbsolute = viewPortToAbsolute - viewPortFromAbsolute;
+
+    return (
+        <div className={cn("container")} onWheel={handleWheel}>
             <div style={{ position: "relative", zIndex: 0 }}>
                 <div style={{ position: "relative", height: 18 }} />
                 <div style={{ position: "relative", zIndex: 2 }}>
-                    <canvas ref={this.canvas} height={100} width={width} />
+                    <ProfilerChartMinimapImage height={100} width={width} data={data} timeRange={timeRange} />
                 </div>
                 <TimeMarkersBackground
-                    timeRange={this.props.timeRange}
+                    timeRange={timeRange}
+                    css
                     width={width}
-                    viewPort={this.props.timeRange}
+                    viewPort={timeRange}
                     fontSize={10}
                     titleHeight={18}
                 />
             </div>
-        );
-    }
+            <div className={cn("left-shadow")} style={{ width: viewPortFromAbsolute }} />
+            <div className={cn("right-shadow")} style={{ width: rightAbsolute - viewPortToAbsolute }} />
+            <Draggable
+                axis="x"
+                onDrag={handleViewPortDrag}
+                bounds={{
+                    top: 0,
+                    bottom: 0,
+                    left: leftAbsolute,
+                    right: rightAbsolute - viewPortSizeAbsolute,
+                }}
+                position={{ x: viewPortFromAbsolute, y: 0 }}>
+                <div className={cn("scroller")} style={{ width: viewPortSizeAbsolute }} />
+            </Draggable>
+            <Draggable
+                axis="x"
+                onDrag={handleDragLeftHandle}
+                bounds={{
+                    top: 0,
+                    bottom: 0,
+                    left: leftAbsolute,
+                    right: viewPortToAbsolute - 10,
+                }}
+                position={{ x: viewPortFromAbsolute, y: 0 }}>
+                <div className={cn("left-handler-container")}>
+                    <div className={cn("left-handler")} />
+                </div>
+            </Draggable>
+            <Draggable
+                axis="x"
+                onDrag={handleDragRightHandle}
+                bounds={{
+                    top: 0,
+                    bottom: 0,
+                    left: viewPortFromAbsolute + 10,
+                    right: rightAbsolute,
+                }}
+                position={{ x: viewPortToAbsolute, y: 0 }}>
+                <div className={cn("right-handler-container")}>
+                    <div className={cn("right-handler")} />
+                </div>
+            </Draggable>
+        </div>
+    );
 }
