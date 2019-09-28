@@ -73,8 +73,8 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
                 cellClassName: cn("service-cell"),
                 renderHeader: () => "Service",
                 renderValue: (x, focused, highlighted) => (
-                    <span className={cn({ faded: !highlighted })}>x.serviceName</span>
-                ),
+                    <span className={cn({ faded: !highlighted })}>{x.serviceName}</span>
+),
                 mainCell: true,
             },
             {

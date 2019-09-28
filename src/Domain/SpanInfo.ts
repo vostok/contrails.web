@@ -9,5 +9,5 @@ export interface SpanInfo {
     OperationName?: string;
     BeginTimestamp: string;
     EndTimestamp: string;
-    Annotations?: null | SpanAnnotations;
+    Annotations: SpanAnnotations;
 }

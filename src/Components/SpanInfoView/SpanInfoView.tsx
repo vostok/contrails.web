@@ -1,15 +1,85 @@
+import { Copy, PC } from "@skbkontur/react-icons";
 import * as React from "react";
 
 import { nullElement } from "../../Commons/TypingHacks";
 import { DateTimeUtils } from "../../Domain/DateTimeUtils";
+import { VostokDataExtractor } from "../../Domain/IDataExtractor";
 import { SpanNode } from "../../Domain/TraceTree/SpanNode";
 import { TraceTreeUtils } from "../../Domain/TraceTree/TraceTreeUtils";
+import { findParentNode } from "../../Domain/Utils/FindParentTreeNodeVisitor";
 
 import cn from "./SpanInfoView.less";
 
 interface SpanInfoViewProps {
     root: SpanNode;
     span?: SpanNode;
+}
+
+interface ServiceIconProps {
+    root: SpanNode;
+    span: SpanNode;
+    parentSpan?: SpanNode;
+}
+
+const dataExtractor = new VostokDataExtractor();
+
+function SpanMainInfo({ span, parentSpan, root }: ServiceIconProps): JSX.Element {
+    if (dataExtractor.isServerSpan(span.source) && parentSpan != undefined) {
+        return (
+            <span>
+                <div>Server request process</div>
+                <div>
+                    {parentSpan.source.Annotations["operation"]} - {parentSpan.source.Annotations["http.response.code"]}
+                </div>
+                <div>
+                    <Copy /> {span.serviceName} @ <PC /> {span.source.Annotations["host"]}
+                </div>
+                <div>
+                    Duration:{" "}
+                    {DateTimeUtils.formatDurationTicks(
+                        DateTimeUtils.difference(span.source.EndTimestamp, span.source.BeginTimestamp)
+                    )}
+                </div>
+            </span>
+        );
+    }
+    if (
+        dataExtractor.isClientSpan(span.source) &&
+        span.children.length === 1 &&
+        dataExtractor.isServerSpan(span.children[0].source)
+    ) {
+        return (
+            <span>
+                <div>Client request</div>
+                <div>
+                    {span.source.Annotations["operation"]} - {span.source.Annotations["http.response.code"]}
+                </div>
+                <div>
+                    <Copy /> {span.serviceName} @ <PC /> {span.source.Annotations["host"]}
+                </div>
+                <div>
+                    Duration:{" "}
+                    {DateTimeUtils.formatDurationTicks(
+                        DateTimeUtils.difference(span.source.EndTimestamp, span.source.BeginTimestamp)
+                    )}
+                </div>
+            </span>
+        );
+    }
+    return (
+        <span>
+            <div>Client operation</div>
+            <div>
+                <Copy /> {span.serviceName} @ <PC /> {span.source.Annotations["host"]}
+            </div>
+            <div>
+                Duration:{" "}
+                {DateTimeUtils.formatDurationTicks(
+                    DateTimeUtils.difference(span.source.EndTimestamp, span.source.BeginTimestamp)
+                )}
+            </div>
+        </span>
+    );
 }
 
 export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Element {
@@ -20,6 +90,7 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     const annotations = spanInfo.Annotations;
     return (
         <div>
+            <SpanMainInfo span={span} parentSpan={findParentNode(root, span, x => x.children)} />
             <div className={cn("section")}>
                 <div className={cn("section-header")}>General</div>
                 <div className={cn("item")}>

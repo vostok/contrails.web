@@ -12,13 +12,14 @@ import { LayoutKind } from "./LayoutKind/LayoutKind";
 interface TraceViewerContainerProps {
     history: H.History;
     location: H.Location;
-    match: match<{ traceIdPrefix: string }>;
+    match: match<{ traceId: string }>;
 }
 
 const mapProps = (state: ContrailsApplicationState, ownProps: TraceViewerContainerProps) => ({
-    traceInfo: state.traceInfo,
+    loadedTraceId: state.traceInfo == undefined ? undefined : state.traceInfo.TraceId,
+    loadedSubtreeSpanId: state.currentTraceSubtree == undefined ? undefined : state.currentTraceSubtree.source.SpanId,
     layoutKind: state.layoutKind,
-    traceIdPrefix: ownProps.match.params.traceIdPrefix,
+    traceId: ownProps.match.params.traceId,
     subtreeSpanId: extractSubtreeSpanId(ownProps.location),
 });
 

@@ -37,7 +37,7 @@ function ContrailsApplicationInternal(): JSX.Element {
             <BrowserRouter basename={process.env.BASE_URL}>
                 <Switch>
                     <Route exact path="/" component={ContrailsRootContainer} />
-                    <Route path="/:traceIdPrefix" component={TraceViewerContainer} />
+                    <Route path="/:traceId" component={TraceViewerContainer} />
                 </Switch>
             </BrowserRouter>
         </Provider>

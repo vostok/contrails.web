@@ -8,7 +8,6 @@ import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
 import { LayoutKind } from "../../Containers/LayoutKind/LayoutKind";
 import { ProfilerChartWithMinimapContainer } from "../../Containers/ProfilerChartWithMinimapContainer";
 import { SpanInfoViewContainer } from "../../Containers/SpanInfoViewContainer";
-import { TraceInfo } from "../../Domain/TraceInfo";
 import { ContrailsErrorMessage, ErrorInfo } from "../ContrailsErrorMessage/ContrailsErrorMessage";
 import { ContrailsLayout } from "../ContrailsLayout/ContrailsLayout";
 import { ContrailsLoader } from "../ContrailsLoader/ContrailsLoader";
@@ -26,9 +25,11 @@ import { TraceIdInput } from "../TraceIdInput/TraceIdInput";
 import cn from "./TraceViewer.less";
 
 interface TraceViewerProps {
-    traceIdPrefix: string;
+    traceId: string;
     subtreeSpanId?: string;
-    traceInfo?: TraceInfo;
+    loadedTraceId?: string;
+    loadedSubtreeSpanId?: string;
+
     layoutKind: LayoutKind;
 
     onLoadTrace: (traceId: string, subtreeSpanId: undefined | string, abortSignal?: AbortSignal) => Promise<void>;
@@ -54,25 +55,21 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
         []
     );
 
-    const traceIdPrefix = props.traceIdPrefix;
-    const subtreeSpanId = props.subtreeSpanId;
-
-    const onLoadTrace = props.onLoadTrace;
-    const traceInfo = props.traceInfo;
-
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<undefined | ErrorInfo>(undefined);
 
     useAsyncEffect(
         async (abortSignal: AbortSignal) => {
-            if (traceInfo != undefined && traceInfo.TraceId === traceIdPrefix) {
-                props.onChangeSubtree(subtreeSpanId);
+            if (props.loadedTraceId != undefined && props.loadedTraceId === props.traceId) {
+                if (props.loadedSubtreeSpanId !== props.subtreeSpanId) {
+                    props.onChangeSubtree(props.subtreeSpanId);
+                }
                 return;
             }
             setError(undefined);
             setLoading(true);
             try {
-                await onLoadTrace(traceIdPrefix, subtreeSpanId, abortSignal);
+                await props.onLoadTrace(props.traceId, props.subtreeSpanId, abortSignal);
             } catch (e) {
                 if (e instanceof Error) {
                     if (e.message === "500") {
@@ -94,19 +91,19 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
                 }
             }
         },
-        [traceIdPrefix, subtreeSpanId]
+        [props.subtreeSpanId, props.traceId]
     );
 
     return (
         <ContrailsLayout
-            header={<HeaderContent traceId={traceIdPrefix} onOpen={nextTraceId => props.onOpenTrace(nextTraceId)} />}
+            header={<HeaderContent traceId={props.traceId} onOpen={nextTraceId => props.onOpenTrace(nextTraceId)} />}
             right={<LayoutKindSelect onChange={props.onChangeLayoutKind} value={props.layoutKind} />}>
             <Helmet>
-                <title>{`Trace ${traceIdPrefix}`}</title>
+                <title>{`Trace ${props.traceId}`}</title>
             </Helmet>
             {loading && <ContrailsLoader />}
             {error && <ContrailsErrorMessage error={error} />}
-            {traceInfo != undefined && (
+            {props.loadedTraceId != undefined && (
                 <ContrailPanelsContainer layoutKind={props.layoutKind}>
                     <ContrailPanelsTop>
                         <ProfilerChartWithMinimapContainer />
