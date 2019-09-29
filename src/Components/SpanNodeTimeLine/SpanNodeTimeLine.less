@@ -15,3 +15,41 @@
         opacity: 0.4;
     }
 }
+
+.duration {
+    font-size: 10px;
+    line-height: 10px;
+    position: absolute;
+    top: 1px;
+    white-space: nowrap;
+    display: inline-block;
+    color: #333333;
+
+    &.left {
+        left: 0;
+
+        > .inner {
+            position: absolute;
+            right: 4px;
+        }
+    }
+
+    &.right {
+        right: 0;
+
+        > .inner {
+            position: absolute;
+            left: 4px;
+        }
+    }
+
+    &.inside {
+        left: 0;
+        color: #fff;
+
+        > .inner {
+            position: absolute;
+            left: 4px;
+        }
+    }
+}
