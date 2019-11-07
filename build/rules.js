@@ -1,11 +1,10 @@
-/* eslint-disable import/unambiguous */
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = function createRules(NODE_ENV) {
     const PROD = (NODE_ENV || "development") === "production";
     return [
         {
-            test: /\.jsx?$/,
+            test: /\.(jsx?|tsx?)$/,
             use: [
                 {
                     loader: "babel-loader",
@@ -25,24 +24,27 @@ module.exports = function createRules(NODE_ENV) {
                 },
                 {
                     use: PROD
-                        ? ExtractTextPlugin.extract([
+                        ? [
+                              MiniCssExtractPlugin.loader,
                               {
                                   loader: "css-loader",
                                   options: {
-                                      modules: true,
-                                      localIdentName: "[hash:base64:6]",
+                                      modules: {
+                                          localIdentName: "[hash:base64:8]",
+                                      },
                                   },
                               },
                               "postcss-loader",
                               "less-loader",
-                          ])
+                          ]
                         : [
                               "style-loader",
                               {
                                   loader: "css-loader",
                                   options: {
-                                      modules: true,
-                                      localIdentName: "[name]-[local]--[hash:base64:3]",
+                                      modules: {
+                                          localIdentName: "[name]-[local]--[hash:base64:3]",
+                                      },
                                   },
                               },
                               "postcss-loader",
@@ -52,34 +54,30 @@ module.exports = function createRules(NODE_ENV) {
             ],
         },
         {
-            test: /\.json$/,
-            exclude: /node_modules/,
-            rules: [
-                {
-                    use: ["json-loader"],
-                },
-            ],
-        },
-        {
             test: /\.css$/,
-            include: /react-ui/,
+            include: /react-ui|react-icons/,
             rules: [
                 {
                     use: PROD
-                        ? ExtractTextPlugin.extract([
+                        ? [
+                              MiniCssExtractPlugin.loader,
                               {
                                   loader: "css-loader",
                                   options: {
-                                      localIdentName: "[hash:base64:6]",
+                                      modules: {
+                                          localIdentName: "[hash:base64:8]",
+                                      },
                                   },
                               },
-                          ])
+                          ]
                         : [
                               "style-loader",
                               {
                                   loader: "css-loader",
                                   options: {
-                                      localIdentName: "[name]-[local]--[hash:base64:3]",
+                                      modules: {
+                                          localIdentName: "[name]-[local]--[hash:base64:3]",
+                                      },
                                   },
                               },
                           ],
@@ -88,7 +86,7 @@ module.exports = function createRules(NODE_ENV) {
         },
         {
             test: /\.(woff|woff2|eot|svg|ttf|gif|png)$/,
-            include: /react-ui/,
+            include: /react-ui|react-icons/,
             use: ["file-loader"],
         },
         {

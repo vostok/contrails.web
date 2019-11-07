@@ -1,0 +1,29 @@
+.root {
+    display: inline-block;
+    height: 28px;
+    white-space: nowrap;
+
+    > button {
+        width: 28px;
+        height: 28px;
+        border: 0;
+        background-color: transparent;
+        display: inline-block;
+        opacity: 0.3;
+        cursor: pointer;
+
+        &.selected {
+            opacity: 1;
+            cursor: default;
+            outline: none;
+        }
+    }
+
+    .chart-with-minimap-and-tree {
+        background-image: ~'url("./chart-with-minimap-and-tree.png")';
+    }
+
+    .minimap-and-tree {
+        background-image: ~'url("./minimap-and-tree.png")';
+    }
+}

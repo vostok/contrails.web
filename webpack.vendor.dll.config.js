@@ -2,8 +2,7 @@
 const path = require("path");
 
 const webpack = require("webpack");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const createRules = require("./build/rules.js");
 const { extensions } = require("./build/resolve.js");
@@ -12,9 +11,10 @@ function createConfigForEnvironment(environment) {
     const PROD = environment === "production";
 
     const result = {
+        mode: environment,
         entry: {
             vendor: [
-                "babel-polyfill",
+                "@babel/polyfill",
                 "whatwg-fetch",
                 "react",
                 "react-dom",
@@ -22,12 +22,13 @@ function createConfigForEnvironment(environment) {
                 "react-draggable",
                 "react-router-dom",
                 "react-router",
+                "prop-types",
+                "redux",
+                "redux-thunk",
                 "decimal.js",
-                "@skbkontur/react-ui/Button",
-                "@skbkontur/react-ui/Icon",
-                "@skbkontur/react-ui/Input",
-                "@skbkontur/react-ui/Spinner",
+                "./src/Commons/ui/index",
                 "moment",
+                "memoizee",
             ],
         },
         output: {
@@ -48,19 +49,12 @@ function createConfigForEnvironment(environment) {
                 name: "vendor",
                 path: `prebuild/${environment}/vendor-manifest.json`,
             }),
-            new webpack.DefinePlugin({
-                "process.env.NODE_ENV": JSON.stringify(environment),
-            }),
-            new ExtractTextPlugin({
+            new webpack.DefinePlugin({}),
+            new MiniCssExtractPlugin({
                 filename: "[name].[hash].css",
             }),
         ],
     };
-
-    if (PROD) {
-        result.plugins = result.plugins || [];
-        result.plugins.push(new UglifyJSPlugin({ extractComments: true }));
-    }
 
     return result;
 }

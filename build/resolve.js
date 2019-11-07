@@ -1,7 +1,7 @@
 /* eslint-disable import/unambiguous */
 const path = require("path");
 
-exports.extensions = [".js", ".jsx"];
+exports.extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 exports.createAliases = function createAliases() {
     return {

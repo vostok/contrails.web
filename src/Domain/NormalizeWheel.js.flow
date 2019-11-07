@@ -1,9 +1,0 @@
-// @flow
-type NormalizeWheelResult = {
-    spinX: number,
-    spinY: number,
-    pixelX: number,
-    pixelY: number,
-};
-
-declare export default function normalizeWheel(event: SyntheticWheelEvent<>): NormalizeWheelResult;

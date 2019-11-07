@@ -1,12 +1,11 @@
 language: node_js
 node_js:
-- '6'
+- '12'
 sudo: false
 dist: trusty
 install: yarn install
 script:
-- yarn run lint
-- yarn run stylelint
-- yarn run travis:flow.coverage-report
-- yarn run flow.check
+- yarn lint
+- yarn stylelint
+- yarn verify
 - yarn test

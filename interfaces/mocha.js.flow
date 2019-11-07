@@ -1,6 +1,0 @@
-declare function describe(name: string, testsFunc: () => void): void;
-declare function it(name: string, testFunc: () => void|Promise<*>): void;
-declare function after(setupFunc: () => void|Promise<*>): void;
-declare function afterEach(tearDownFunc: () => void|Promise<*>): void;
-declare function before(setupFunc: () => void|Promise<*>): void;
-declare function beforeEach(setupFunc: () => void|Promise<*>): void;

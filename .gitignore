@@ -1,8 +1,5 @@
-.idea
+.idea/workspace.xml
 node_modules
-.tmp
 npm-debug.log
-flow-coverage.json
-flow-coverage/*
 yarn-error.log
 dist

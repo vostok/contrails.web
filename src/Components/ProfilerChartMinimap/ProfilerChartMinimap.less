@@ -1,0 +1,73 @@
+.left-handler-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+}
+
+.left-shadow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.right-shadow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.right-handler-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+}
+
+.left-handler {
+    position: absolute;
+    top: 0;
+    left: -2px;
+    width: 5px;
+    height: 20px;
+    background-color: #3072c4;
+    cursor: e-resize;
+}
+
+.right-handler {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    width: 5px;
+    height: 20px;
+    background-color: #3072c4;
+    cursor: e-resize;
+}
+
+.scroller {
+    background-color: transparent;
+    border-left: 1px solid #3072c4;
+    border-right: 1px solid #3072c4;
+    position: absolute;
+    box-sizing: border-box;
+    top: 0;
+    bottom: 0;
+
+    &:hover {
+        cursor: grab;
+    }
+
+    &:active {
+        cursor: grabbing;
+    }
+}
+
+.container {
+    position: relative;
+    overflow: hidden;
+    border-bottom: #eeeeee;
+}

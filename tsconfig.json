@@ -1,16 +1,41 @@
 {
     "compilerOptions": {
-        "module": "system",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true
+        "allowJs": false,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./",
+        "rootDir": "./",
+        "jsx": "react",
+        "module": "esnext",
+        "target": "esnext",
+        "moduleResolution": "node",
+        "noEmit": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "pretty": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "maxNodeModuleJsDepth": 5,
+        "experimentalDecorators": true,
+        "noImplicitReturns": true,
+        "suppressImplicitAnyIndexErrors": false,
+        "alwaysStrict": true,
+        "lib": ["es2017", "dom", "dom.iterable"],
+        "plugins": [
+            {
+                "name": "tslint-language-service",
+                "alwaysShowRuleFailuresAsWarnings": false,
+                "ignoreDefinitionFiles": true,
+                "configFile": "./tslint-webstorm-local.json",
+                "disableNoUnusedVariableRule": true,
+                "supressWhileTypeErrorsPresent": false,
+                "mockTypeScriptVersion": false
+            }
+        ]
     },
     "include": [
-        "./fake.ts"
-    ],
-    "exclude": [
-        "**/*.js",
-        "**/*.jsx"
+        "src/**/*",
+        "stories/**/*",
+        "test/**/*"
     ]
 }
