@@ -1,4 +1,4 @@
-FROM node:latest AS build-env
+FROM node:12 AS build-env
 
 ADD . /app
 
