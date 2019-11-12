@@ -18,7 +18,7 @@ export class ContrailsVostokApi implements IContrailsApi {
     }
 
     public async getTrace(id: string, abortSignal?: AbortSignal): Promise<TraceInfo> {
-        const response = await fetch(`${this.urlPrefix}/api/findTrace?traceId=${id}`, {
+        const response = await fetch(`${this.urlPrefix}/api/search?traceId=${id}`, {
             headers: ContrailsVostokApi.additionalHeaders,
             signal: abortSignal,
         });
