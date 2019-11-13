@@ -99,6 +99,7 @@
         "test": "mocha test/**/*.test.ts",
         "clean": "rimraf dist",
         "build": "cross-env NODE_ENV=production webpack",
+        "subpath:build": "cross-env NODE_ENV=production webpack \"--env.baseUrl=/contrails\"",
         "vendor:clean": "rimraf prebuild",
         "vendor:build": "rimraf prebuild & webpack --config webpack.vendor.dll.config.js"
     }

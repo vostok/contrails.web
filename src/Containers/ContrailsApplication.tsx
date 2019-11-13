@@ -17,7 +17,7 @@ import { TraceViewerContainer } from "./TraceViewerContainer";
 
 let api: IContrailsApi;
 if (process.env.API_MODE === "production") {
-    api = new ContrailsVostokApi("");
+    api = new ContrailsVostokApi(process.env.BASE_URL || "");
 }
 if (process.env.API_MODE === "fake") {
     api = new ContrailsVostokDemoApi();
