@@ -73,17 +73,17 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
             } catch (e) {
                 if (e instanceof Error) {
                     if (e.message === "500") {
-                        setError({ errorTitle: "500", errorMessage: "Кажется что-то пошло не так :-(" });
+                        setError({ errorTitle: "500", errorMessage: "An error has occurred." });
                         return;
                     }
                     if (e.message === "404") {
-                        setError({ errorTitle: "404", errorMessage: "Трассировок не найдено." });
+                        setError({ errorTitle: "404", errorMessage: "Traces not found. Check TraceId or wait a minute." });
                         return;
                     }
                 }
                 if (!(e instanceof OperationAbortedError)) {
                     console.error(e);
-                    setError({ errorTitle: "Упс :-(", errorMessage: "Произошла непредвиденная ошибка" });
+                    setError({ errorTitle: "Unknown errror.", errorMessage: "An error has occurred." });
                 }
             } finally {
                 if (!abortSignal.aborted) {

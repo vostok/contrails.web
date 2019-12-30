@@ -25,7 +25,7 @@ export function TraceIdInput({ value, onChange, onOpenTrace }: TraceIdInputProps
     return (
         <div>
             <Input
-                placeholder="Введите TraceId"
+                placeholder="TraceId"
                 autoFocus
                 width={500}
                 value={value}
@@ -34,7 +34,7 @@ export function TraceIdInput({ value, onChange, onOpenTrace }: TraceIdInputProps
             />
             <span className={cn("gap")} />
             <Button use="success" onClick={handleOpenTrace}>
-                Открыть
+                Open
             </Button>
         </div>
     );
