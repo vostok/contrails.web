@@ -22,7 +22,7 @@ export function ContrailsLayout({ children, header, right }: ContrailsLayoutProp
                 {right && <div className={cn("header-right-content")}>{right}</div>}
             </div>
             <div className={cn("content")}>
-                <Helmet defaultTitle="Contrails | SKB Kontur" titleTemplate="%s | Contrails | SKB Kontur" />
+                <Helmet defaultTitle="Contrails | Vostok" titleTemplate="%s | Contrails | Vostok" />
                 {children}
             </div>
         </div>
