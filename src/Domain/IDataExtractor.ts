@@ -8,6 +8,7 @@ export interface IDataExtractor {
     isServerSpan(span: SpanInfo): boolean;
     isClientSpan(span: SpanInfo): boolean;
     isFailedRequest(span: SpanInfo): boolean;
+    isSuccessfulRequest(span: SpanInfo): boolean;
 }
 
 export class VostokDataExtractor implements IDataExtractor {
@@ -45,6 +46,22 @@ export class VostokDataExtractor implements IDataExtractor {
         if (code != undefined) {
             const numericCode = parseInt(code);
             if (numericCode < 200 || numericCode >= 300)
+                return true;
+        }
+
+        return false;
+    }
+
+    public isSuccessfulRequest(span: SpanInfo): boolean {
+        const vostokAnnotations = this.getVostokAnnotations(span);
+        if (vostokAnnotations == undefined) {
+            return false;
+        }        
+        
+        const code = vostokAnnotations["http.response.code"];
+        if (code != undefined) {
+            const numericCode = parseInt(code);
+            if (200 <= numericCode && numericCode < 300)
                 return true;
         }
 

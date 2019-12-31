@@ -39,5 +39,9 @@ export class TraceTreeTimeFixer {
                 node.status = 2;
             }
         }
+
+        if (this.dataExtractor.isSuccessfulRequest(node.source)) {
+            node.status = 0;
+        }
     }
 }
