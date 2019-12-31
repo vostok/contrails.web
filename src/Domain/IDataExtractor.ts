@@ -4,10 +4,10 @@ import { VostokKnownAnnotations } from "./VostokSpanInfo";
 export interface IDataExtractor {
     getServiceName(span: SpanInfo): string;
     getSpanTitle(span: SpanInfo): string;
-    getColorConfig(span: SpanInfo): number;
     getHostName(span: SpanInfo): string;
     isServerSpan(span: SpanInfo): boolean;
     isClientSpan(span: SpanInfo): boolean;
+    isFailedRequest(span: SpanInfo): boolean;
 }
 
 export class VostokDataExtractor implements IDataExtractor {
@@ -35,19 +35,20 @@ export class VostokDataExtractor implements IDataExtractor {
         return "";
     }
 
-    public getColorConfig(span: SpanInfo): number {
+    public isFailedRequest(span: SpanInfo): boolean {
         const vostokAnnotations = this.getVostokAnnotations(span);
         if (vostokAnnotations == undefined) {
-            return 0;
+            return false;
+        }        
+        
+        const code = vostokAnnotations["http.response.code"];
+        if (code != undefined) {
+            const numericCode = parseInt(code);
+            if (numericCode < 200 || numericCode >= 300)
+                return true;
         }
-        const { application } = vostokAnnotations;
-        if (application.startsWith("Billy") || application.startsWith("Billing")) {
-            return 3;
-        }
-        if (application.startsWith("Web.UI")) {
-            return 2;
-        }
-        return 0;
+
+        return false;
     }
 
     public isServerSpan(span: SpanInfo): boolean {

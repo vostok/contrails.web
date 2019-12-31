@@ -13,7 +13,7 @@ import { ContrailsDispatch } from "../Store/ContrailsDispatch";
 import { MinimapChartData } from "../Components/ProfilerChartMinimap/MinimapChartData";
 
 function getMinimapItemColor(item: SpanLineItem): undefined | string {
-    return itemColors[item.source.colorConfig].background;
+    return itemColors[item.source.status].background;
 }
 
 function buildMinimapChartData(

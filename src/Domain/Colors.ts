@@ -1,10 +1,10 @@
 export const Colors = [
     {
         text: "white",
-        background: "rgba(30, 121, 190, 0.50)",
+        background: "rgba(0, 170, 144, 0.50)",
         hoverText: "white",
-        hoverBackground: "rgba(30, 121, 190, 0.80)",
-        border: "rgba(30, 121, 190, 1.0)",
+        hoverBackground: "rgba(0, 170, 144, 0.80)",
+        border: "rgba(0,170,144,1.0)",
     },
     {
         text: "white",
@@ -22,10 +22,10 @@ export const Colors = [
     },
     {
         text: "white",
-        background: "rgba(0, 170, 144, 0.50)",
+        background: "rgba(30, 121, 190, 0.50)",
         hoverText: "white",
-        hoverBackground: "rgba(0, 170, 144, 0.80)",
-        border: "rgba(0,170,144,1.0)",
+        hoverBackground: "rgba(30, 121, 190, 0.80)",
+        border: "rgba(30, 121, 190, 1.0)",
     },
     {
         text: "white",

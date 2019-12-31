@@ -23,6 +23,10 @@ export class TraceTreeTimeFixer {
                 offset = parent.from - node.from;
             }
         }
+
+        if (this.dataExtractor.isFailedRequest(node.source)) {
+            node.status = 1;
+        }
         
         if (offset != undefined) {
             node.from += offset;
@@ -31,6 +35,9 @@ export class TraceTreeTimeFixer {
         
         for (const child of node.children) {
             this.traverseTree(child, node, offset);
+            if (child.status != 0 && child.status != 5 && node.status == 0) {
+                node.status = 2;
+            }
         }
     }
 }

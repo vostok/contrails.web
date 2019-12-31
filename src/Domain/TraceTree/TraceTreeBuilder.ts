@@ -29,9 +29,9 @@ export class TraceTreeBuilder {
                 type: "FakeSpan",
                 from: moment(span.BeginTimestamp).valueOf(),
                 to: moment(span.EndTimestamp).valueOf(),
+                status: 5,
                 serviceName: "FakeSpan",
                 spanTitle: "",
-                colorConfig: 5,
                 source: span,
                 children: spans
                     .filter(x => x !== span && x.ParentSpanId != undefined && x.ParentSpanId === span.SpanId)
@@ -43,18 +43,14 @@ export class TraceTreeBuilder {
             type: "SingleSpan",
             from: moment(span.BeginTimestamp).valueOf(),
             to: moment(span.EndTimestamp).valueOf(),
+            status: 0,
             serviceName: this.dataExtractor.getServiceName(span),
             spanTitle: this.dataExtractor.getSpanTitle(span),
-            colorConfig: this.getColorConfig(span),
             source: span,
             children: spans
                 .filter(x => x !== span && x.ParentSpanId != undefined && x.ParentSpanId === span.SpanId)
                 .map(x => this.spanInfoToSpanNode(x, spans))
                 .sort((x, y) => x.from - y.from),
         };
-    }
-
-    private getColorConfig(span: SpanInfo): number {
-        return this.dataExtractor.getColorConfig(span);
     }
 }

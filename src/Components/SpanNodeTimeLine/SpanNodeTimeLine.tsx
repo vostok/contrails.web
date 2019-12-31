@@ -36,7 +36,7 @@ export function SpanNodeTimeLine({ node, totalTimeRange, highlighted }: SpanNode
             <div
                 className={cn("time-span", { faded: !highlighted })}
                 style={{
-                    backgroundColor: Colors[node.colorConfig].background,
+                    backgroundColor: Colors[node.status].background,
                     width: nodeWidthPosition,
                     left: nodeLeftPosition,
                 }}>

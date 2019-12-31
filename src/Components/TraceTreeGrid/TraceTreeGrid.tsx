@@ -88,7 +88,7 @@ export function TraceTreeGrid(props: TraceTreeGridProps): JSX.Element {
     );
 
     const handleGetChildren = React.useCallback((x: SpanNode) => x.children, []);
-    const handleGetItemColor = React.useCallback((x: SpanNode) => Colors[x.colorConfig].background, []);
+    const handleGetItemColor = React.useCallback((x: SpanNode) => Colors[x.status].background, []);
 
     return (
         <TreeGridWithState

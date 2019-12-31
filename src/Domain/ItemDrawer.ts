@@ -56,7 +56,7 @@ export function handleCustomDrawItem(
 ): void {
     context.save();
     try {
-        const colorIndex = item.source.colorConfig;
+        const colorIndex = item.source.status;
         let left = 0;
         let width: number | undefined;
         const fullWidth = itemContext.width;

@@ -8,9 +8,9 @@ function createSpan(from: number, to: number, children?: SpanNode[]): SpanNode {
         type: "SingleSpan",
         from: from,
         to: to,
+        status: 0,
         serviceName: "ServiceName",
-        spanTitle: "SpanTitle",
-        colorConfig: 0,
+        spanTitle: "SpanTitle",        
         source: {
             TraceId: "Id",
             SpanId: "Id",
