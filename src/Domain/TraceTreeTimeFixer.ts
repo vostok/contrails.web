@@ -14,6 +14,13 @@ export class TraceTreeTimeFixer {
         this.traverseTree(this.traceTree);
     }
 
+    private cmp(a: SpanNode, b: SpanNode): number {
+        if (a.status == b.status)
+            return a.from - b.from;
+
+        return a.status - b.status;
+    }
+
     private traverseTree(node: SpanNode, parent?: SpanNode, offset?: number): void {
         if (parent != undefined) {
             const parentHostName = this.dataExtractor.getHostName(parent.source);
@@ -43,5 +50,7 @@ export class TraceTreeTimeFixer {
         if (this.dataExtractor.isSuccessfulRequest(node.source)) {
             node.status = 0;
         }
+
+        node.children = node.children.sort(this.cmp);
     }
 }
