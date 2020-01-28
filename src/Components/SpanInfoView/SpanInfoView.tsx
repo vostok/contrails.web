@@ -23,65 +23,6 @@ interface ServiceIconProps {
 
 const dataExtractor = new VostokDataExtractor();
 
-function SpanMainInfo({ span, parentSpan, root }: ServiceIconProps): JSX.Element {
-    if (dataExtractor.isServerSpan(span.source) && parentSpan != undefined) {
-        return (
-            <span>
-                <div>Server request process</div>
-                <div>
-                    {parentSpan.source.Annotations["operation"]} - {parentSpan.source.Annotations["http.response.code"]}
-                </div>
-                <div>
-                    <Copy /> {span.serviceName} @ <PC /> {span.source.Annotations["host"]}
-                </div>
-                <div>
-                    Duration:{" "}
-                    {DateTimeUtils.formatDurationTicks(
-                        DateTimeUtils.difference(span.source.EndTimestamp, span.source.BeginTimestamp)
-                    )}
-                </div>
-            </span>
-        );
-    }
-    if (
-        dataExtractor.isClientSpan(span.source) &&
-        span.children.length === 1 &&
-        dataExtractor.isServerSpan(span.children[0].source)
-    ) {
-        return (
-            <span>
-                <div>Client request</div>
-                <div>
-                    {span.source.Annotations["operation"]} - {span.source.Annotations["http.response.code"]}
-                </div>
-                <div>
-                    <Copy /> {span.serviceName} @ <PC /> {span.source.Annotations["host"]}
-                </div>
-                <div>
-                    Duration:{" "}
-                    {DateTimeUtils.formatDurationTicks(
-                        DateTimeUtils.difference(span.source.EndTimestamp, span.source.BeginTimestamp)
-                    )}
-                </div>
-            </span>
-        );
-    }
-    return (
-        <span>
-            <div>Client operation</div>
-            <div>
-                <Copy /> {span.serviceName} @ <PC /> {span.source.Annotations["host"]}
-            </div>
-            <div>
-                Duration:{" "}
-                {DateTimeUtils.formatDurationTicks(
-                    DateTimeUtils.difference(span.source.EndTimestamp, span.source.BeginTimestamp)
-                )}
-            </div>
-        </span>
-    );
-}
-
 export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Element {
     if (span == undefined) {
         return nullElement;
@@ -90,7 +31,6 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     const annotations = spanInfo.Annotations;
     return (
         <div>
-            <SpanMainInfo span={span} parentSpan={findParentNode(root, span, x => x.children)} />
             <div className={cn("section")}>
                 <div className={cn("section-header")}>General</div>
                 <div className={cn("item")}>
@@ -134,7 +74,7 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
             {annotations != undefined && (
                 <div className={cn("section")}>
                     <div className={cn("section-header")}>Annotations</div>
-                    {Object.getOwnPropertyNames(annotations).map(x => (
+                    {Object.getOwnPropertyNames(annotations).sort(sortAnnotations).map(x => (
                         <div key={x} className={cn("item")}>
                             <div className={cn("caption")}>{x}:</div>
                             <span className={cn("value")}>{renderValue(annotations[x])}</span>
@@ -146,14 +86,38 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     );
 }
 
+function sortAnnotations(a: string, b: string) {
+    var sortingArr = [
+        'kind',
+        'application',
+        'host',
+        'operation',
+        'http.client.name',
+        'http.client.address',
+        'http.request.method',
+        'http.request.targetEnvironment',
+        'http.request.targetService',
+        'http.request.url',
+        'http.request.size',
+        'http.cluster.strategy',
+        'http.cluster.status',
+        'http.response.code',
+        'http.response.size',
+    ];
+
+    let indexA = sortingArr.indexOf(a);
+    if (indexA == -1) indexA = sortingArr.length;
+
+    let indexB = sortingArr.indexOf(b);
+    if (indexB == -1) indexB = sortingArr.length;
+
+    return indexA - indexB;
+}
+
 function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): React.ReactNode {
     const parentSpan = TraceTreeUtils.getParentSpan(root, node);
-
-    const rootSource = root.source;
-    const relatedToRoot = DateTimeUtils.formatDurationTicks(DateTimeUtils.difference(value, rootSource.BeginTimestamp));
-
     let relatedToParent;
-    if (parentSpan != undefined) {
+    if (parentSpan != undefined && node.source.Annotations["host"] ==  parentSpan.source.Annotations["host"]) {
         const parentSource = parentSpan.source;
         relatedToParent = DateTimeUtils.formatDurationTicks(
             DateTimeUtils.difference(value, parentSource.BeginTimestamp)
@@ -165,10 +129,6 @@ function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): 
             <div className={cn("item")}>
                 <div className={cn("caption")}>UTC: </div>
                 <span className={cn("value")}>{DateTimeUtils.formatDatePreciseUtc(value)}</span>
-            </div>
-            <div className={cn("item")}>
-                <div className={cn("caption")}>Relative (root begin):</div>
-                <span className={cn("value")}>{relatedToRoot}</span>
             </div>
             {relatedToParent != undefined && (
                 <div className={cn("item")}>
