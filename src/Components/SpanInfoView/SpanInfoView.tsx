@@ -90,7 +90,9 @@ function sortAnnotations(a: string, b: string) {
     var sortingArr = [
         'kind',
         'application',
+        'environment',
         'host',
+        'component',
         'operation',
         'http.client.name',
         'http.client.address',
