@@ -10,3 +10,11 @@ export interface SpanNode {
     source: SpanInfo;
     children: SpanNode[];
 }
+
+export enum Status {
+    Unknown,
+    Ok,
+    Warn,
+    Error,
+    Fake
+}

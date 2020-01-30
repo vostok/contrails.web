@@ -1,5 +1,6 @@
-import { SpanInfo } from "./SpanInfo";
-import { VostokKnownAnnotations } from "./VostokSpanInfo";
+import {SpanInfo} from "./SpanInfo";
+import {VostokKnownAnnotations} from "./VostokSpanInfo";
+import {Status} from "./TraceTree/SpanNode";
 
 export interface IDataExtractor {
     getServiceName(span: SpanInfo): string;
@@ -7,8 +8,7 @@ export interface IDataExtractor {
     getHostName(span: SpanInfo): string;
     isServerSpan(span: SpanInfo): boolean;
     isClientSpan(span: SpanInfo): boolean;
-    isFailedRequest(span: SpanInfo): boolean;
-    isSuccessfulRequest(span: SpanInfo): boolean;
+    getStatus(span: SpanInfo): Status;
 }
 
 export class VostokDataExtractor implements IDataExtractor {
@@ -36,32 +36,56 @@ export class VostokDataExtractor implements IDataExtractor {
         return "";
     }
 
-    public isFailedRequest(span: SpanInfo): boolean {
-        const vostokAnnotations = this.getVostokAnnotations(span);
-        if (vostokAnnotations == undefined) {
-            return false;
-        }        
-        
-        const code = vostokAnnotations["http.response.code"];
-        if (code != undefined) {
-            const numericCode = parseInt(code);
-            if (numericCode < 200 || numericCode >= 300)
-                return true;
+    public getStatus(span: SpanInfo): Status {
+        if (span.OperationName == "FakeSpan") {
+            return Status.Fake;
         }
 
-        return false;
+        const vostokAnnotations = this.getVostokAnnotations(span);
+        if (vostokAnnotations == undefined) {
+            return Status.Unknown;
+        }
+
+        const code = vostokAnnotations["http.response.code"];
+        if (code == undefined) {
+            return Status.Unknown;
+        }
+
+        const numericCode = parseInt(code);
+
+        // Successful
+        if ((numericCode >= 200) && (numericCode < 300))
+            return Status.Ok;
+
+        // Redirection
+        if ((numericCode >= 300) && (numericCode < 400))
+            return Status.Ok;
+
+        // Informational
+        if ((numericCode >= 100) && (numericCode < 200))
+            return Status.Ok;
+
+        // Server error
+        if ((numericCode >= 500) && (numericCode < 600))
+            return Status.Error;
+
+        // NetworkError
+        if (numericCode == 0 || numericCode == 408 || numericCode == 450 || numericCode == 451 || numericCode == 452 || numericCode == 453)
+            return Status.Error;
+
+        return Status.Warn;
     }
 
     public isSuccessfulRequest(span: SpanInfo): boolean {
         const vostokAnnotations = this.getVostokAnnotations(span);
         if (vostokAnnotations == undefined) {
             return false;
-        }        
-        
+        }
+
         const code = vostokAnnotations["http.response.code"];
         if (code != undefined) {
             const numericCode = parseInt(code);
-            if (200 <= numericCode && numericCode < 300)
+            if (100 <= numericCode && numericCode <= 399)
                 return true;
         }
 

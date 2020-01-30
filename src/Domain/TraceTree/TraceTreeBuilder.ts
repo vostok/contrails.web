@@ -4,7 +4,7 @@ import { NotImplementedError } from "../../Commons/Errors";
 import { IDataExtractor } from "../IDataExtractor";
 import { SpanInfo } from "../SpanInfo";
 
-import { SpanNode } from "./SpanNode";
+import {SpanNode, Status} from "./SpanNode";
 
 export class TraceTreeBuilder {
     public dataExtractor: IDataExtractor;
@@ -29,7 +29,7 @@ export class TraceTreeBuilder {
                 type: "FakeSpan",
                 from: moment(span.BeginTimestamp).valueOf(),
                 to: moment(span.EndTimestamp).valueOf(),
-                status: 5,
+                status: Status.Fake,
                 serviceName: "FakeSpan",
                 spanTitle: "",
                 source: span,
@@ -43,7 +43,7 @@ export class TraceTreeBuilder {
             type: "SingleSpan",
             from: moment(span.BeginTimestamp).valueOf(),
             to: moment(span.EndTimestamp).valueOf(),
-            status: 0,
+            status: Status.Unknown,
             serviceName: this.dataExtractor.getServiceName(span),
             spanTitle: this.dataExtractor.getSpanTitle(span),
             source: span,

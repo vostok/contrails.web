@@ -10,7 +10,7 @@ function createSpan(from: number, to: number, children?: SpanNode[]): SpanNode {
         to: to,
         status: 0,
         serviceName: "ServiceName",
-        spanTitle: "SpanTitle",        
+        spanTitle: "SpanTitle",
         source: {
             TraceId: "Id",
             SpanId: "Id",
@@ -30,7 +30,8 @@ describe("TraceTreeUtils.getSpanNodeSelfTime", () => {
     });
 
     it("should correct calculate time for child not fully intersected with parent", () => {
-        expect(TraceTreeUtils.getSpanNodeSelfTime(createSpan(0, 10, [createSpan(5, 20)]))).to.eql(5);
+        expect(TraceTreeUtils.getSpanNodeSelfTime(createSpan(0, 10, [createSpan(
+            5, 20)]))).to.eql(5);
         expect(TraceTreeUtils.getSpanNodeSelfTime(createSpan(0, 10, [createSpan(5, 20), createSpan(7, 25)]))).to.eql(5);
     });
 
