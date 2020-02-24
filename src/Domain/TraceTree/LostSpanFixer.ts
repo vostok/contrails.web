@@ -2,6 +2,7 @@ import _ from "lodash";
 import moment from "moment";
 
 import { InvalidProgramStateError } from "../../Commons/Errors";
+import {SpanInfo} from "../SpanInfo";
 
 interface SpanBase {
     SpanId: string;
@@ -25,22 +26,34 @@ export type SpanFactory<T> = (
 export class LostSpanFixer {
     public fix<T extends SpanBase>(spans: T[], createFakeSpan: SpanFactory<T>): T[] {
         let result = [...spans];
-        const spanIds = spans.map(x => x.SpanId);
-        result = this.fixParentSpanIfNeed(result, createFakeSpan);
-        const lostSpans = spans.filter(x => x.ParentSpanId != undefined && !spanIds.includes(x.ParentSpanId));
-        for (const lostSpan of lostSpans) {
-            if (result.find(x => x.SpanId === lostSpan.ParentSpanId) != undefined) {
-                continue;
+        const spanIds = new Set(spans.map(x => x.SpanId));
+        result = this.fixRootSpanIfNeed(result, createFakeSpan);
+        const root = result.find(x => x.ParentSpanId == undefined);
+
+        const lostSpans = spans.filter(x => x.ParentSpanId != undefined && !spanIds.has(x.ParentSpanId));
+        console.log("Number of lost spans: ", lostSpans.length);
+
+        const lostParentDict = new Map<string, SpanInfo[]>();
+        lostSpans.forEach(span => {
+            const parent = span.ParentSpanId;
+            if (parent != undefined) {
+                lostParentDict.set(parent, lostParentDict.get(parent) || []);
+                // @ts-ignore
+                lostParentDict.get(parent).push(span);
             }
-            const parentSpanId = lostSpan.ParentSpanId;
-            const mostSuitableParent = this.findMostSuitableParent(result, lostSpan);
+        });
+
+        for (const lostGroup of lostParentDict) {
+            const parentSpanId = lostGroup[0];
+            // @ts-ignore
+            const mostSuitableParent = spans.length > 500 ? root : this.findMostSuitableParent(result, lostGroup[1][0]);
             if (mostSuitableParent == undefined) {
                 continue;
             }
             if (parentSpanId == undefined) {
                 throw new Error("InvalidProgramState");
             }
-            const childrenOfFakeSpan = spans.filter(x => x.ParentSpanId === parentSpanId);
+            const childrenOfFakeSpan = lostGroup[1];
             const min = _.minBy(childrenOfFakeSpan.map(x => x.BeginTimestamp), x => moment(x).toDate());
             const max = _.maxBy(childrenOfFakeSpan.map(x => x.EndTimestamp), x => moment(x).toDate());
             if (min == undefined || max == undefined) {
@@ -52,7 +65,7 @@ export class LostSpanFixer {
         return result;
     }
 
-    public fixParentSpanIfNeed<T extends SpanBase>(spans: T[], createFakeSpan: SpanFactory<T>): T[] {
+    public fixRootSpanIfNeed<T extends SpanBase>(spans: T[], createFakeSpan: SpanFactory<T>): T[] {
         if (spans.find(x => x.ParentSpanId == undefined) != undefined) {
             return spans;
         }
