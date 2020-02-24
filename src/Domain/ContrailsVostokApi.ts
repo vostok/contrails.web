@@ -2,6 +2,7 @@ import { IContrailsApi } from "./IContrailsApi";
 import { TraceInfo } from "./TraceInfo";
 import { vostokResponseToTraceInfo } from "./VostokResponseToTraceInfo";
 import { VostokSpanInfo } from "./VostokSpanInfo";
+import Toast from "@skbkontur/react-ui/Toast";
 
 export class ContrailsVostokApi implements IContrailsApi {
     private readonly urlPrefix: string;
@@ -18,15 +19,20 @@ export class ContrailsVostokApi implements IContrailsApi {
     }
 
     public async getTrace(id: string, abortSignal?: AbortSignal): Promise<TraceInfo> {
-        const response = await fetch(`${this.urlPrefix}/api/search?traceId=${id}`, {
+        const limit = 10000;
+        const response = await fetch(`${this.urlPrefix}/api/search?traceId=${id}&limit=${limit}`, {
             headers: ContrailsVostokApi.additionalHeaders,
             signal: abortSignal,
         });
         if (response.status !== 200) {
-            throw new Error("500");
+            throw new Error(response.status.toString());
         }
         // tslint:disable no-unsafe-any
         const resp: VostokSpanInfo[] = await response.json();
-        return vostokResponseToTraceInfo(resp);
+        const trace = vostokResponseToTraceInfo(resp);
+        if (trace.Spans.length > limit) {
+            Toast.push(`$Only first ${trace.Spans.length} spans showed.`);
+        }
+        return trace;
     }
 }
