@@ -19,11 +19,22 @@ export class TraceTreeBuilder {
             // TODO построить фековай item
             throw new NotImplementedError();
         }
-        const resultRoot = this.spanInfoToSpanNode(root, spans);
+
+        const childrenDict = new Map<string, SpanInfo[]>();
+        spans.forEach(span => {
+            const parent = span.ParentSpanId;
+            if (parent != undefined) {
+                childrenDict.set(parent, childrenDict.get(parent) || []);
+                // @ts-ignore
+                childrenDict.get(parent).push(span);
+            }
+        });
+
+        const resultRoot = this.spanInfoToSpanNode(root, childrenDict);
         return resultRoot;
     }
 
-    private spanInfoToSpanNode(span: SpanInfo, spans: SpanInfo[]): SpanNode {
+    private spanInfoToSpanNode(span: SpanInfo, childrenDict: Map<string, SpanInfo[]>): SpanNode {
         if (span.OperationName === "FakeSpan") {
             return {
                 type: "FakeSpan",
@@ -33,9 +44,8 @@ export class TraceTreeBuilder {
                 serviceName: "FakeSpan",
                 spanTitle: "",
                 source: span,
-                children: spans
-                    .filter(x => x !== span && x.ParentSpanId != undefined && x.ParentSpanId === span.SpanId)
-                    .map(x => this.spanInfoToSpanNode(x, spans))
+                children: (childrenDict.get(span.SpanId) || [])
+                    .map(x => this.spanInfoToSpanNode(x, childrenDict))
                     .sort((x, y) => x.from - y.from),
             };
         }
@@ -47,9 +57,8 @@ export class TraceTreeBuilder {
             serviceName: this.dataExtractor.getServiceName(span),
             spanTitle: this.dataExtractor.getSpanTitle(span),
             source: span,
-            children: spans
-                .filter(x => x !== span && x.ParentSpanId != undefined && x.ParentSpanId === span.SpanId)
-                .map(x => this.spanInfoToSpanNode(x, spans))
+            children: (childrenDict.get(span.SpanId) || [])
+                .map(x => this.spanInfoToSpanNode(x, childrenDict))
                 .sort((x, y) => x.from - y.from),
         };
     }
