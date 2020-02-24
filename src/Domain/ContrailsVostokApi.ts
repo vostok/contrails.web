@@ -34,7 +34,7 @@ export class ContrailsVostokApi implements IContrailsApi {
             Toast.push(`Only the first ${trace.Spans.length} spans have been shown.`, {
                 label: "Ok",
                 // tslint:disable-next-line:no-empty
-                handler: () => {},
+                handler: () => Toast.close(),
             });
         }
         return trace;
