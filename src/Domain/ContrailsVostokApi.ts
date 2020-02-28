@@ -2,7 +2,6 @@ import { IContrailsApi } from "./IContrailsApi";
 import { TraceInfo } from "./TraceInfo";
 import { vostokResponseToTraceInfo } from "./VostokResponseToTraceInfo";
 import { VostokSpanInfo } from "./VostokSpanInfo";
-import Toast from "@skbkontur/react-ui/Toast";
 
 export class ContrailsVostokApi implements IContrailsApi {
     private readonly urlPrefix: string;
@@ -31,11 +30,7 @@ export class ContrailsVostokApi implements IContrailsApi {
         const resp: VostokSpanInfo[] = await response.json();
         const trace = vostokResponseToTraceInfo(resp);
         if (trace.Spans.length > limit) {
-            Toast.push(`Only the first ${trace.Spans.length} spans have been shown`, {
-                label: "Ok",
-                // tslint:disable-next-line:no-empty
-                handler: () => Toast.close(),
-            });
+            alert(`Only the first ${trace.Spans.length} spans have been shown`);
         }
         return trace;
     }
