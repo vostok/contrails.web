@@ -30,7 +30,7 @@ export class ContrailsVostokApi implements IContrailsApi {
         const resp: VostokSpanInfo[] = await response.json();
         const trace = vostokResponseToTraceInfo(resp);
         if (trace.Spans.length > limit) {
-            alert(`Only the first ${trace.Spans.length} spans have been shown`);
+            alert(`Only the first ${trace.Spans.length} spans will be shown`);
         }
         return trace;
     }
