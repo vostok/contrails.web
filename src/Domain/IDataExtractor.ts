@@ -23,9 +23,9 @@ export class VostokDataExtractor implements IDataExtractor {
     public getHostName(span: SpanInfo): string {
         const vostokAnnotations = this.getVostokAnnotations(span);
         if (typeof vostokAnnotations.host === "string") {
-            return vostokAnnotations.host;
+            return vostokAnnotations.host.toLowerCase().split(".")[0];
         }
-        return "Unknown Service";
+        return "unknown";
     }
 
     public getSpanTitle(span: SpanInfo): string {
