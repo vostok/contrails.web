@@ -1,5 +1,6 @@
 import _ from "lodash";
 import * as React from "react";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 import { ArrowTriangleDown, ArrowTriangleRight } from "../../Commons/ui";
 import { findNodesPathTo } from "../../Domain/Utils/FindNodesPathToVisitor";
@@ -33,6 +34,7 @@ export interface TreeGridProps<TItem> {
 
 interface TreeGridState<TItem> {
     visibleRows: Array<VisibleRowInfo<TItem>>;
+    columnWidths: { [name: string]: undefined | number };
 }
 
 interface VisibleRowInfo<TItem> {
@@ -44,6 +46,7 @@ interface VisibleRowInfo<TItem> {
 export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeGridState<TItem>> {
     public state: TreeGridState<TItem> = {
         visibleRows: [],
+        columnWidths: {},
     };
     private readonly highlightedItems: Set<TItem> = new Set<TItem>();
     private readonly table = React.createRef<VirtualTableType<VisibleRowInfo<TItem>>>();
@@ -252,7 +255,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
                     key={column.name}
                     className={cn("item-cell", "main-cell", column.cellClassName)}
                     style={{
-                        width: column.width || "100%",
+                        width: this.state.columnWidths[column.name] ?? column.width ?? "100%",
                     }}>
                     {parents.map(x => this.renderParentBlock(x))}
                     <span>
@@ -276,8 +279,8 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
                 key={column.name}
                 className={cn("item-cell", column.cellClassName)}
                 style={{
-                    width: column.width,
-                    maxWidth: column.width,
+                    width: this.state.columnWidths[column.name] ?? column.width,
+                    maxWidth: this.state.columnWidths[column.name] ?? column.width,
                     textAlign: column.align,
                 }}>
                 {column.renderValue(item, focusedItem === item, highlighted)}
@@ -286,14 +289,52 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
     }
 
     private renderHeaderCell(column: ColumnDefinition<TItem>): React.ReactNode {
+        const currentColumnWidth = this.state.columnWidths[column.name] ?? column.width;
         return (
             <th
                 key={column.name}
                 style={{
-                    width: column.width,
-                    maxWidth: column.width,
+                    position: "relative",
+                    overflow: "visible",
+                    width: currentColumnWidth,
+                    maxWidth: currentColumnWidth,
                 }}>
                 {column.renderHeader()}
+                {currentColumnWidth && (
+                    <Draggable
+                        axis="x"
+                        position={{ x: 0, y: 0 }}
+                        onStop={(e, dragInfo) => {
+                            this.setState({
+                                columnWidths: {
+                                    ...this.state.columnWidths,
+                                    [column.name]: currentColumnWidth + dragInfo.x,
+                                },
+                            });
+                        }}>
+                        <div
+                            style={{
+                                cursor: "e-resize",
+                                position: "absolute",
+                                width: 10,
+                                right: -5,
+                                top: 0,
+                                bottom: 0,
+                                zIndex: 5,
+                            }}>
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    width: 1,
+                                    left: 5,
+                                    top: 0,
+                                    bottom: 0,
+                                    backgroundColor: "#ccc",
+                                }}
+                            />
+                        </div>
+                    </Draggable>
+                )}
             </th>
         );
     }

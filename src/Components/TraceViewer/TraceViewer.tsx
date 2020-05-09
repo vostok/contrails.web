@@ -8,6 +8,7 @@ import { FullCallTreeContainer } from "../../Containers/FullCallTreeContainer";
 import { LayoutKind } from "../../Containers/LayoutKind/LayoutKind";
 import { ProfilerChartWithMinimapContainer } from "../../Containers/ProfilerChartWithMinimapContainer";
 import { SpanInfoViewContainer } from "../../Containers/SpanInfoViewContainer";
+import { normalizeTraceId } from "../../Domain/Utils/TraceIdNormalizer";
 import { ContrailsErrorMessage, ErrorInfo } from "../ContrailsErrorMessage/ContrailsErrorMessage";
 import { ContrailsLayout } from "../ContrailsLayout/ContrailsLayout";
 import { ContrailsLoader } from "../ContrailsLoader/ContrailsLoader";
@@ -60,7 +61,10 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
 
     useAsyncEffect(
         async (abortSignal: AbortSignal) => {
-            if (props.loadedTraceId != undefined && props.loadedTraceId === props.traceId) {
+            if (
+                props.loadedTraceId != undefined &&
+                normalizeTraceId(props.loadedTraceId) === normalizeTraceId(props.traceId)
+            ) {
                 if (props.loadedSubtreeSpanId !== props.subtreeSpanId) {
                     props.onChangeSubtree(props.subtreeSpanId);
                 }
