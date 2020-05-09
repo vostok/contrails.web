@@ -1,6 +1,6 @@
-import {SpanInfo} from "./SpanInfo";
-import {VostokKnownAnnotations} from "./VostokSpanInfo";
-import {Status} from "./TraceTree/SpanNode";
+import { SpanInfo } from "./SpanInfo";
+import { Status } from "./TraceTree/SpanNode";
+import { VostokKnownAnnotations } from "./VostokSpanInfo";
 
 export interface IDataExtractor {
     getServiceName(span: SpanInfo): string;
@@ -54,24 +54,36 @@ export class VostokDataExtractor implements IDataExtractor {
         const numericCode = parseInt(code);
 
         // Successful
-        if ((numericCode >= 200) && (numericCode < 300))
+        if (numericCode >= 200 && numericCode < 300) {
             return Status.Ok;
+        }
 
         // Redirection
-        if ((numericCode >= 300) && (numericCode < 400))
+        if (numericCode >= 300 && numericCode < 400) {
             return Status.Ok;
+        }
 
         // Informational
-        if ((numericCode >= 100) && (numericCode < 200))
+        if (numericCode >= 100 && numericCode < 200) {
             return Status.Ok;
+        }
 
         // Server error
-        if ((numericCode >= 500) && (numericCode < 600))
+        if (numericCode >= 500 && numericCode < 600) {
             return Status.Error;
+        }
 
         // NetworkError
-        if (numericCode == 0 || numericCode == 408 || numericCode == 450 || numericCode == 451 || numericCode == 452 || numericCode == 453)
+        if (
+            numericCode == 0 ||
+            numericCode == 408 ||
+            numericCode == 450 ||
+            numericCode == 451 ||
+            numericCode == 452 ||
+            numericCode == 453
+        ) {
             return Status.Error;
+        }
 
         return Status.Warn;
     }
@@ -85,8 +97,9 @@ export class VostokDataExtractor implements IDataExtractor {
         const code = vostokAnnotations["http.response.code"];
         if (code != undefined) {
             const numericCode = parseInt(code);
-            if (100 <= numericCode && numericCode <= 399)
+            if (100 <= numericCode && numericCode <= 399) {
                 return true;
+            }
         }
 
         return false;

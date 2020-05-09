@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { strictDefined } from "../Commons/StrictDefined";
 import { ProfilerData } from "../Components/ProfilerChart/Internal/ProfilerChartDrawer";
+import { MinimapChartData } from "../Components/ProfilerChartMinimap/MinimapChartData";
 import { ProfilerChartMinimap } from "../Components/ProfilerChartMinimap/ProfilerChartMinimap";
 import { Colors as itemColors } from "../Domain/Colors";
 import { SpanLineItem } from "../Domain/SpanLines/SpansToLinesArranger";
@@ -10,7 +11,6 @@ import { TimeRange } from "../Domain/TimeRange";
 import { ActionType } from "../Store/ContrailsApplicationActions";
 import { ContrailsApplicationState } from "../Store/ContrailsApplicationState";
 import { ContrailsDispatch } from "../Store/ContrailsDispatch";
-import { MinimapChartData } from "../Components/ProfilerChartMinimap/MinimapChartData";
 
 function getMinimapItemColor(item: SpanLineItem): undefined | string {
     return itemColors[item.source.status].background;
@@ -44,7 +44,4 @@ const mapDispatch = (dispatch: ContrailsDispatch) => ({
         dispatch({ type: ActionType.ChangeViewPort, payload: { viewPort: viewPort } }),
 });
 
-export const ProfilerChartMinimapContainer = connect(
-    mapProps,
-    mapDispatch
-)(ProfilerChartMinimap);
+export const ProfilerChartMinimapContainer = connect(mapProps, mapDispatch)(ProfilerChartMinimap);

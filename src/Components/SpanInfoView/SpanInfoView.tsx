@@ -74,12 +74,14 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
             {annotations != undefined && (
                 <div className={cn("section")}>
                     <div className={cn("section-header")}>Annotations</div>
-                    {Object.getOwnPropertyNames(annotations).sort(sortAnnotations).map(x => (
-                        <div key={x} className={cn("item")}>
-                            <div className={cn("caption")}>{x}:</div>
-                            <span className={cn("value")}>{renderValue(annotations[x])}</span>
-                        </div>
-                    ))}
+                    {Object.getOwnPropertyNames(annotations)
+                        .sort(sortAnnotations)
+                        .map(x => (
+                            <div key={x} className={cn("item")}>
+                                <div className={cn("caption")}>{x}:</div>
+                                <span className={cn("value")}>{renderValue(annotations[x])}</span>
+                            </div>
+                        ))}
                 </div>
             )}
         </div>
@@ -87,31 +89,35 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
 }
 
 function sortAnnotations(a: string, b: string) {
-    var sortingArr = [
-        'kind',
-        'application',
-        'environment',
-        'host',
-        'component',
-        'operation',
-        'http.client.name',
-        'http.client.address',
-        'http.request.method',
-        'http.request.targetEnvironment',
-        'http.request.targetService',
-        'http.request.url',
-        'http.request.size',
-        'http.cluster.strategy',
-        'http.cluster.status',
-        'http.response.code',
-        'http.response.size',
+    let sortingArr = [
+        "kind",
+        "application",
+        "environment",
+        "host",
+        "component",
+        "operation",
+        "http.client.name",
+        "http.client.address",
+        "http.request.method",
+        "http.request.targetEnvironment",
+        "http.request.targetService",
+        "http.request.url",
+        "http.request.size",
+        "http.cluster.strategy",
+        "http.cluster.status",
+        "http.response.code",
+        "http.response.size",
     ];
 
     let indexA = sortingArr.indexOf(a);
-    if (indexA == -1) indexA = sortingArr.length;
+    if (indexA == -1) {
+        indexA = sortingArr.length;
+    }
 
     let indexB = sortingArr.indexOf(b);
-    if (indexB == -1) indexB = sortingArr.length;
+    if (indexB == -1) {
+        indexB = sortingArr.length;
+    }
 
     return indexA - indexB;
 }
@@ -119,7 +125,7 @@ function sortAnnotations(a: string, b: string) {
 function renderTimestampSection(root: SpanNode, node: SpanNode, value: string): React.ReactNode {
     const parentSpan = TraceTreeUtils.getParentSpan(root, node);
     let relatedToParent;
-    if (parentSpan != undefined && node.source.Annotations["host"] ==  parentSpan.source.Annotations["host"]) {
+    if (parentSpan != undefined && node.source.Annotations["host"] == parentSpan.source.Annotations["host"]) {
         const parentSource = parentSpan.source;
         relatedToParent = DateTimeUtils.formatDurationTicks(
             DateTimeUtils.difference(value, parentSource.BeginTimestamp)

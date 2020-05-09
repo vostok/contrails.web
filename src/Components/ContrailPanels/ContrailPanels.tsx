@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import cn from "./ContrailPanels.less";
 import { LayoutKind } from "../../Containers/LayoutKind/LayoutKind";
+
+import cn from "./ContrailPanels.less";
 
 interface ContainerProps {
     className?: string;

@@ -18,13 +18,8 @@ export class DateTimeUtils {
     public static formatDatePreciseUtc(dateTimeString: string): string {
         const ticks = new Decimal(timestampToTicks(dateTimeString) || "0");
         return (
-            moment(dateTimeString)
-                .utc()
-                .format("DD.MM.YYYY HH:mm:ss.SSS") +
-            ticks
-                .mod(10000)
-                .toString()
-                .padStart(4, "0")
+            moment(dateTimeString).utc().format("DD.MM.YYYY HH:mm:ss.SSS") +
+            ticks.mod(10000).toString().padStart(4, "0")
         );
     }
 
@@ -35,14 +30,7 @@ export class DateTimeUtils {
         }
         return (
             (val.isNegative() ? "-" : "") +
-            this.millisecondsToString(
-                val
-                    .absoluteValue()
-                    .div(10000)
-                    .round()
-                    .toNumber(),
-                "0ms"
-            )
+            this.millisecondsToString(val.absoluteValue().div(10000).round().toNumber(), "0ms")
         );
     }
 
@@ -101,11 +89,7 @@ function timestampToTicks(timeStr: undefined | string | Date): undefined | null 
     } else {
         commonTime = new Decimal(timeStr.getTime());
     }
-    return commonTime
-        .mul(10000)
-        .plus(offset)
-        .plus(end)
-        .toString();
+    return commonTime.mul(10000).plus(offset).plus(end).toString();
 }
 
 // export function ticksToTimestamp(timeStr: undefined | string | Date): undefined | Date {

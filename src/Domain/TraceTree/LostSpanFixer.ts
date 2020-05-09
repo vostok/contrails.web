@@ -2,7 +2,7 @@ import _ from "lodash";
 import moment from "moment";
 
 import { InvalidProgramStateError } from "../../Commons/Errors";
-import {SpanInfo} from "../SpanInfo";
+import { SpanInfo } from "../SpanInfo";
 
 interface SpanBase {
     SpanId: string;
@@ -54,8 +54,14 @@ export class LostSpanFixer {
                 throw new Error("InvalidProgramState");
             }
             const childrenOfFakeSpan = lostGroup[1];
-            const min = _.minBy(childrenOfFakeSpan.map(x => x.BeginTimestamp), x => moment(x).toDate());
-            const max = _.maxBy(childrenOfFakeSpan.map(x => x.EndTimestamp), x => moment(x).toDate());
+            const min = _.minBy(
+                childrenOfFakeSpan.map(x => x.BeginTimestamp),
+                x => moment(x).toDate()
+            );
+            const max = _.maxBy(
+                childrenOfFakeSpan.map(x => x.EndTimestamp),
+                x => moment(x).toDate()
+            );
             if (min == undefined || max == undefined) {
                 throw new InvalidProgramStateError();
             }
@@ -113,18 +119,10 @@ export class LostSpanFixer {
     }
 
     public getDistanceTo(left: SpanBase, right: SpanBase): number {
-        const leftFrom = moment(left.BeginTimestamp)
-            .toDate()
-            .valueOf();
-        const leftTo = moment(left.EndTimestamp)
-            .toDate()
-            .valueOf();
-        const rightFrom = moment(right.BeginTimestamp)
-            .toDate()
-            .valueOf();
-        const rightTo = moment(right.EndTimestamp)
-            .toDate()
-            .valueOf();
+        const leftFrom = moment(left.BeginTimestamp).toDate().valueOf();
+        const leftTo = moment(left.EndTimestamp).toDate().valueOf();
+        const rightFrom = moment(right.BeginTimestamp).toDate().valueOf();
+        const rightTo = moment(right.EndTimestamp).toDate().valueOf();
         return Math.min(
             Math.abs(leftFrom - rightTo),
             Math.abs(leftFrom - rightFrom),
@@ -134,14 +132,7 @@ export class LostSpanFixer {
     }
 
     public getSpanLength(span: SpanRange): number {
-        return (
-            moment(span.EndTimestamp)
-                .toDate()
-                .valueOf() -
-            moment(span.BeginTimestamp)
-                .toDate()
-                .valueOf()
-        );
+        return moment(span.EndTimestamp).toDate().valueOf() - moment(span.BeginTimestamp).toDate().valueOf();
     }
 
     public getSpanIntersection(left: SpanRange, right: SpanRange): undefined | SpanRange {
@@ -173,19 +164,9 @@ export class LostSpanFixer {
 
     public getDifferenceBetween<T extends SpanBase>(span: T, target: T): number {
         const parentDuration =
-            moment(span.EndTimestamp)
-                .toDate()
-                .getTime() -
-            moment(span.BeginTimestamp)
-                .toDate()
-                .getTime();
+            moment(span.EndTimestamp).toDate().getTime() - moment(span.BeginTimestamp).toDate().getTime();
         const targetDuration =
-            moment(target.EndTimestamp)
-                .toDate()
-                .getTime() -
-            moment(target.BeginTimestamp)
-                .toDate()
-                .getTime();
+            moment(target.EndTimestamp).toDate().getTime() - moment(target.BeginTimestamp).toDate().getTime();
         return parentDuration - targetDuration;
     }
 }

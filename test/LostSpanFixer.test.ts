@@ -12,9 +12,7 @@ interface Span {
 }
 
 function timestamp(relativeValue: number): string {
-    return moment("2013-02-08 12:00:00.000")
-        .add(relativeValue, "seconds")
-        .format();
+    return moment("2013-02-08 12:00:00.000").add(relativeValue, "seconds").format();
 }
 
 function spanFactory(

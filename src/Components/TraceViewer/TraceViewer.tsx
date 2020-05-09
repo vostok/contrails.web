@@ -77,7 +77,10 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
                         return;
                     }
                     if (e.message === "404") {
-                        setError({ errorTitle: "404", errorMessage: "Traces not found. Check TraceId or wait a minute." });
+                        setError({
+                            errorTitle: "404",
+                            errorMessage: "Traces not found. Check TraceId or wait a minute.",
+                        });
                         return;
                     }
                 }

@@ -20,7 +20,4 @@ const mapDispatch = (dispatch: ContrailsDispatch) => ({
     onChangeFocusedItem: (focusedNode: undefined | SpanNode) => dispatch(changeFocusedNode(focusedNode)),
 });
 
-export const CallTreeContainer = connect(
-    mapProps,
-    mapDispatch
-)(TraceTreeGrid);
+export const CallTreeContainer = connect(mapProps, mapDispatch)(TraceTreeGrid);

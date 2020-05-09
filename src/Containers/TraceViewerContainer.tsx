@@ -32,10 +32,7 @@ const mapDispatch = (dispatch: ContrailsDispatch, ownProps: TraceViewerContainer
     onChangeLayoutKind: (layoutKind: LayoutKind) => dispatch(changeLayoutKind(layoutKind)),
 });
 
-export const TraceViewerContainer = connect(
-    mapProps,
-    mapDispatch
-)(TraceViewer);
+export const TraceViewerContainer = connect(mapProps, mapDispatch)(TraceViewer);
 
 function extractSubtreeSpanId(location: H.Location): undefined | string {
     if (location.hash != undefined) {

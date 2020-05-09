@@ -6,14 +6,13 @@ import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
 
 import { TraceViewer } from "../src/Components/TraceViewer/TraceViewer";
+import { LayoutKind } from "../src/Containers/LayoutKind/LayoutKind";
 import { IDataExtractor, VostokDataExtractor } from "../src/Domain/IDataExtractor";
-import Response53ee602db8d444d9a7a674471be6b709
-    from "../src/Domain/Responses/a7f26865-a1d4-4064-b565-84df9b2e780f.json";
+import Response53ee602db8d444d9a7a674471be6b709 from "../src/Domain/Responses/a7f26865-a1d4-4064-b565-84df9b2e780f.json";
 import { TraceInfo } from "../src/Domain/TraceInfo";
 import { vostokResponseToTraceInfo } from "../src/Domain/VostokResponseToTraceInfo";
 import { ActionType } from "../src/Store/ContrailsApplicationActions";
 import { createContrailsApplicationReducer } from "../src/Store/ContrailsApplicationReducer";
-import { LayoutKind } from "../src/Containers/LayoutKind/LayoutKind";
 
 interface TraceViewerStoryProps {
     dataExtractor: IDataExtractor;

@@ -9,13 +9,6 @@ export interface SpanLineItem {
 export type SpanLines = Array<{ items: SpanLineItem[] }>;
 
 export class SpansToLinesArranger {
-    private cmp(a: SpanNode, b: SpanNode): number {
-        if (a.status == b.status)
-            return a.from - b.from;
-
-        return a.status - b.status;
-    }
-
     public arrange(rootNode: SpanNode): SpanLines {
         const totalResult: SpanLines = [];
         return this.treeTraverse(
@@ -60,5 +53,12 @@ export class SpansToLinesArranger {
             result = this.treeTraverseInternal(root, child, visitor, result, currentDepth + 1, childrenGetter);
         }
         return result;
+    }
+    private cmp(a: SpanNode, b: SpanNode): number {
+        if (a.status == b.status) {
+            return a.from - b.from;
+        }
+
+        return a.status - b.status;
     }
 }

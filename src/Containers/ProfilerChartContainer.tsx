@@ -21,7 +21,4 @@ const mapDispatch = (dispatch: ContrailsDispatch) => ({
     onItemClick: (lineItem: SpanLineItem) => dispatch(changeFocusedNode(lineItem.source)),
 });
 
-export const ProfilerChartContainer = connect(
-    mapProps,
-    mapDispatch
-)(ProfilerChartSpanLines);
+export const ProfilerChartContainer = connect(mapProps, mapDispatch)(ProfilerChartSpanLines);

@@ -30,8 +30,7 @@ describe("TraceTreeUtils.getSpanNodeSelfTime", () => {
     });
 
     it("should correct calculate time for child not fully intersected with parent", () => {
-        expect(TraceTreeUtils.getSpanNodeSelfTime(createSpan(0, 10, [createSpan(
-            5, 20)]))).to.eql(5);
+        expect(TraceTreeUtils.getSpanNodeSelfTime(createSpan(0, 10, [createSpan(5, 20)]))).to.eql(5);
         expect(TraceTreeUtils.getSpanNodeSelfTime(createSpan(0, 10, [createSpan(5, 20), createSpan(7, 25)]))).to.eql(5);
     });
 

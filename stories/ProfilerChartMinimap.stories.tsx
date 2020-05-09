@@ -91,19 +91,34 @@ storiesOf("ProfilerChartMinimap", module)
                             items: [{ from: 0, to: 10 }],
                         },
                         {
-                            items: [{ from: 0, to: 2 }, { from: 2.1, to: 3.993 }],
+                            items: [
+                                { from: 0, to: 2 },
+                                { from: 2.1, to: 3.993 },
+                            ],
                         },
                         {
-                            items: [{ from: 0.5, to: 2 }, { from: 2.6, to: 3.9 }],
+                            items: [
+                                { from: 0.5, to: 2 },
+                                { from: 2.6, to: 3.9 },
+                            ],
                         },
                         {
-                            items: [{ from: 1, to: 1.5 }, { from: 2, to: 2.9 }],
+                            items: [
+                                { from: 1, to: 1.5 },
+                                { from: 2, to: 2.9 },
+                            ],
                         },
                         {
-                            items: [{ from: 1, to: 1.5 }, { from: 2, to: 2.9 }],
+                            items: [
+                                { from: 1, to: 1.5 },
+                                { from: 2, to: 2.9 },
+                            ],
                         },
                         {
-                            items: [{ from: 1, to: 1.5 }, { from: 2, to: 2.9 }],
+                            items: [
+                                { from: 1, to: 1.5 },
+                                { from: 2, to: 2.9 },
+                            ],
                         },
                     ],
                 }}

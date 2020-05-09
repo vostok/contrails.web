@@ -1,6 +1,7 @@
-import { TimeRange } from "../../../Domain/TimeRange";
 import * as React from "react";
+
 import { emptyRef } from "../../../Commons/TypingHacks";
+import { TimeRange } from "../../../Domain/TimeRange";
 import { MinimapChartData } from "../MinimapChartData";
 
 interface ProfilerChartMinimapImageProps {
@@ -10,7 +11,12 @@ interface ProfilerChartMinimapImageProps {
     height: number;
 }
 
-export function ProfilerChartMinimapImage({timeRange, data, width, height}: ProfilerChartMinimapImageProps): JSX.Element {
+export function ProfilerChartMinimapImage({
+    timeRange,
+    data,
+    width,
+    height,
+}: ProfilerChartMinimapImageProps): JSX.Element {
     const canvas = React.useRef<HTMLCanvasElement>(emptyRef);
 
     function toAbsoluteX(value: number): number {
@@ -58,5 +64,5 @@ export function ProfilerChartMinimapImage({timeRange, data, width, height}: Prof
         return undefined;
     }, [data, width, height]);
 
-    return <canvas ref={canvas} height={height} width={width}/>;
+    return <canvas ref={canvas} height={height} width={width} />;
 }

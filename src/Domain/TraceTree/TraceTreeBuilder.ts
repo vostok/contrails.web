@@ -4,7 +4,7 @@ import { NotImplementedError } from "../../Commons/Errors";
 import { IDataExtractor } from "../IDataExtractor";
 import { SpanInfo } from "../SpanInfo";
 
-import {SpanNode, Status} from "./SpanNode";
+import { SpanNode, Status } from "./SpanNode";
 
 export class TraceTreeBuilder {
     public dataExtractor: IDataExtractor;

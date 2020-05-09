@@ -16,5 +16,5 @@ export enum Status {
     Ok,
     Warn,
     Error,
-    Fake
+    Fake,
 }
