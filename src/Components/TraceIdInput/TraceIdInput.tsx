@@ -29,7 +29,7 @@ export function TraceIdInput({ value, onChange, onOpenTrace }: TraceIdInputProps
                 autoFocus
                 width={500}
                 value={value}
-                onChange={(e, nextValue) => onChange(nextValue)}
+                onValueChange={onChange}
                 onKeyPress={handleInputKeyPress}
             />
             <span className={cn("gap")} />

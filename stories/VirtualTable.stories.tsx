@@ -1,4 +1,4 @@
-import Button from "@skbkontur/react-ui/Button";
+import { Button } from "@skbkontur/react-ui";
 import { storiesOf } from "@storybook/react";
 import _ from "lodash";
 import * as React from "react";
