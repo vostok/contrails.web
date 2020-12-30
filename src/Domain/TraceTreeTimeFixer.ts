@@ -35,7 +35,13 @@ export class TraceTreeTimeFixer {
             const nodeHostName = this.dataExtractor.getHostName(node.source);
 
             if (nodeHostName !== parentHostName && this.dataExtractor.isServerSpan(node.source)) {
-                offset = parent.from - node.from;
+                offset = undefined;
+                if (parent.to < node.to) {
+                    offset = parent.to - node.to;
+                }
+                if (parent.from > node.from) {
+                    offset = parent.from - node.from;
+                }
             }
         }
 
