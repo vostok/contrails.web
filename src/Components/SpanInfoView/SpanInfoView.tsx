@@ -29,10 +29,18 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     }
     const spanInfo = span.source;
     const annotations = spanInfo.Annotations;
+
+    let logsLink;
+    if (annotations.hasOwnProperty("application") && annotations.hasOwnProperty("host")) {
+        logsLink = `/contrails/api/logs?traceId=${spanInfo.TraceId}&host=${annotations["host"]}&application=${annotations["application"]}&beginTimestamp=${encodeURIComponent(spanInfo.BeginTimestamp)}&endTimestamp=${encodeURIComponent(spanInfo.EndTimestamp)}`
+    }
+
     return (
         <div>
             <div className={cn("section")}>
-                <div className={cn("section-header")}>General</div>
+                <div className={cn("section-header")}>General {logsLink != undefined && (
+                    <a href={logsLink}>(logs)</a>
+                )}</div>
                 <div className={cn("item")}>
                     <div className={cn("caption")}>TraceId:</div>
                     <span className={cn("value")}>{spanInfo.TraceId}</span>
