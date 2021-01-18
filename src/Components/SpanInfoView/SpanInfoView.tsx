@@ -39,7 +39,7 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
         <div>
             <div className={cn("section")}>
                 <div className={cn("section-header")}>General {logsLink != undefined && (
-                    <a href={logsLink}>(logs)</a>
+                    <a target="_blank" href={logsLink}>(logs)</a>
                 )}</div>
                 <div className={cn("item")}>
                     <div className={cn("caption")}>TraceId:</div>
