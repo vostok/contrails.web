@@ -1,6 +1,6 @@
-import { SpanInfo } from "./SpanInfo";
-import { Status } from "./TraceTree/SpanNode";
-import { VostokKnownAnnotations } from "./VostokSpanInfo";
+import {SpanInfo} from "./SpanInfo";
+import {Status} from "./TraceTree/SpanNode";
+import {VostokKnownAnnotations} from "./VostokSpanInfo";
 
 export interface IDataExtractor {
     getServiceName(span: SpanInfo): string;
@@ -44,6 +44,19 @@ export class VostokDataExtractor implements IDataExtractor {
         const vostokAnnotations = this.getVostokAnnotations(span);
         if (vostokAnnotations == undefined) {
             return Status.Unknown;
+        }
+
+        const status = vostokAnnotations["status"];
+        if (status != undefined) {
+            if (status == "success") {
+                return Status.Ok;
+            }
+            if (status == "warning") {
+                return Status.Warn;
+            }
+            if (status == "error") {
+                return Status.Error;
+            }
         }
 
         const code = vostokAnnotations["http.response.code"];
