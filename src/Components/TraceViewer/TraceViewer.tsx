@@ -90,7 +90,7 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
                 }
                 if (!(e instanceof OperationAbortedError)) {
                     console.error(e);
-                    setError({ errorTitle: "Unknown errror.", errorMessage: "An error has occurred." });
+                    setError({ errorTitle: "Unknown error.", errorMessage: "An error has occurred." });
                 }
             } finally {
                 if (!abortSignal.aborted) {
