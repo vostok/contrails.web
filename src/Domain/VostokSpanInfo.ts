@@ -1,12 +1,15 @@
 export interface VostokKnownAnnotations {
-    host: string;
-    application: string;
-    kind: "http-request-client" | "http-request-server";
+    host?: string;
+    "host.name"?: string;
+
+    application?: string;
+    "service.name"?: string;
+
+    kind?: string;
+
     "http.response.code"?: string;
-    "http.request.size"?: string;
-    "http.request.method"?: string;
-    "http.response.size"?: string;
-    "http.request.url"?: string;
+    "http.status_code"?: string;
+
     operation?: string;
 }
 

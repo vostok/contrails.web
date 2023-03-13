@@ -31,8 +31,10 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     const annotations = spanInfo.Annotations;
 
     let logsLink;
-    if (annotations.hasOwnProperty("application") && annotations.hasOwnProperty("host")) {
-        logsLink = `/contrails/api/logs?traceId=${spanInfo.TraceId}&host=${annotations["host"]}&application=${annotations["application"]}&beginTimestamp=${encodeURIComponent(spanInfo.BeginTimestamp)}&endTimestamp=${encodeURIComponent(spanInfo.EndTimestamp)}`
+    const app = dataExtractor.getServiceName(spanInfo);
+    const host = dataExtractor.getHostName(spanInfo);
+    if (app !== "Unknown Service" && host !== "unknown") {
+        logsLink = `/contrails/api/logs?traceId=${spanInfo.TraceId}&host=${host}&application=${app}&beginTimestamp=${encodeURIComponent(spanInfo.BeginTimestamp)}&endTimestamp=${encodeURIComponent(spanInfo.EndTimestamp)}`
     }
 
     return (
@@ -100,29 +102,26 @@ function sortAnnotations(a: string, b: string) {
     let sortingArr = [
         "kind",
         "application",
+        "service.name",
         "environment",
+        "deployment.environment",
         "host",
+        "host.name",
         "component",
         "operation",
-        "http.client.name",
-        "http.client.address",
-        "http.request.method",
-        "http.request.targetEnvironment",
-        "http.request.targetService",
-        "http.request.url",
-        "http.request.size",
-        "http.cluster.strategy",
-        "http.cluster.status",
-        "http.response.code",
-        "http.response.size",
     ];
 
     let indexA = sortingArr.indexOf(a);
+    let indexB = sortingArr.indexOf(b);
+
+    if (indexA == -1 && indexB == -1) {
+        return a.localeCompare(b);
+    }
+
     if (indexA == -1) {
         indexA = sortingArr.length;
     }
 
-    let indexB = sortingArr.indexOf(b);
     if (indexB == -1) {
         indexB = sortingArr.length;
     }

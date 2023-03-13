@@ -4,7 +4,6 @@ import {VostokKnownAnnotations} from "./VostokSpanInfo";
 
 export interface IDataExtractor {
     getServiceName(span: SpanInfo): string;
-    getSpanTitle(span: SpanInfo): string;
     getHostName(span: SpanInfo): string;
     isServerSpan(span: SpanInfo): boolean;
     isClientSpan(span: SpanInfo): boolean;
@@ -17,23 +16,27 @@ export class VostokDataExtractor implements IDataExtractor {
         if (typeof vostokAnnotations.application === "string") {
             return vostokAnnotations.application;
         }
+        if (typeof vostokAnnotations["service.name"] === "string") {
+            return vostokAnnotations["service.name"];
+        }
         return "Unknown Service";
     }
 
     public getHostName(span: SpanInfo): string {
         const vostokAnnotations = this.getVostokAnnotations(span);
+        let result = "unknown";
         if (typeof vostokAnnotations.host === "string") {
-            return vostokAnnotations.host.toLowerCase().split(".")[0];
+            result = vostokAnnotations.host;
         }
-        return "unknown";
+        if (typeof vostokAnnotations["host.name"] === "string") {
+            result = vostokAnnotations["host.name"];
+        }
+        return result.toLowerCase().split(".")[0];
     }
 
-    public getSpanTitle(span: SpanInfo): string {
+    public getHttpCode(span: SpanInfo): string | undefined {
         const vostokAnnotations = this.getVostokAnnotations(span);
-        if (vostokAnnotations.host === "string") {
-            return vostokAnnotations.host;
-        }
-        return "";
+        return vostokAnnotations["http.response.code"] ?? vostokAnnotations["http.status_code"];
     }
 
     public getStatus(span: SpanInfo): Status {
@@ -42,24 +45,20 @@ export class VostokDataExtractor implements IDataExtractor {
         }
 
         const vostokAnnotations = this.getVostokAnnotations(span);
-        if (vostokAnnotations == undefined) {
-            return Status.Unknown;
-        }
-
         const status = vostokAnnotations["status"];
         if (status != undefined) {
-            if (status == "success") {
+            if (status === "success" || status === "Ok") {
                 return Status.Ok;
             }
-            if (status == "warning") {
+            if (status === "warning") {
                 return Status.Warn;
             }
-            if (status == "error") {
+            if (status === "error" || status === "Error") {
                 return Status.Error;
             }
         }
 
-        const code = vostokAnnotations["http.response.code"];
+        const code = this.getHttpCode(span);
         if (code == undefined) {
             return Status.Unknown;
         }
@@ -101,36 +100,19 @@ export class VostokDataExtractor implements IDataExtractor {
         return Status.Warn;
     }
 
-    public isSuccessfulRequest(span: SpanInfo): boolean {
-        const vostokAnnotations = this.getVostokAnnotations(span);
-        if (vostokAnnotations == undefined) {
-            return false;
-        }
-
-        const code = vostokAnnotations["http.response.code"];
-        if (code != undefined) {
-            const numericCode = parseInt(code);
-            if (100 <= numericCode && numericCode <= 399) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public isServerSpan(span: SpanInfo): boolean {
         const vostokAnnotations = this.getVostokAnnotations(span);
         if (vostokAnnotations == undefined) {
             return false;
         }
-        return vostokAnnotations.kind === "http-request-server";
+        return vostokAnnotations.kind === "http-request-server" || vostokAnnotations.kind === "Server";
     }
     public isClientSpan(span: SpanInfo): boolean {
         const vostokAnnotations = this.getVostokAnnotations(span);
         if (vostokAnnotations == undefined) {
             return true;
         }
-        return vostokAnnotations.kind === "http-request-client";
+        return vostokAnnotations.kind === "http-request-client" || vostokAnnotations.kind === "Client";
     }
 
     private getVostokAnnotations(span: SpanInfo): VostokKnownAnnotations {

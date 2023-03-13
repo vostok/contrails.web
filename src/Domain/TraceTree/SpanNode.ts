@@ -6,7 +6,6 @@ export interface SpanNode {
     to: number;
     status: number;
     serviceName: string;
-    spanTitle: string;
     source: SpanInfo;
     children: SpanNode[];
 }

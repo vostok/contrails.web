@@ -10,7 +10,6 @@ function createSpan(from: number, to: number, children?: SpanNode[]): SpanNode {
         to: to,
         status: 0,
         serviceName: "ServiceName",
-        spanTitle: "SpanTitle",
         source: {
             TraceId: "Id",
             SpanId: "Id",

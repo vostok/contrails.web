@@ -42,7 +42,6 @@ export class TraceTreeBuilder {
                 to: moment(span.EndTimestamp).valueOf(),
                 status: Status.Fake,
                 serviceName: "FakeSpan",
-                spanTitle: "",
                 source: span,
                 children: (childrenDict.get(span.SpanId) || [])
                     .map(x => this.spanInfoToSpanNode(x, childrenDict))
@@ -55,7 +54,6 @@ export class TraceTreeBuilder {
             to: moment(span.EndTimestamp).valueOf(),
             status: Status.Unknown,
             serviceName: this.dataExtractor.getServiceName(span),
-            spanTitle: this.dataExtractor.getSpanTitle(span),
             source: span,
             children: (childrenDict.get(span.SpanId) || [])
                 .map(x => this.spanInfoToSpanNode(x, childrenDict))
