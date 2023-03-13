@@ -109,6 +109,8 @@ function sortAnnotations(a: string, b: string) {
         "host.name",
         "component",
         "operation",
+        "status",
+        "status.description",
     ];
 
     let indexA = sortingArr.indexOf(a);
