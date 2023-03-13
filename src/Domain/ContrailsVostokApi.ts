@@ -28,7 +28,7 @@ export class ContrailsVostokApi implements IContrailsApi {
         }
         // tslint:disable no-unsafe-any
         const rawResponse: any = await response.json();
-        const resp: VostokSpanInfo[] = 'result' in rawResponse ? rawResponse.result : rawResponse
+        const resp: VostokSpanInfo[] = "result" in rawResponse ? rawResponse.result : rawResponse;
         const trace = vostokResponseToTraceInfo(resp);
         if (trace.Spans.length > limit) {
             alert(`Only the first ${trace.Spans.length} spans will be shown`);

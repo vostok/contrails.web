@@ -1,6 +1,6 @@
-import {SpanInfo} from "./SpanInfo";
-import {Status} from "./TraceTree/SpanNode";
-import {VostokKnownAnnotations} from "./VostokSpanInfo";
+import { SpanInfo } from "./SpanInfo";
+import { Status } from "./TraceTree/SpanNode";
+import { VostokKnownAnnotations } from "./VostokSpanInfo";
 
 export interface IDataExtractor {
     getServiceName(span: SpanInfo): string;

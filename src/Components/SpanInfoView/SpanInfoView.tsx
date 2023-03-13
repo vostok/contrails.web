@@ -34,15 +34,24 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     const app = dataExtractor.getServiceName(spanInfo);
     const host = dataExtractor.getHostName(spanInfo);
     if (app !== "Unknown Service" && host !== "unknown") {
-        logsLink = `/contrails/api/logs?traceId=${spanInfo.TraceId}&host=${host}&application=${app}&beginTimestamp=${encodeURIComponent(spanInfo.BeginTimestamp)}&endTimestamp=${encodeURIComponent(spanInfo.EndTimestamp)}`
+        logsLink = `/contrails/api/logs?traceId=${
+            spanInfo.TraceId
+        }&host=${host}&application=${app}&beginTimestamp=${encodeURIComponent(
+            spanInfo.BeginTimestamp
+        )}&endTimestamp=${encodeURIComponent(spanInfo.EndTimestamp)}`;
     }
 
     return (
         <div>
             <div className={cn("section")}>
-                <div className={cn("section-header")}>General {logsLink != undefined && (
-                    <a target="_blank" href={logsLink}>(logs)</a>
-                )}</div>
+                <div className={cn("section-header")}>
+                    General{" "}
+                    {logsLink != undefined && (
+                        <a target="_blank" href={logsLink}>
+                            (logs)
+                        </a>
+                    )}
+                </div>
                 <div className={cn("item")}>
                     <div className={cn("caption")}>TraceId:</div>
                     <span className={cn("value")}>{spanInfo.TraceId}</span>
@@ -99,7 +108,7 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
 }
 
 function sortAnnotations(a: string, b: string) {
-    let sortingArr = [
+    const sortingArr = [
         "kind",
         "application",
         "service.name",

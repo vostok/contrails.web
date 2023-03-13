@@ -94,6 +94,7 @@
         "start:prod-build": "cross-env NODE_ENV=production webpack-dev-server --env.apiMode=fake",
         "storybook": "cross-env NODE_ENV=development start-storybook -p 6006",
         "lint": "tslint --project ./tsconfig.json",
+        "lint-fix": "tslint --project ./tsconfig.json --fix",
         "verify": "tsc",
         "stylelint": "stylelint src/**/*.less stories/**/*.less --syntax less",
         "test": "mocha test/**/*.test.ts",
