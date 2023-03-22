@@ -11,6 +11,7 @@ export interface VostokKnownAnnotations {
     "http.status_code"?: string;
 
     operation?: string;
+    name?: string;
 }
 
 export interface VostokSpanInfo {

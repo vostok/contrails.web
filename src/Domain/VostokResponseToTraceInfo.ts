@@ -7,14 +7,14 @@ export function vostokResponseToTraceInfo(resp: VostokSpanInfo[]): TraceInfo {
         TraceId: resp[0].traceId,
         Spans: resp.map(
             (span: VostokSpanInfo): SpanInfo => {
-                const { operation } = span.annotations;
+                const { operation, name } = span.annotations;
                 return {
                     BeginTimestamp: span.beginTimestamp,
                     EndTimestamp: span.endTimestamp,
                     ParentSpanId: span.parentSpanId?.replace(/-/g, ""),
                     SpanId: span.spanId.replace(/-/g, ""),
                     TraceId: span.traceId.replace(/-/g, ""),
-                    OperationName: operation,
+                    OperationName: name ?? operation,
                     Annotations: { ...span.annotations },
                 };
             }

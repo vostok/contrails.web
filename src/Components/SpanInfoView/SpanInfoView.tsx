@@ -118,6 +118,7 @@ function sortAnnotations(a: string, b: string) {
         "host.name",
         "component",
         "operation",
+        "name",
         "status",
         "status.description",
     ];
