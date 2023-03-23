@@ -14,7 +14,7 @@ export function vostokResponseToTraceInfo(resp: VostokSpanInfo[]): TraceInfo {
                     ParentSpanId: span.parentSpanId?.replace(/-/g, ""),
                     SpanId: span.spanId.replace(/-/g, ""),
                     TraceId: span.traceId.replace(/-/g, ""),
-                    OperationName: name ?? operation,
+                    OperationName: operation ?? name,
                     Annotations: { ...span.annotations },
                 };
             }
