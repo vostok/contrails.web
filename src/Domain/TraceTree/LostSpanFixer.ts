@@ -77,7 +77,7 @@ export class LostSpanFixer {
             return spans;
 
         if (rootSpans.length > 1) {
-            spans.forEach(value => {
+            spans.forEach(value  => {
                 if (value.ParentSpanId == undefined)
                     value.ParentSpanId = "FakeRootSpanId";
             });
