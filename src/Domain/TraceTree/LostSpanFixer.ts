@@ -72,9 +72,17 @@ export class LostSpanFixer {
     }
 
     public fixRootSpanIfNeed<T extends SpanBase>(spans: T[], createFakeSpan: SpanFactory<T>): T[] {
-        if (spans.find(x => x.ParentSpanId == undefined) != undefined) {
+        const rootSpans = spans.filter(x => x.ParentSpanId == undefined);
+        if (rootSpans.length == 1)
             return spans;
+
+        if (rootSpans.length > 1) {
+            spans.forEach(value => {
+                if (value.ParentSpanId == undefined)
+                    value.ParentSpanId = "FakeRootSpanId";
+            });
         }
+
         const min = _.minBy(spans, x => moment(x.BeginTimestamp).toDate());
         const max = _.maxBy(spans, x => moment(x.EndTimestamp).toDate());
         if (min == undefined || max == undefined) {
