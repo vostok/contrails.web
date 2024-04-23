@@ -1,12 +1,10 @@
-import { Copy, PC } from "@skbkontur/react-icons";
 import * as React from "react";
 
-import { nullElement } from "../../Commons/TypingHacks";
-import { DateTimeUtils } from "../../Domain/DateTimeUtils";
-import { VostokDataExtractor } from "../../Domain/IDataExtractor";
-import { SpanNode } from "../../Domain/TraceTree/SpanNode";
-import { TraceTreeUtils } from "../../Domain/TraceTree/TraceTreeUtils";
-import { findParentNode } from "../../Domain/Utils/FindParentTreeNodeVisitor";
+import {nullElement} from "../../Commons/TypingHacks";
+import {DateTimeUtils} from "../../Domain/DateTimeUtils";
+import {VostokDataExtractor} from "../../Domain/IDataExtractor";
+import {SpanNode} from "../../Domain/TraceTree/SpanNode";
+import {TraceTreeUtils} from "../../Domain/TraceTree/TraceTreeUtils";
 
 import cn from "./SpanInfoView.less";
 
@@ -15,15 +13,10 @@ interface SpanInfoViewProps {
     span?: SpanNode;
 }
 
-interface ServiceIconProps {
-    root: SpanNode;
-    span: SpanNode;
-    parentSpan?: SpanNode;
-}
 
 const dataExtractor = new VostokDataExtractor();
 
-export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Element {
+export function SpanInfoView({span, root}: SpanInfoViewProps): null | JSX.Element {
     if (span == undefined) {
         return nullElement;
     }
@@ -40,6 +33,8 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
             spanInfo.BeginTimestamp
         )}&endTimestamp=${encodeURIComponent(spanInfo.EndTimestamp)}`;
     }
+
+    const parent = {traceId: annotations["ParentTraceId"], spanId: annotations["ParentTraceSpanId"]};
 
     return (
         <div>
@@ -89,12 +84,32 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
                     <div className={cn("caption")}>EndTimestamp:</div>
                     {renderTimestampSection(root, span, spanInfo.EndTimestamp)}
                 </div>
+
+                {(parent.traceId || parent.spanId) &&
+                    <>
+                        <div className={cn("item")}>
+                            <div className={cn("caption")}>ParentTraceId:</div>
+                            <span className={cn("value")}>
+                                <a href={`##${parent.traceId}`}>{parent.traceId}</a>
+                            </span>
+                        </div>
+                        <div className={cn("item")}>
+                            <div className={cn("caption")}>ParentTraceSpanId:</div>
+                            <span className={cn("value")}>
+                                {parent.traceId
+                                    ? (<a href={`/${parent.traceId}##${parent.spanId}`}>{parent.spanId}</a>)
+                                    : <>{parent.spanId}</>}
+                            </span>
+                        </div>
+                    </>
+                }
             </div>
             {annotations != undefined && (
                 <div className={cn("section")}>
                     <div className={cn("section-header")}>Annotations</div>
                     {Object.getOwnPropertyNames(annotations)
                         .sort(sortAnnotations)
+                        .filter(x => x !== "ParentTraceId" && x !== "ParentTraceSpanId")
                         .map(x => (
                             <div key={x} className={cn("item")}>
                                 <div className={cn("caption")}>{x}:</div>
