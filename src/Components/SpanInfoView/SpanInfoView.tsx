@@ -39,10 +39,9 @@ export function SpanInfoView({span, root}: SpanInfoViewProps): null | JSX.Elemen
                 <Annotation name="ParentSpanId" value={spanInfo.ParentSpanId} href={`##${spanInfo.ParentSpanId}`}/>
                 <Annotation name="OperationName" value={spanInfo.OperationName}/>
                 <Annotation name="Duration" value={duration}/>
-                {(parent.traceId || parent.spanId) && <ParentTraceInfo {...parent}/>}
-
                 <TimestampSection name="BeginTimestamp" value={spanInfo.BeginTimestamp} root={root} node={span}/>
                 <TimestampSection name="EndTimestamp" value={spanInfo.EndTimestamp} root={root} node={span}/>
+                {(parent.traceId || parent.spanId) && <ParentTraceInfo {...parent}/>}
             </div>
             {annotations && <AnnotationsSection annotations={annotations}/>}
         </div>
@@ -73,7 +72,7 @@ function AnnotationsSection(props: { annotations: SpanAnnotations }) {
 }
 
 function TimestampSection(props: { root: SpanNode, node: SpanNode, name: string, value: string }): React.ReactElement {
-    const {root, node, value} = props;
+    const {root, node, name, value} = props;
     const parentSpan = TraceTreeUtils.getParentSpan(root, node);
     let relatedToParent;
     if (parentSpan != undefined && node.source.Annotations["host"] == parentSpan.source.Annotations["host"]) {
@@ -132,8 +131,6 @@ function LogsLink(props: { spanInfo: SpanInfo }): React.ReactElement | null {
 
 function sortAnnotations(a: string, b: string): number {
     const sortingArr = [
-        "parentTraceId",
-        "parentTraceSpanId",
         "kind",
         "application",
         "service.name",
