@@ -27,6 +27,35 @@ function findSpanNode(traceTree: SpanNode, subtreeSpanId: string): undefined | S
     return undefined;
 }
 
+function findSpanNodeByPrefix(traceTree: SpanNode, subtreeSpanIdPrefix: string): undefined | SpanNode {
+    /*
+    in case of legacy tracing transport (kontur headers) we may don't know whole parentSpanId but only it's prefix
+    because only first 4 bytes of spanId are being transferred.
+    here we trying to find *single* matching span by prefix in subtree.
+    several matching spans should be really rare case so we just treat it like an error
+    */
+
+    let result: undefined | SpanNode;
+    if (traceTree.source.SpanId.startsWith(subtreeSpanIdPrefix)) {
+        result = traceTree;
+    }
+
+    for (const child of traceTree.children) {
+        const childResult = findSpanNodeByPrefix(child, subtreeSpanIdPrefix);
+        if (!childResult)
+            continue;
+
+        if (result) {
+            console.log(`multiple spans is found by prefix ${subtreeSpanIdPrefix}`);
+            return undefined;
+        }
+
+        result = childResult;
+    }
+
+    return result;
+}
+
 const defaultState = { layoutKind: LayoutKind.ChartWithMinimapAndTree };
 
 export function createContrailsApplicationReducer(
@@ -107,7 +136,10 @@ export function createContrailsApplicationReducer(
                     subtreeTimeRange: state.totalTimeRange,
                 };
             } else if (state.traceTree != undefined) {
-                const traceSubtree = findSpanNode(state.traceTree, subtreeSpanId);
+                const traceSubtree =
+                    findSpanNode(state.traceTree, subtreeSpanId) ??
+                    findSpanNodeByPrefix(state.traceTree, subtreeSpanId);
+
                 if (traceSubtree == undefined) {
                     throw new Error("Span id not found");
                 }
