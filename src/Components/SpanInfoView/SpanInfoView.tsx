@@ -51,9 +51,9 @@ export function SpanInfoView({span, root}: SpanInfoViewProps): null | JSX.Elemen
 function ParentTraceInfo(props: { traceId: unknown | undefined | null, spanId: unknown | undefined | null }): React.ReactElement {
     const {traceId, spanId} = props;
     return (<>
-        <Annotation name="ParentTraceId" value={traceId} href={`/${traceId}`} newTab/>
+        <Annotation name="ParentTraceId" value={traceId} href={`${traceId}`} newTab/>
         <Annotation name="ParentTraceSpanId" value={spanId}
-                    href={traceId ? `/${traceId}##${spanId}` : null}
+                    href={traceId ? `${traceId}##${spanId}` : null}
                     newTab/>
     </>);
 }
