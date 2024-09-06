@@ -3,10 +3,10 @@ include:
       file: 'all.yaml'
 
 stages:
-    - 'build-docker-image'
+    - 'build docker image'
 
-build 'vostok/contrails.web':
-    stage: 'build-docker-image'
+build vostok/contrails.web:
+    stage: 'build docker image'
     extends: .docker_build_image
     variables:
         IMAGE_VERSION: "1.1"
