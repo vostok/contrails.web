@@ -1,4 +1,4 @@
-﻿include:
+include:
     - project: 'idevops/ci-templates'
       file: 'all.yaml'
 
