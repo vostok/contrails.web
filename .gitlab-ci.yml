@@ -1,0 +1,25 @@
+﻿include:
+    - project: 'idevops/ci-templates'
+      file: 'all.yaml'
+
+stages:
+    - 'build-docker-image'
+
+build 'vostok/contrails.web':
+    stage: 'build-image'
+    extends: .docker_build_image
+    variables:
+        IMAGE_VERSION: "1.1"
+        DOCKER_IMAGE_NAME: "$DOCKER_REGISTRY/vostok/contrails.web"
+        DOCKER_REGISTRY_USER: $SVC_USER_LOGIN
+        DOCKER_REGISTRY_PASSWORD: $SVC_USER_PASSWORD
+        DOCKER_IMAGE_TAG: "$IMAGE_VERSION.$CI_PIPELINE_IID$DOCKER_IMAGE_TAG_SUFFIX"
+        DOCKER_IMAGE_TAG_SUFFIX: "-$CI_COMMIT_REF_SLUG"
+        DOCKER_PUSH_LATEST: "false"
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          variables:
+              DOCKER_IMAGE_TAG_SUFFIX: ""
+              DOCKER_PUSH_LATEST: "true"
+          when: manual
+        - when: manual
