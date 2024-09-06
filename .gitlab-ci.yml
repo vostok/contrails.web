@@ -6,7 +6,7 @@ stages:
     - 'build-docker-image'
 
 build 'vostok/contrails.web':
-    stage: 'build-image'
+    stage: 'build-docker-image'
     extends: .docker_build_image
     variables:
         IMAGE_VERSION: "1.1"
