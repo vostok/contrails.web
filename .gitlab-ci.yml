@@ -5,7 +5,7 @@ include:
 stages:
     - 'build docker image'
 
-build vostok/contrails.web:
+vostok/contrails.web:
     stage: 'build docker image'
     extends: .docker_build_image
     variables:
