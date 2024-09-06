@@ -1,4 +1,4 @@
-FROM node:12 AS build-env
+FROM docker-proxy.kontur.host/node:12 AS build-env
 
 ADD . /app
 
@@ -8,7 +8,7 @@ RUN yarn install && yarn run build
 
 
 # build runtime image
-FROM nginx:alpine
+FROM docker-proxy.kontur.host/nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 COPY --from=build-env /app/dist /usr/share/nginx/html
