@@ -11,6 +11,7 @@ vostok/contrails.web:
     variables:
         IMAGE_VERSION: "1.1"
         DOCKER_IMAGE_NAME: "$DOCKER_REGISTRY/vostok/contrails.web"
+        DOCKER_DOCKERFILE: "Dockerfile.subpath"
         DOCKER_REGISTRY_USER: $SVC_USER_LOGIN
         DOCKER_REGISTRY_PASSWORD: $SVC_USER_PASSWORD
         DOCKER_IMAGE_TAG: "$IMAGE_VERSION.$CI_PIPELINE_IID$DOCKER_IMAGE_TAG_SUFFIX"
