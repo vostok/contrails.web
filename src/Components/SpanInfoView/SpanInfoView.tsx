@@ -118,11 +118,11 @@ function LogsLink(props: { spanInfo: SpanInfo }): React.ReactElement | null {
     if (app === "Unknown Service" || host === "unknown")
         return null;
 
-    const href = `/contrails/api/logs?traceId=${
+    const href = `/dutymon/logs/forService?traceId=${
         spanInfo.TraceId
-    }&host=${host}&application=${app}&beginTimestamp=${
+    }&host=${host}&service=${app}&from=${
         encodeURIComponent(spanInfo.BeginTimestamp)
-    }&endTimestamp=${
+    }&to=${
         encodeURIComponent(spanInfo.EndTimestamp)
     }`;
 

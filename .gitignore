@@ -5,3 +5,5 @@ yarn-error.log
 dist
 
 src/Domain/Responses/*.json
+/.idea/.idea.contrails.web.dir/.idea/workspace.xml
+/.idea/.idea.contrails.web.dir/.idea/vcs.xml
