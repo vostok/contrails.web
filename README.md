@@ -14,6 +14,7 @@ For convenience, we recommend using [nvm (Node Version Manager)](https://github.
 To start the application, run:
 
 ```bash
+yarn install
 yarn start
 ```
 
