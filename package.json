@@ -58,7 +58,6 @@
         "copy-webpack-plugin": "^5.1.1",
         "cross-env": "^7.0.2",
         "css-loader": "^3.5.3",
-        "favicons-webpack-plugin": "^3.0.1",
         "html-webpack-plugin": "^4.3.0",
         "less": "3.11.1",
         "less-loader": "^6.1.0",
@@ -103,5 +102,8 @@
         "subpath:build": "cross-env NODE_ENV=production webpack \"--env.baseUrl=/contrails\"",
         "vendor:clean": "rimraf prebuild",
         "vendor:build": "rimraf prebuild & webpack --config webpack.vendor.dll.config.js"
+    },
+    "engines": {
+        "node": "16.x"
     }
 }

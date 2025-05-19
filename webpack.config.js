@@ -9,7 +9,6 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const createRules = require("./build/rules.js");
 const { extensions, createAliases } = require("./build/resolve.js");
@@ -59,6 +58,7 @@ module.exports = function createConfig(env) {
             new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
+                favicon: "./src/favicon.svg",
             }),
             new AddAssetHtmlPlugin({
                 filepath: path.resolve(__dirname, `./prebuild/${NODE_ENV}/*.js`),
@@ -73,12 +73,6 @@ module.exports = function createConfig(env) {
                 "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
                 "process.env.API_MODE": JSON.stringify(options.apiMode),
                 "process.env.BASE_URL": JSON.stringify(options.baseUrl),
-            }),
-            new FaviconsWebpackPlugin({
-                logo: './src/favicon.svg',
-                cache: true,
-                mode: 'webapp',
-                devMode: 'webapp'
             }),
             new CopyWebpackPlugin(
                 [
