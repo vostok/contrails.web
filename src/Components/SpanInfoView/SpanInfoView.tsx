@@ -89,8 +89,10 @@ function AnnotationsSection(props: { annotations: SpanAnnotations; root: SpanNod
     );
 }
 
-function TimestampSection(props: { root: SpanNode; node: SpanNode; name: string; value: string }): React.ReactElement {
-    const { root, node, name, value } = props;
+function TimestampSection(props: { root: SpanNode; node: SpanNode; name: string; value: string;level?: number  }): React.ReactElement {
+    const { root, node, name, value,level = 0  } = props;
+        const marginLeft = { marginLeft: level * BASE_INDENT };
+
     const parentSpan = TraceTreeUtils.getParentSpan(root, node);
     let relatedToParent;
     if (parentSpan != undefined && node.source.Annotations["host"] == parentSpan.source.Annotations["host"]) {
@@ -100,7 +102,7 @@ function TimestampSection(props: { root: SpanNode; node: SpanNode; name: string;
     }
 
     return (
-        <div className={cn("item")}>
+        <div className={cn("item")} style={marginLeft}>
             <div className={cn("caption")}>{name}:</div>
             <div className={cn("sub-section")}>
                 <Annotation name="UTC" value={DateTimeUtils.formatDatePreciseUtc(value)} />
@@ -123,7 +125,7 @@ function Annotation(props: {
     const { name, value, href: propHref, newTab, level = 0, parentObj, root, node } = props;
 
     if (name === "timestampUtc" && typeof value === "string" && root && node) {
-        return <TimestampSection name={name} value={value} root={root} node={node} />;
+        return <TimestampSection name={name} level={level} value={value} root={root} node={node} />;
     }
 
     let keyBasedHref: string | undefined;
