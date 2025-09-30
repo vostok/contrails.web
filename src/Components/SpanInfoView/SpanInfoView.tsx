@@ -37,7 +37,7 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
                 <div className={cn("section-header")}>
                     General <LogsLink spanInfo={spanInfo} />
                 </div>
-                <Annotation name="TraceId" value={spanInfo.TraceId} />
+                <Annotation name="TraceId" value={spanInfo.TraceId} href="" />
                 <Annotation name="SpanId" value={spanInfo.SpanId} href={`##${spanInfo.SpanId}`} />
                 <Annotation name="ParentSpanId" value={spanInfo.ParentSpanId} href={`##${spanInfo.ParentSpanId}`} />
                 <Annotation name="OperationName" value={spanInfo.OperationName} />
@@ -51,7 +51,10 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
     );
 }
 
-function ParentTraceInfo(props: { traceId: unknown | undefined | null; spanId: unknown | undefined | null }): React.ReactElement {
+function ParentTraceInfo(props: {
+    traceId: unknown | undefined | null;
+    spanId: unknown | undefined | null;
+}): React.ReactElement {
     const { traceId, spanId } = props;
     return (
         <>
@@ -89,9 +92,15 @@ function AnnotationsSection(props: { annotations: SpanAnnotations; root: SpanNod
     );
 }
 
-function TimestampSection(props: { root: SpanNode; node: SpanNode; name: string; value: string;level?: number  }): React.ReactElement {
-    const { root, node, name, value,level = 0  } = props;
-        const marginLeft = { marginLeft: level * BASE_INDENT };
+function TimestampSection(props: {
+    root: SpanNode;
+    node: SpanNode;
+    name: string;
+    value: string;
+    level?: number;
+}): React.ReactElement {
+    const { root, node, name, value, level = 0 } = props;
+    const marginLeft = { marginLeft: level * BASE_INDENT };
 
     const parentSpan = TraceTreeUtils.getParentSpan(root, node);
     let relatedToParent;
@@ -140,18 +149,20 @@ function Annotation(props: {
         }
     }
     const href = propHref ?? keyBasedHref;
-        const marginLeft = { marginLeft: level * BASE_INDENT };
+    const marginLeft = { marginLeft: level * BASE_INDENT };
 
     const isPrimitive =
         value == null || typeof value === "string" || typeof value === "number" || typeof value === "boolean";
 
     if (isPrimitive) {
+        const displayValue = value == null ? "" : String(value);
+
         const content = href ? (
             <a href={href} target={newTab ? "_blank" : "_self"}>
-                {String(value)}
+                {displayValue}
             </a>
         ) : (
-            String(value)
+            displayValue
         );
 
         return (
@@ -226,39 +237,31 @@ function LogsLink(props: { spanInfo: SpanInfo }): React.ReactElement | null {
 }
 
 function sortAnnotations(a: string, b: string): number {
-    const sortingArr = [
-        "kind",
-        "application",
-        "service.name",
-        "environment",
-        "deployment.environment",
-        "host",
-        "host.name",
-        "component",
-        "operation",
-        "name",
-        "status",
-        "status.description",
-    ];
+    const priority: Record<string, number> = {
+        traceId: -1,
+        kind: 0,
+        application: 1,
+        "service.name": 2,
+        environment: 3,
+        "deployment.environment": 4,
+        host: 5,
+        "host.name": 6,
+        component: 7,
+        operation: 8,
+        name: 9,
+        status: 10,
+        "status.description": 11,
+        annotations: 98,
+        events: 99,
+        links: 100,
+    };
 
-    const lastKeys = ["events", "links"];
+    const getPriority = (key: string): number => (key in priority ? priority[key] : 50);
 
-    if (lastKeys.includes(a) && !lastKeys.includes(b)) return 1;
-    if (!lastKeys.includes(a) && lastKeys.includes(b)) return -1;
-    if (lastKeys.includes(a) && lastKeys.includes(b)) return a.localeCompare(b);
+    const pa = getPriority(a);
+    const pb = getPriority(b);
 
-    if (a === "annotations" && b !== "annotations") return 1;
-    if (b === "annotations" && a !== "annotations") return -1;
+    if (pa !== pb) return pa - pb;
 
-    let indexA = sortingArr.indexOf(a);
-    let indexB = sortingArr.indexOf(b);
-
-if (indexA === -1 && indexB === -1) {
     return a.localeCompare(b);
-}
-
-if (indexA === -1) indexA = sortingArr.length;
-if (indexB === -1) indexB = sortingArr.length;
-
-    return indexA - indexB;
 }
