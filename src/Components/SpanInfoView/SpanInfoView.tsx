@@ -15,6 +15,7 @@ interface SpanInfoViewProps {
 }
 
 const dataExtractor = new VostokDataExtractor();
+const BASE_INDENT = 8;
 
 export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Element {
     if (span == undefined) return nullElement;
@@ -45,15 +46,12 @@ export function SpanInfoView({ span, root }: SpanInfoViewProps): null | JSX.Elem
                 <TimestampSection name="EndTimestamp" value={spanInfo.EndTimestamp} root={root} node={span} />
                 {(parent.traceId || parent.spanId) && <ParentTraceInfo {...parent} />}
             </div>
-            {annotations && <AnnotationsSection annotations={annotations} />}
+            {annotations && <AnnotationsSection annotations={annotations} root={root} node={span} />}
         </div>
     );
 }
 
-function ParentTraceInfo(props: {
-    traceId: unknown | undefined | null;
-    spanId: unknown | undefined | null;
-}): React.ReactElement {
+function ParentTraceInfo(props: { traceId: unknown | undefined | null; spanId: unknown | undefined | null }): React.ReactElement {
     const { traceId, spanId } = props;
     return (
         <>
@@ -68,8 +66,8 @@ function ParentTraceInfo(props: {
     );
 }
 
-function AnnotationsSection(props: { annotations: SpanAnnotations }) {
-    const { annotations } = props;
+function AnnotationsSection(props: { annotations: SpanAnnotations; root: SpanNode; node: SpanNode }) {
+    const { annotations, root, node } = props;
     return (
         <div className={cn("section")}>
             <div className={cn("section-header")}>Annotations</div>
@@ -77,7 +75,15 @@ function AnnotationsSection(props: { annotations: SpanAnnotations }) {
                 .sort(sortAnnotations)
                 .filter(name => name !== "ParentTraceId" && name !== "ParentTraceSpanId")
                 .map(name => (
-                    <Annotation name={name} value={annotations[name]} />
+                    <Annotation
+                        key={name}
+                        name={name}
+                        value={annotations[name]}
+                        level={0}
+                        parentObj={annotations}
+                        root={root}
+                        node={node}
+                    />
                 ))}
         </div>
     );
@@ -104,29 +110,35 @@ function TimestampSection(props: { root: SpanNode; node: SpanNode; name: string;
     );
 }
 
-const BASE_INDENT = 8;
-
 function Annotation(props: {
     name: string;
     value: unknown;
     href?: string | null;
     newTab?: boolean;
     level?: number;
+    parentObj?: Record<string, any>;
+    root?: SpanNode;
+    node?: SpanNode;
 }): React.ReactElement {
-    const { name, value, href: propHref, newTab, level = 0 } = props;
+    const { name, value, href: propHref, newTab, level = 0, parentObj, root, node } = props;
+
+    if (name === "timestampUtc" && typeof value === "string" && root && node) {
+        return <TimestampSection name={name} value={value} root={root} node={node} />;
+    }
 
     let keyBasedHref: string | undefined;
 
     if (typeof value === "string") {
         const lowerName = name.toLowerCase();
         if (lowerName.includes("spanid")) {
-            keyBasedHref = `##${value}`;
+            const traceIdFromBlock = parentObj?.traceId;
+            keyBasedHref = traceIdFromBlock ? `${traceIdFromBlock}##${value}` : `##${value}`;
         } else if (lowerName.includes("traceid")) {
             keyBasedHref = value;
         }
     }
     const href = propHref ?? keyBasedHref;
-    const marginLeft = { marginLeft: level * BASE_INDENT };
+        const marginLeft = { marginLeft: level * BASE_INDENT };
 
     const isPrimitive =
         value == null || typeof value === "string" || typeof value === "number" || typeof value === "boolean";
@@ -153,7 +165,15 @@ function Annotation(props: {
             <div className={cn("item")} style={marginLeft}>
                 {name && <div className={cn("caption")}>{name}:</div>}
                 {value.map((item, i) => (
-                    <Annotation key={i} name="" value={item} level={level + 1} />
+                    <Annotation
+                        key={i}
+                        name=""
+                        value={item}
+                        level={level + 1}
+                        parentObj={item as Record<string, any>}
+                        root={root}
+                        node={node}
+                    />
                 ))}
             </div>
         );
@@ -165,7 +185,15 @@ function Annotation(props: {
             <div className={cn("item")} style={marginLeft}>
                 {name && <div className={cn("caption")}>{name}:</div>}
                 {entries.map(([k, v]) => (
-                    <Annotation key={k} name={k} value={v} level={level + 1} />
+                    <Annotation
+                        key={k}
+                        name={k}
+                        value={v}
+                        level={level + 1}
+                        parentObj={value as Record<string, any>}
+                        root={root}
+                        node={node}
+                    />
                 ))}
             </div>
         );
@@ -209,9 +237,13 @@ function sortAnnotations(a: string, b: string): number {
         "name",
         "status",
         "status.description",
-        "events",
-        "links",
     ];
+
+    const lastKeys = ["events", "links"];
+
+    if (lastKeys.includes(a) && !lastKeys.includes(b)) return 1;
+    if (!lastKeys.includes(a) && lastKeys.includes(b)) return -1;
+    if (lastKeys.includes(a) && lastKeys.includes(b)) return a.localeCompare(b);
 
     if (a === "annotations" && b !== "annotations") return 1;
     if (b === "annotations" && a !== "annotations") return -1;
@@ -219,17 +251,12 @@ function sortAnnotations(a: string, b: string): number {
     let indexA = sortingArr.indexOf(a);
     let indexB = sortingArr.indexOf(b);
 
-    if (indexA === -1 && indexB === -1) {
-        return a.localeCompare(b);
-    }
+if (indexA === -1 && indexB === -1) {
+    return a.localeCompare(b);
+}
 
-    if (indexA === -1) {
-        indexA = sortingArr.length;
-    }
-
-    if (indexB === -1) {
-        indexB = sortingArr.length;
-    }
+if (indexA === -1) indexA = sortingArr.length;
+if (indexB === -1) indexB = sortingArr.length;
 
     return indexA - indexB;
 }
