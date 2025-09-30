@@ -1,4 +1,4 @@
-FROM docker-proxy.kontur.host/node:12 AS build-env
+FROM docker-proxy.kontur.host/node:16 AS build-env
 
 ADD . /app
 
