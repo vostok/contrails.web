@@ -227,9 +227,10 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
         }
     }
 
-    private renderParentBlock(item: TItem): JSX.Element {
+    private renderParentBlock(item: TItem, index: number): JSX.Element {
         return (
             <div
+                key={index}
                 className={cn("parent-line", { highlighted: this.highlightedItems.has(item) })}
                 style={{ backgroundColor: this.getItemColor(item) }}>
                 &nbsp;
@@ -257,7 +258,7 @@ export class TreeGrid<TItem> extends React.Component<TreeGridProps<TItem>, TreeG
                     style={{
                         width: this.state.columnWidths[column.name] ?? column.width ?? "100%",
                     }}>
-                    {parents.map(x => this.renderParentBlock(x))}
+                    {parents.map((x, i) => this.renderParentBlock(x, i))}
                     <span>
                         <button
                             className={cn("expand-button")}

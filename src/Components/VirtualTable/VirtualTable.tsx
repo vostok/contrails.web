@@ -73,15 +73,15 @@ export function VirtualTableInternal<T>(props: VirtualTableProps<T>, ref: React.
                 style={{ top: props.headerHeight }}
                 onScroll={handleScroll}
                 ref={scrollContainer}>
-                <div style={{ height: topOffset }} />
-                <table tabIndex={-1} className={cn("table", props.tableClassName)} onKeyDown={props.onKeyDown}>
+                <div key="top-spacer" style={{ height: topOffset }} />
+                <table key="data-table" tabIndex={-1} className={cn("table", props.tableClassName)} onKeyDown={props.onKeyDown}>
                     <tbody>
                         {props.data
                             .slice(renderRange.from, renderRange.to)
                             .map((x, i) => props.renderRow(x, i + renderRange.from))}
                     </tbody>
                 </table>
-                <div style={{ height: bottomOffset }} />
+                <div key="bottom-spacer" style={{ height: bottomOffset }} />
             </div>
         </div>
     );
