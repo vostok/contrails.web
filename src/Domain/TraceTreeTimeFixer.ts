@@ -25,11 +25,15 @@ export class TraceTreeTimeFixer {
         return Math.max(current, child);
     }
 
+    private static readonly TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
+
     public fix(): void {
-        this.traverseTree(this.traceTree);
+        const rootDuration = this.traceTree.to - this.traceTree.from;
+        const maxSpanDuration = Math.max(rootDuration * 10, TraceTreeTimeFixer.TEN_DAYS_MS);
+        this.traverseTree(this.traceTree, undefined, undefined, maxSpanDuration);
     }
 
-    private traverseTree(node: SpanNode, parent?: SpanNode, offset?: number): void {
+    private traverseTree(node: SpanNode, parent: SpanNode | undefined, offset: number | undefined, maxSpanDuration: number): void {
         if (parent != undefined) {
             const parentHostName = this.dataExtractor.getHostName(parent.source);
             const nodeHostName = this.dataExtractor.getHostName(node.source);
@@ -51,8 +55,16 @@ export class TraceTreeTimeFixer {
             node.to += offset;
         }
 
+        if (parent != undefined && node.from < parent.from) {
+            node.from = parent.from;
+        }
+
+        if (node.to - node.from > maxSpanDuration) {
+            node.to = node.from + maxSpanDuration;
+        }
+
         for (const child of node.children) {
-            this.traverseTree(child, node, offset);
+            this.traverseTree(child, node, offset, maxSpanDuration);
             node.status = TraceTreeTimeFixer.mergeStatus(node.status, child.status);
         }
     }
