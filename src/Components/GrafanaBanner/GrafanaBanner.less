@@ -1,0 +1,45 @@
+.container {
+    display: flex;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background-color: #fffde7;
+    border-bottom: 1px solid #f9e895;
+    padding: 6px 16px;
+    align-items: center;
+    justify-content: space-between;
+    font-family: "Segoe UI", "Helvetica", "Arial", "Tahoma", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.text a {
+    color: #1565c0;
+    text-decoration: underline;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.close {
+    border: none;
+    background: transparent;
+    font-size: 18px;
+    line-height: 1;
+    color: #888;
+    cursor: pointer;
+    padding: 0 0 0 12px;
+    flex-shrink: 0;
+}
+
+.close:hover {
+    color: #333;
+}

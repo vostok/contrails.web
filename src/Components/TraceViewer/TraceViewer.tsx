@@ -103,6 +103,7 @@ export function TraceViewer(props: TraceViewerProps): JSX.Element {
 
     return (
         <ContrailsLayout
+            traceId={props.traceId}
             header={<HeaderContent traceId={props.traceId} onOpen={nextTraceId => props.onOpenTrace(nextTraceId)} />}
             right={<LayoutKindSelect onChange={props.onChangeLayoutKind} value={props.layoutKind} />}>
             <Helmet>

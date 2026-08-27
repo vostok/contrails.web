@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { Button, Input } from "../../Commons/ui";
+import { getGrafanaTraceUrl } from "../../Domain/GrafanaUtils";
 
 import cn from "./TraceIdInput.less";
 
@@ -22,6 +23,8 @@ export function TraceIdInput({ value, onChange, onOpenTrace }: TraceIdInputProps
         [onOpenTrace]
     );
 
+    const grafanaUrl = React.useMemo(() => getGrafanaTraceUrl(value), [value]);
+
     return (
         <div>
             <Input
@@ -36,6 +39,10 @@ export function TraceIdInput({ value, onChange, onOpenTrace }: TraceIdInputProps
             <Button use="success" onClick={handleOpenTrace}>
                 Open
             </Button>
+            <span className={cn("gap")} />
+            <a href={grafanaUrl} target="_blank" rel="noopener noreferrer">
+                <Button use="success">Open in Grafana</Button>
+            </a>
         </div>
     );
 }
